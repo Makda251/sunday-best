@@ -12,20 +12,20 @@ export default function Home() {
               Your Home for Habesha Elegance
             </h1>
             <p className="mt-4 max-w-xl mx-auto text-xl text-indigo-100">
-              Discover beautiful traditional kemis and celebrate your heritage
+              Buy and sell beautiful traditional Habesha dresses - new & pre-loved
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Link
-                href="/auth/signup"
+                href="#products"
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50"
               >
-                Get Started
+                Browse Dresses
               </Link>
               <Link
-                href="#products"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400"
+                href="/auth/signup"
+                className="inline-flex items-center px-6 py-3 border-2 border-white text-base font-medium rounded-md text-white hover:bg-indigo-500"
               >
-                Browse Dresses
+                Sign Up to Sell
               </Link>
             </div>
           </div>
