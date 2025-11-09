@@ -1,7 +1,31 @@
+'use client'
+
 import Link from 'next/link'
 import ProductGrid from '@/components/ProductGrid'
+import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
+  const [userRole, setUserRole] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    const getProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle()
+        setUserRole(data?.role || null)
+      }
+      setLoading(false)
+    }
+    getProfile()
+  }, [supabase])
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
@@ -36,15 +60,17 @@ export default function Home() {
                 </svg>
                 Browse Dresses
               </Link>
-              <Link
-                href="/auth/signup"
-                className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl text-white bg-white/20 backdrop-blur-sm border-2 border-white/40 hover:bg-white/30 transform hover:scale-105 transition-all duration-200"
-              >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Sign Up to Sell
-              </Link>
+              {!loading && userRole !== 'seller' && userRole !== 'admin' && (
+                <Link
+                  href="/auth/signup"
+                  className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl text-white bg-white/20 backdrop-blur-sm border-2 border-white/40 hover:bg-white/30 transform hover:scale-105 transition-all duration-200"
+                >
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Sign Up to Sell
+                </Link>
+              )}
             </div>
           </div>
         </div>
