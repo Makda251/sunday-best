@@ -9,6 +9,8 @@ import type { Profile } from '@/lib/types/database'
 export default function Navbar() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [pendingOrders, setPendingOrders] = useState(0)
+  const [pendingPayments, setPendingPayments] = useState(0)
   const router = useRouter()
   const supabase = createClient()
 
@@ -24,6 +26,27 @@ export default function Navbar() {
           .maybeSingle()
 
         setProfile(data)
+
+        // Fetch notification counts based on role
+        if (data?.role === 'seller') {
+          // Count verified orders that need shipping
+          const { count } = await supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true })
+            .eq('seller_id', user.id)
+            .eq('payment_status', 'verified')
+            .in('status', ['payment_verified', 'processing'])
+
+          setPendingOrders(count || 0)
+        } else if (data?.role === 'admin') {
+          // Count pending payment verifications
+          const { count } = await supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true })
+            .eq('payment_status', 'pending')
+
+          setPendingPayments(count || 0)
+        }
       }
       setLoading(false)
     }
@@ -79,9 +102,14 @@ export default function Navbar() {
                     {(profile.role === 'seller' || profile.role === 'admin') && (
                       <Link
                         href={profile.role === 'seller' ? '/dashboard/seller' : '/dashboard/admin'}
-                        className="hidden sm:inline-flex text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-lg hover:bg-gray-100 text-xs lg:text-sm font-medium transition-colors"
+                        className="hidden sm:inline-flex items-center text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-lg hover:bg-gray-100 text-xs lg:text-sm font-medium transition-colors relative"
                       >
                         Dashboard
+                        {((profile.role === 'seller' && pendingOrders > 0) || (profile.role === 'admin' && pendingPayments > 0)) && (
+                          <span className="ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-red-600 rounded-full">
+                            {profile.role === 'seller' ? pendingOrders : pendingPayments}
+                          </span>
+                        )}
                       </Link>
                     )}
                     <button

@@ -19,6 +19,8 @@ export default function CheckoutPage() {
   const [state, setState] = useState('')
   const [zip, setZip] = useState('')
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null)
+  const [buyerZelleEmail, setBuyerZelleEmail] = useState('')
+  const [buyerZellePhone, setBuyerZellePhone] = useState('')
 
   const router = useRouter()
   const supabase = createClient()
@@ -110,6 +112,8 @@ export default function CheckoutPage() {
           payment_method: 'zelle',
           payment_status: 'pending',
           payment_screenshot_url: publicUrl,
+          buyer_zelle_email: buyerZelleEmail || null,
+          buyer_zelle_phone: buyerZellePhone || null,
           shipping_address_line1: addressLine1,
           shipping_address_line2: addressLine2,
           shipping_city: city,
@@ -250,22 +254,49 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Upload Zelle Payment Screenshot *
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  required
-                  onChange={handleFileChange}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                />
-                {paymentScreenshot && (
-                  <p className="mt-2 text-sm text-green-600">
-                    ✓ {paymentScreenshot.name}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Zelle Email or Phone <span className="text-xs text-gray-500">(for refunds if needed)</span>
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input
+                      type="email"
+                      placeholder="Email used for Zelle"
+                      className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      value={buyerZelleEmail}
+                      onChange={(e) => setBuyerZelleEmail(e.target.value)}
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Phone used for Zelle"
+                      className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      value={buyerZellePhone}
+                      onChange={(e) => setBuyerZellePhone(e.target.value)}
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Provide at least one so we can refund you if the order is cancelled
                   </p>
-                )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Upload Zelle Payment Screenshot *
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    required
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                  />
+                  {paymentScreenshot && (
+                    <p className="mt-2 text-sm text-green-600">
+                      ✓ {paymentScreenshot.name}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -315,7 +346,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-6 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="mt-6 w-full bg-gradient-to-r from-indigo-600 to-purple-600 border border-transparent rounded-xl py-3 px-4 text-base font-semibold text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition shadow-lg hover:shadow-xl"
               >
                 {submitting ? 'Placing order...' : 'Place Order'}
               </button>

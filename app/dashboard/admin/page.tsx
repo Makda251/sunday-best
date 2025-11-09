@@ -88,6 +88,9 @@ export default async function AdminDashboard() {
               <dd className="mt-1 text-3xl font-semibold text-yellow-600">
                 {pendingPayments || 0}
               </dd>
+              {pendingPayments > 0 && (
+                <p className="mt-2 text-xs text-yellow-600 font-medium">⚠️ Action needed</p>
+              )}
             </div>
           </div>
           <div className="bg-white overflow-hidden shadow rounded-lg">
@@ -148,7 +151,7 @@ export default async function AdminDashboard() {
                       <div className="ml-4">
                         <Link
                           href={`/dashboard/admin/orders/${order.id}`}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg"
                         >
                           Review
                         </Link>
@@ -192,6 +195,8 @@ export default async function AdminDashboard() {
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               order.status === 'delivered' ? 'bg-green-100 text-green-800' :
                               order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                              order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                              order.status === 'refunded' ? 'bg-orange-100 text-orange-800' :
                               'bg-blue-100 text-blue-800'
                             }`}>
                               {order.status.replace(/_/g, ' ')}

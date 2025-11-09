@@ -11,6 +11,9 @@ export default function SellerOrderDetailPage() {
   const [trackingNumber, setTrackingNumber] = useState('')
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showDeclineModal, setShowDeclineModal] = useState(false)
+  const [cancellationReason, setCancellationReason] = useState('')
+  const [makeProductsAvailable, setMakeProductsAvailable] = useState(true)
   const router = useRouter()
   const params = useParams()
   const supabase = createClient()
@@ -101,6 +104,51 @@ export default function SellerOrderDetailPage() {
     }
   }
 
+  const handleDeclineOrder = async () => {
+    if (!cancellationReason.trim()) {
+      setError('Please provide a reason for declining this order')
+      return
+    }
+
+    setUpdating(true)
+    setError(null)
+
+    try {
+      // Update order status to cancelled with reason
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({
+          status: 'cancelled',
+          payment_status: 'rejected',
+          cancellation_reason: cancellationReason,
+        })
+        .eq('id', order.id)
+
+      if (updateError) {
+        throw updateError
+      }
+
+      // Update product availability based on seller's choice
+      const productIds = order.order_items?.map((item: any) => item.product_id) || []
+      if (productIds.length > 0) {
+        const { error: productError } = await supabase
+          .from('products')
+          .update({ is_active: makeProductsAvailable })
+          .in('id', productIds)
+
+        if (productError) {
+          console.error('Error updating products:', productError)
+        }
+      }
+
+      // Redirect back to dashboard
+      router.push('/dashboard/seller')
+    } catch (err: any) {
+      setError(err.message)
+      setUpdating(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -167,23 +215,35 @@ export default function SellerOrderDetailPage() {
           </div>
 
           {/* Shipping Action */}
-          {order.payment_status === 'verified' && order.status !== 'shipped' && order.status !== 'delivered' && (
-            <div className="mt-6 border-t pt-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-4">Mark as Shipped</h3>
-              <div className="flex space-x-4">
-                <input
-                  type="text"
-                  placeholder="Enter tracking number"
-                  className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={trackingNumber}
-                  onChange={(e) => setTrackingNumber(e.target.value)}
-                />
+          {order.payment_status === 'verified' && order.status !== 'shipped' && order.status !== 'delivered' && order.status !== 'cancelled' && (
+            <div className="mt-6 border-t pt-6 space-y-4">
+              <div>
+                <h3 className="text-sm font-medium text-gray-900 mb-4">Mark as Shipped</h3>
+                <div className="flex space-x-4">
+                  <input
+                    type="text"
+                    placeholder="Enter tracking number"
+                    className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                  />
+                  <button
+                    onClick={handleMarkAsShipped}
+                    disabled={updating}
+                    className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                  >
+                    {updating ? 'Updating...' : 'Mark as Shipped'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
                 <button
-                  onClick={handleMarkAsShipped}
+                  onClick={() => setShowDeclineModal(true)}
                   disabled={updating}
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                  className="px-4 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-semibold text-red-700 bg-white hover:bg-red-50 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                 >
-                  {updating ? 'Updating...' : 'Mark as Shipped'}
+                  Decline Order
                 </button>
               </div>
             </div>
@@ -229,16 +289,27 @@ export default function SellerOrderDetailPage() {
 
           <div className="mt-6 border-t pt-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal</span>
+              <span className="text-gray-600">Subtotal (Your Product)</span>
               <span className="font-medium text-gray-900">${order.subtotal}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Shipping (Buyer Paid)</span>
+              <span className="font-medium text-blue-600">+${order.shipping_cost}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Platform Fee (10%)</span>
               <span className="font-medium text-red-600">-${order.platform_fee}</span>
             </div>
             <div className="border-t pt-2 flex justify-between text-base font-medium">
-              <span className="text-gray-900">You Receive</span>
-              <span className="text-green-600">${(order.subtotal - order.platform_fee).toFixed(2)}</span>
+              <span className="text-gray-900">You Receive (After Shipping)</span>
+              <span className="text-green-600">${(order.subtotal + order.shipping_cost - order.platform_fee).toFixed(2)}</span>
+            </div>
+            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-xs text-blue-800">
+                <strong>Note:</strong> We will send you ${(order.subtotal + order.shipping_cost - order.platform_fee).toFixed(2)} via Zelle.
+                This includes the ${order.shipping_cost} shipping cost that the buyer paid.
+                You are responsible for shipping the item to the buyer.
+              </p>
             </div>
           </div>
         </div>
@@ -267,6 +338,96 @@ export default function SellerOrderDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Decline Order Modal */}
+      {showDeclineModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Decline Order</h3>
+              <p className="mt-2 text-sm text-gray-600">
+                Please provide a reason for declining this order. The buyer will be notified.
+              </p>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="cancellation-reason" className="block text-sm font-medium text-gray-700 mb-2">
+                Reason for cancellation <span className="text-red-600">*</span>
+              </label>
+              <textarea
+                id="cancellation-reason"
+                rows={4}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="e.g., Item damaged, currently traveling, personal emergency, etc."
+                value={cancellationReason}
+                onChange={(e) => setCancellationReason(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Product Availability
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start cursor-pointer">
+                  <input
+                    type="radio"
+                    name="product-availability"
+                    checked={makeProductsAvailable}
+                    onChange={() => setMakeProductsAvailable(true)}
+                    className="mt-0.5 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  />
+                  <div className="ml-3">
+                    <span className="text-sm font-medium text-gray-900">Make products available again</span>
+                    <p className="text-xs text-gray-500">Choose this if you can fulfill the order later (e.g., traveling, temporary issue)</p>
+                  </div>
+                </label>
+                <label className="flex items-start cursor-pointer">
+                  <input
+                    type="radio"
+                    name="product-availability"
+                    checked={!makeProductsAvailable}
+                    onChange={() => setMakeProductsAvailable(false)}
+                    className="mt-0.5 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  />
+                  <div className="ml-3">
+                    <span className="text-sm font-medium text-gray-900">Keep products unavailable</span>
+                    <p className="text-xs text-gray-500">Choose this if the item is permanently unavailable (e.g., damaged, sold elsewhere)</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mb-4 rounded-md bg-red-50 p-3">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowDeclineModal(false)
+                  setCancellationReason('')
+                  setMakeProductsAvailable(true)
+                  setError(null)
+                }}
+                disabled={updating}
+                className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeclineOrder}
+                disabled={updating}
+                className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 transition"
+              >
+                {updating ? 'Declining...' : 'Decline Order'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

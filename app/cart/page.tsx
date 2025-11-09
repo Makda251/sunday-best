@@ -76,7 +76,7 @@ export default function CartPage() {
           <p className="text-gray-600 mb-8">Browse our collection and add items to your cart</p>
           <Link
             href="/"
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition shadow-lg hover:shadow-xl"
           >
             Continue Shopping
           </Link>
@@ -191,7 +191,7 @@ export default function CartPage() {
               </div>
               <Link
                 href="/checkout"
-                className="mt-6 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-4 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="mt-6 w-full bg-gradient-to-r from-indigo-600 to-purple-600 border border-transparent rounded-xl py-3 px-4 flex items-center justify-center text-base font-semibold text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition shadow-lg hover:shadow-xl"
               >
                 Proceed to Checkout
               </Link>

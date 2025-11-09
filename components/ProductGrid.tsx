@@ -236,16 +236,16 @@ export default function ProductGrid() {
 
         {/* Tag Filters */}
         {showFilters && (
-          <div className="bg-white p-3 rounded-lg border border-gray-200">
-            <div className="space-y-2">
+          <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">COLORS</p>
-                <div className="flex flex-wrap gap-1.5">
+                <p className="text-xs font-medium text-gray-500 mb-1.5 sm:mb-2">COLORS</p>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {COLOR_TAGS.map(tag => (
                     <button
                       key={tag}
                       onClick={() => toggleTag(tag)}
-                      className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
+                      className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
                         selectedTags.includes(tag)
                           ? 'bg-indigo-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -258,13 +258,13 @@ export default function ProductGrid() {
               </div>
 
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">STYLES</p>
-                <div className="flex flex-wrap gap-1.5">
+                <p className="text-xs font-medium text-gray-500 mb-1.5 sm:mb-2">STYLES</p>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {STYLE_TAGS.map(tag => (
                     <button
                       key={tag}
                       onClick={() => toggleTag(tag)}
-                      className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
+                      className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
                         selectedTags.includes(tag)
                           ? 'bg-indigo-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -277,13 +277,13 @@ export default function ProductGrid() {
               </div>
 
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">OCCASIONS</p>
-                <div className="flex flex-wrap gap-1.5">
+                <p className="text-xs font-medium text-gray-500 mb-1.5 sm:mb-2">OCCASIONS</p>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {OCCASION_TAGS.map(tag => (
                     <button
                       key={tag}
                       onClick={() => toggleTag(tag)}
-                      className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
+                      className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
                         selectedTags.includes(tag)
                           ? 'bg-indigo-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -305,11 +305,11 @@ export default function ProductGrid() {
           <p className="text-gray-500">Loading...</p>
         </div>
       ) : products.length > 0 ? (
-        <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {products.map((product: Product) => (
             <div key={product.id} className="group relative">
-              <div className="absolute top-2 left-2 z-10">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${
+              <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 z-10">
+                <span className={`inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-[10px] sm:text-xs font-semibold ${
                   product.condition === 'new'
                     ? 'bg-green-100 text-green-800'
                     : 'bg-amber-100 text-amber-800'
@@ -317,7 +317,7 @@ export default function ProductGrid() {
                   {product.condition === 'new' ? 'New' : 'Pre-Loved'}
                 </span>
               </div>
-              <div className="absolute top-2 right-2 z-10">
+              <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 z-10">
                 <FavoriteButton productId={product.id} />
               </div>
               <Link href={`/products/${product.id}`}>
@@ -331,22 +331,22 @@ export default function ProductGrid() {
                       className="w-full h-full object-center object-cover group-hover:opacity-75"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                       No image
                     </div>
                   )}
                 </div>
-                <h3 className="mt-4 text-sm text-gray-700 font-medium">{product.title}</h3>
-                <p className="mt-1 text-lg font-semibold text-gray-900">${product.price}</p>
+                <h3 className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-700 font-medium line-clamp-2">{product.title}</h3>
+                <p className="mt-0.5 sm:mt-1 text-sm sm:text-lg font-semibold text-gray-900">${product.price}</p>
                 {product.tags && product.tags.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {product.tags.slice(0, 3).map((tag: string) => (
-                      <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
+                  <div className="mt-1 sm:mt-2 flex flex-wrap gap-1">
+                    {product.tags.slice(0, 2).map((tag: string) => (
+                      <span key={tag} className="inline-flex items-center px-1.5 py-0.5 sm:px-2 rounded text-[10px] sm:text-xs font-medium bg-indigo-100 text-indigo-800">
                         {tag}
                       </span>
                     ))}
-                    {product.tags.length > 3 && (
-                      <span className="text-xs text-gray-500">+{product.tags.length - 3}</span>
+                    {product.tags.length > 2 && (
+                      <span className="text-[10px] sm:text-xs text-gray-500">+{product.tags.length - 2}</span>
                     )}
                   </div>
                 )}

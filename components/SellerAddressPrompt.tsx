@@ -14,6 +14,9 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
   const [isOpen, setIsOpen] = useState(hasOrders)
   const [addressLine1, setAddressLine1] = useState('')
   const [addressLine2, setAddressLine2] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [zipCode, setZipCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -29,6 +32,10 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
       .update({
         address_line1: addressLine1,
         address_line2: addressLine2 || null,
+        city: city,
+        state: state,
+        zip_code: zipCode,
+        country: 'USA',
       })
       .eq('id', sellerId)
 
@@ -91,11 +98,61 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
             />
           </div>
 
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                City <span className="text-red-600">*</span>
+              </label>
+              <input
+                id="city"
+                type="text"
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="New York"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+                State <span className="text-red-600">*</span>
+              </label>
+              <input
+                id="state"
+                type="text"
+                required
+                maxLength={2}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm uppercase"
+                placeholder="NY"
+                value={state}
+                onChange={(e) => setState(e.target.value.toUpperCase())}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="zip-code" className="block text-sm font-medium text-gray-700">
+              ZIP Code <span className="text-red-600">*</span>
+            </label>
+            <input
+              id="zip-code"
+              type="text"
+              required
+              maxLength={5}
+              pattern="[0-9]{5}"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="10001"
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+            />
+          </div>
+
           <div className="flex justify-end space-x-3 mt-6">
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="inline-flex justify-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition shadow-md hover:shadow-lg"
             >
               {loading ? 'Saving...' : 'Save Address'}
             </button>

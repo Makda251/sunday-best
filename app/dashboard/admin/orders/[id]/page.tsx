@@ -62,6 +62,7 @@ export default function AdminOrderDetailPage() {
     setError(null)
 
     try {
+      // Update order status
       const { error: updateError } = await supabase
         .from('orders')
         .update({
@@ -73,6 +74,19 @@ export default function AdminOrderDetailPage() {
 
       if (updateError) {
         throw updateError
+      }
+
+      // Mark all products in this order as inactive (sold)
+      const productIds = order.order_items?.map((item: any) => item.product_id) || []
+      if (productIds.length > 0) {
+        const { error: productError } = await supabase
+          .from('products')
+          .update({ is_active: false })
+          .in('id', productIds)
+
+        if (productError) {
+          console.error('Error marking products as sold:', productError)
+        }
       }
 
       // Refresh order data
@@ -103,11 +117,50 @@ export default function AdminOrderDetailPage() {
     setError(null)
 
     try {
-      const { error: updateError } = await supabase
+      const { error: updateError} = await supabase
         .from('orders')
         .update({
           payment_status: 'rejected',
           status: 'cancelled',
+        })
+        .eq('id', order.id)
+
+      if (updateError) {
+        throw updateError
+      }
+
+      // Refresh order data
+      const { data } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          buyer:profiles!buyer_id(full_name, email, phone),
+          seller:profiles!seller_id(full_name, email, phone),
+          order_items(*, product:products(*))
+        `)
+        .eq('id', params.id)
+        .single()
+
+      setOrder(data)
+      setUpdating(false)
+    } catch (err: any) {
+      setError(err.message)
+      setUpdating(false)
+    }
+  }
+
+  const handleMarkAsRefunded = async () => {
+    const refundNotes = prompt('Add any notes about this refund (optional):')
+
+    setUpdating(true)
+    setError(null)
+
+    try {
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({
+          refunded_at: new Date().toISOString(),
+          refund_notes: refundNotes || null,
         })
         .eq('id', order.id)
 
@@ -221,6 +274,14 @@ export default function AdminOrderDetailPage() {
               </div>
             )}
           </div>
+
+          {/* Cancellation Reason */}
+          {order.cancellation_reason && (
+            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <h3 className="text-sm font-medium text-red-900 mb-2">Cancellation Reason</h3>
+              <p className="text-sm text-red-700">{order.cancellation_reason}</p>
+            </div>
+          )}
         </div>
 
         {/* Payment Screenshot */}
@@ -298,6 +359,46 @@ export default function AdminOrderDetailPage() {
               <p className="text-gray-600">{order.buyer?.email}</p>
               {order.buyer?.phone && <p className="text-gray-600">{order.buyer.phone}</p>}
             </div>
+
+            {/* Buyer Zelle Info for Refunds */}
+            {(order.buyer_zelle_email || order.buyer_zelle_phone) && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <h3 className="text-sm font-medium text-gray-900 mb-2">Zelle Info (for refunds)</h3>
+                <div className="text-sm space-y-1">
+                  {order.buyer_zelle_email && (
+                    <p className="text-gray-600">
+                      <span className="font-medium">Email:</span> {order.buyer_zelle_email}
+                    </p>
+                  )}
+                  {order.buyer_zelle_phone && (
+                    <p className="text-gray-600">
+                      <span className="font-medium">Phone:</span> {order.buyer_zelle_phone}
+                    </p>
+                  )}
+                </div>
+
+                {/* Refund Tracking */}
+                {order.status === 'cancelled' && !order.refunded_at && (
+                  <button
+                    onClick={handleMarkAsRefunded}
+                    disabled={updating}
+                    className="mt-3 w-full px-3 py-2 border border-transparent rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 transition"
+                  >
+                    Mark as Refunded
+                  </button>
+                )}
+
+                {order.refunded_at && (
+                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm font-medium text-green-900">✓ Refunded</p>
+                    <p className="text-xs text-green-700 mt-1">{new Date(order.refunded_at).toLocaleString()}</p>
+                    {order.refund_notes && (
+                      <p className="text-xs text-green-700 mt-1 italic">{order.refund_notes}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="bg-white shadow rounded-lg p-6">
