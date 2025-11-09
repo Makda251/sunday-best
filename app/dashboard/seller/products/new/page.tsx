@@ -1,0 +1,339 @@
+'use client'
+
+import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+import type { ProductCondition } from '@/lib/types/database'
+
+// Predefined tag options
+const COLOR_TAGS = ['White', 'Ivory', 'Red', 'Gold', 'Silver', 'Yellow', 'Pink', 'Green', 'Blue', 'Purple', 'Black', 'Multicolor']
+const STYLE_TAGS = ['Traditional', 'Modern', 'Embroidered', 'Beaded', 'Sequined', 'Handwoven']
+const OCCASION_TAGS = ['Wedding', 'Engagement', 'Baptism', 'Holiday', 'Casual', 'Festival']
+
+export default function NewProductPage() {
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [price, setPrice] = useState('')
+  const [condition, setCondition] = useState<ProductCondition>('new')
+  const [size, setSize] = useState('')
+  const [images, setImages] = useState<File[]>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const supabase = createClient()
+
+  const platformFee = parseFloat(process.env.NEXT_PUBLIC_PLATFORM_FEE_PERCENTAGE || '10')
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    )
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImages(Array.from(e.target.files))
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setUploading(true)
+    setError(null)
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (!user) {
+        router.push('/auth/login')
+        return
+      }
+
+      // Debug: Log user info
+      console.log('Current user ID:', user.id)
+      console.log('User email:', user.email)
+
+      // Check if profile exists with seller role
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, role')
+        .eq('id', user.id)
+        .single()
+
+      console.log('Profile:', profile)
+      console.log('Profile error:', profileError)
+
+      if (!profile || profile.role !== 'seller') {
+        throw new Error('You must be a seller to create products. Please contact support.')
+      }
+
+      // Upload images to Supabase Storage
+      const imageUrls: string[] = []
+      for (const image of images) {
+        const fileExt = image.name.split('.').pop()
+        const fileName = `${user.id}/${Math.random().toString(36).substring(2)}.${fileExt}`
+
+        const { error: uploadError } = await supabase.storage
+          .from('product-images')
+          .upload(fileName, image)
+
+        if (uploadError) {
+          throw uploadError
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(fileName)
+
+        imageUrls.push(publicUrl)
+      }
+
+      // Create product
+      const { error: insertError } = await supabase
+        .from('products')
+        .insert({
+          seller_id: user.id,
+          title,
+          description,
+          price: parseFloat(price),
+          condition,
+          size,
+          images: imageUrls,
+          tags: selectedTags,
+          is_active: true,
+        })
+
+      if (insertError) {
+        throw insertError
+      }
+
+      router.push('/dashboard/seller')
+      router.refresh()
+    } catch (err: any) {
+      setError(err.message)
+      setUploading(false)
+    }
+  }
+
+  const priceNum = parseFloat(price) || 0
+  const sellerReceives = priceNum * (1 - platformFee / 100)
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Create a new listing for your Habesha dress
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6 space-y-6">
+          {error && (
+            <div className="rounded-md bg-red-50 p-4">
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
+          )}
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Title *
+            </label>
+            <input
+              type="text"
+              id="title"
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Beautiful Traditional Habesha Dress"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <textarea
+              id="description"
+              rows={4}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Describe your dress..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+                Price ($) *
+              </label>
+              <input
+                type="number"
+                id="price"
+                required
+                step="0.01"
+                min="0"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="150.00"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+              {priceNum > 0 && (
+                <p className="mt-2 text-sm text-gray-500">
+                  Platform fee ({platformFee}%): ${(priceNum * platformFee / 100).toFixed(2)} •
+                  You receive: ${sellerReceives.toFixed(2)}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="size" className="block text-sm font-medium text-gray-700">
+                Size
+              </label>
+              <select
+                id="size"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+              >
+                <option value="">Select size</option>
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Condition *
+            </label>
+            <div className="space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="condition"
+                  value="new"
+                  checked={condition === 'new'}
+                  onChange={(e) => setCondition(e.target.value as ProductCondition)}
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                />
+                <span className="ml-2 text-sm text-gray-700">New</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="condition"
+                  value="used"
+                  checked={condition === 'used'}
+                  onChange={(e) => setCondition(e.target.value as ProductCondition)}
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                />
+                <span className="ml-2 text-sm text-gray-700">Used</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="images" className="block text-sm font-medium text-gray-700">
+              Images * (Max 5 images)
+            </label>
+            <input
+              type="file"
+              id="images"
+              accept="image/*"
+              multiple
+              required
+              onChange={handleImageChange}
+              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            />
+            <p className="mt-2 text-sm text-gray-500">
+              {images.length > 0 ? `${images.length} image(s) selected` : 'No images selected'}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tags
+            </label>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">COLOR</p>
+                <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                  {COLOR_TAGS.map(tag => (
+                    <label key={tag} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedTags.includes(tag)}
+                        onChange={() => toggleTag(tag)}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{tag}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">STYLE</p>
+                <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                  {STYLE_TAGS.map(tag => (
+                    <label key={tag} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedTags.includes(tag)}
+                        onChange={() => toggleTag(tag)}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{tag}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">OCCASION</p>
+                <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                  {OCCASION_TAGS.map(tag => (
+                    <label key={tag} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedTags.includes(tag)}
+                        onChange={() => toggleTag(tag)}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{tag}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4 border-t">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={uploading}
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            >
+              {uploading ? 'Creating...' : 'Create Product'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
