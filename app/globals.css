@@ -24,3 +24,21 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Make placeholder text more visible on all devices */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: rgb(107, 114, 128) !important;
+  opacity: 1 !important;
+}
+
+/* Specific override for mobile devices */
+@media (max-width: 640px) {
+  input::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    color: rgb(75, 85, 99) !important;
+    opacity: 1 !important;
+  }
+}
