@@ -9,10 +9,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-extrabold text-white sm:text-5xl sm:tracking-tight lg:text-6xl">
-              Buy & Sell Habesha Dresses
+              Your Home for Habesha Elegance
             </h1>
             <p className="mt-4 max-w-xl mx-auto text-xl text-indigo-100">
-              Find beautiful traditional dresses or sell your own
+              Discover beautiful traditional kemis and celebrate your heritage
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Link
