@@ -37,7 +37,7 @@ export default async function SellerShopPage({ params }: { params: Promise<{ id:
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <h1 className="text-2xl md:text-3xl font-bold mb-2">
-              {seller.full_name || 'Anonymous Seller'}'s Collection
+              {seller.full_name || 'Anonymous Seller'}&apos;s Collection
             </h1>
             <p className="text-sm md:text-base text-indigo-100">
               {productList.length} {productList.length === 1 ? 'item' : 'items'} available
@@ -121,7 +121,7 @@ export default async function SellerShopPage({ params }: { params: Promise<{ id:
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
             <h3 className="mt-6 text-xl font-semibold text-gray-900">No products yet</h3>
-            <p className="mt-2 text-gray-500">This seller hasn't listed any products yet. Check back soon!</p>
+            <p className="mt-2 text-gray-500">This seller hasn&apos;t listed any products yet. Check back soon!</p>
           </div>
         )}
       </div>

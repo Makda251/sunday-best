@@ -55,7 +55,7 @@ export default function SignupPage() {
       // User is logged in immediately (no email confirmation required)
       if (data.user) {
         // Update profile with additional info
-        const updateData: any = {
+        const updateData: Record<string, string | null> = {
           full_name: fullName,
           role,
         }
