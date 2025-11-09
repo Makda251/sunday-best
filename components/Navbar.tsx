@@ -45,31 +45,22 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 flex flex-col justify-center">
-              <span className="text-2xl font-bold text-indigo-600">The Kemis House</span>
-              <span className="text-xs text-gray-500 -mt-1">Your Home for Habesha Elegance</span>
+    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
+          <div className="flex items-center min-w-0">
+            <Link href="/" className="flex-shrink-0 min-w-0">
+              <span className="text-lg sm:text-xl lg:text-2xl font-bold text-indigo-600 truncate">The Kemis House</span>
             </Link>
-            <div className="hidden md:ml-8 md:flex md:space-x-6">
-              <Link
-                href="/"
-                className="text-gray-600 hover:text-indigo-600 inline-flex items-center px-1 text-sm font-medium transition-colors"
-              >
-                Browse Dresses
-              </Link>
-            </div>
           </div>
           <div className="flex items-center">
             {!loading && (
               <>
                 {profile ? (
-                  <div className="flex items-center space-x-2 md:space-x-4">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <Link
                       href="/favorites"
-                      className="text-gray-600 hover:text-indigo-600 p-2 rounded-md transition-colors"
+                      className="text-gray-600 hover:text-indigo-600 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
                       title="Favorites"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,41 +69,24 @@ export default function Navbar() {
                     </Link>
                     <Link
                       href="/cart"
-                      className="text-gray-600 hover:text-indigo-600 p-2 rounded-md transition-colors"
+                      className="text-gray-600 hover:text-indigo-600 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
                       title="Cart"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                       </svg>
                     </Link>
-                    {profile.role === 'seller' && (
+                    {(profile.role === 'seller' || profile.role === 'admin') && (
                       <Link
-                        href="/dashboard/seller"
-                        className="hidden md:inline-flex text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                        href={profile.role === 'seller' ? '/dashboard/seller' : '/dashboard/admin'}
+                        className="hidden sm:inline-flex text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-lg hover:bg-gray-100 text-xs lg:text-sm font-medium transition-colors"
                       >
                         Dashboard
                       </Link>
                     )}
-                    {profile.role === 'admin' && (
-                      <Link
-                        href="/dashboard/admin"
-                        className="hidden md:inline-flex text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                      >
-                        Admin
-                      </Link>
-                    )}
-                    <div className="hidden md:flex items-center space-x-3 pl-3 border-l border-gray-200">
-                      <span className="text-sm text-gray-700">{profile.full_name || profile.email}</span>
-                      <button
-                        onClick={handleSignOut}
-                        className="text-gray-600 hover:text-indigo-600 text-sm font-medium transition-colors"
-                      >
-                        Sign out
-                      </button>
-                    </div>
                     <button
                       onClick={handleSignOut}
-                      className="md:hidden text-gray-600 hover:text-indigo-600 p-2 rounded-md transition-colors"
+                      className="text-gray-600 hover:text-indigo-600 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
                       title="Sign out"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,16 +95,16 @@ export default function Navbar() {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center gap-2">
                     <Link
                       href="/auth/login"
-                      className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                      className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                     >
                       Sign in
                     </Link>
                     <Link
                       href="/auth/signup"
-                      className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"
+                      className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all shadow-sm"
                     >
                       Sign up
                     </Link>
