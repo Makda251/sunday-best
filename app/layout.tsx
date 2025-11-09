@@ -6,8 +6,8 @@ import Navbar from "@/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sunday Best - Celebrating Habesha Elegance",
-  description: "Buy and sell new and pre-loved traditional Habesha dresses. Celebrating Habesha elegance through beautiful cotton and chiffon dresses.",
+  title: "The Kemis House - Your Home for Habesha Elegance",
+  description: "Buy and sell new and pre-loved traditional Habesha dresses. Your home for Habesha elegance through beautiful cotton and chiffon kemis.",
 };
 
 export default function RootLayout({

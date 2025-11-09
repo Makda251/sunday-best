@@ -50,8 +50,8 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex flex-col justify-center">
-              <span className="text-2xl font-bold text-indigo-600">Sunday Best</span>
-              <span className="text-xs text-gray-500 -mt-1">Celebrating Habesha Elegance</span>
+              <span className="text-2xl font-bold text-indigo-600">The Kemis House</span>
+              <span className="text-xs text-gray-500 -mt-1">Your Home for Habesha Elegance</span>
             </Link>
             <div className="hidden md:ml-8 md:flex md:space-x-6">
               <Link
