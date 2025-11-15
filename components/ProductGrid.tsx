@@ -29,7 +29,7 @@ export default function ProductGrid() {
 
     const { data: allProducts } = await supabase
       .from('products')
-      .select('*, seller:profiles(full_name, email)')
+      .select('*, seller:profiles!products_seller_id_fkey(full_name, email)')
       .eq('is_active', true)
       .eq('review_status', 'approved')
       .order('created_at', { ascending: false })

@@ -11,7 +11,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   const { data: product } = await supabase
     .from('products')
-    .select('*, seller:profiles(id, full_name, email)')
+    .select('*, seller:profiles!products_seller_id_fkey(id, full_name, email)')
     .eq('id', id)
     .single()
 
