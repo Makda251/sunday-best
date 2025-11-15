@@ -39,13 +39,18 @@ export default function Navbar() {
 
           setPendingOrders(count || 0)
         } else if (data?.role === 'admin') {
-          // Count pending payment verifications
-          const { count } = await supabase
+          // Count pending payment verifications and product reviews
+          const { count: paymentCount } = await supabase
             .from('orders')
             .select('*', { count: 'exact', head: true })
             .eq('payment_status', 'pending')
 
-          setPendingPayments(count || 0)
+          const { count: productCount } = await supabase
+            .from('products')
+            .select('*', { count: 'exact', head: true })
+            .eq('review_status', 'pending')
+
+          setPendingPayments((paymentCount || 0) + (productCount || 0))
         }
       }
       setLoading(false)

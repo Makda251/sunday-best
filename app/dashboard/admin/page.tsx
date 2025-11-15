@@ -51,6 +51,11 @@ export default async function AdminDashboard() {
     .select('*', { count: 'exact', head: true })
     .eq('payment_status', 'pending')
 
+  const { count: pendingProducts } = await supabase
+    .from('products')
+    .select('*', { count: 'exact', head: true })
+    .eq('review_status', 'pending')
+
   const { data: revenueData } = await supabase
     .from('orders')
     .select('platform_fee')
@@ -69,7 +74,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <dt className="text-sm font-medium text-gray-500 truncate">
@@ -93,6 +98,19 @@ export default async function AdminDashboard() {
               )}
             </div>
           </div>
+          <Link href="/dashboard/admin/products" className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
+            <div className="p-5">
+              <dt className="text-sm font-medium text-gray-500 truncate">
+                Pending Product Reviews
+              </dt>
+              <dd className="mt-1 text-3xl font-semibold text-purple-600">
+                {pendingProducts || 0}
+              </dd>
+              {pendingProducts > 0 && (
+                <p className="mt-2 text-xs text-purple-600 font-medium">⚠️ Action needed</p>
+              )}
+            </div>
+          </Link>
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <dt className="text-sm font-medium text-gray-500 truncate">

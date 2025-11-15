@@ -31,6 +31,7 @@ export default function ProductGrid() {
       .from('products')
       .select('*, seller:profiles(full_name, email)')
       .eq('is_active', true)
+      .eq('review_status', 'approved')
       .order('created_at', { ascending: false })
 
     let filtered = allProducts || []

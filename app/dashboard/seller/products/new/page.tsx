@@ -89,7 +89,7 @@ export default function NewProductPage() {
         imageUrls.push(publicUrl)
       }
 
-      // Create product
+      // Create product with pending review status
       const { error: insertError } = await supabase
         .from('products')
         .insert({
@@ -102,12 +102,15 @@ export default function NewProductPage() {
           images: imageUrls,
           tags: selectedTags,
           is_active: true,
+          review_status: 'pending',
         })
 
       if (insertError) {
         throw insertError
       }
 
+      // Show success message
+      alert('Product submitted for review! An admin will review it before it appears on the site.')
       router.push('/dashboard/seller')
       router.refresh()
     } catch (err: any) {
