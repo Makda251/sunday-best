@@ -43,7 +43,7 @@ export default function AdminProductsPage() {
       .from('products')
       .select(`
         *,
-        profiles:seller_id (
+        profiles!products_seller_id_fkey (
           email,
           full_name
         )
