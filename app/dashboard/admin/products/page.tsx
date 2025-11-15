@@ -70,10 +70,14 @@ export default function AdminProductsPage() {
       })
       .eq('id', productId)
 
-    if (!error) {
+    if (error) {
+      console.error('Error approving product:', error)
+      alert(`Failed to approve product: ${error.message}`)
+    } else {
       // Remove the product from the current list
       setProducts(prev => prev.filter(p => p.id !== productId))
       setSelectedProduct(null)
+      alert('Product approved successfully!')
     }
   }
 
@@ -96,11 +100,15 @@ export default function AdminProductsPage() {
       })
       .eq('id', productId)
 
-    if (!error) {
+    if (error) {
+      console.error('Error rejecting product:', error)
+      alert(`Failed to reject product: ${error.message}`)
+    } else {
       // Remove the product from the current list
       setProducts(prev => prev.filter(p => p.id !== productId))
       setSelectedProduct(null)
       setRejectionReason('')
+      alert('Product rejected successfully!')
     }
   }
 
@@ -229,10 +237,13 @@ export default function AdminProductsPage() {
                       onClick={() => setZoomedImage(img)}
                     >
                       <Image src={img} alt={`${selectedProduct.title} ${idx + 1}`} fill className="object-cover rounded" />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded flex items-center justify-center">
-                        <svg className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                        </svg>
+                      <div className="absolute bottom-2 right-2">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 px-2 py-1.5 rounded-lg shadow-lg flex items-center gap-1">
+                          <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">Click to zoom</span>
+                        </div>
                       </div>
                     </div>
                   ))}
