@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import SellerAddressPrompt from '@/components/SellerAddressPrompt'
+import DashboardVisitTracker from '@/components/DashboardVisitTracker'
 
 export default async function SellerDashboard() {
   const supabase = await createClient()
@@ -41,6 +42,8 @@ export default async function SellerDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      <DashboardVisitTracker role="seller" />
+
       {/* Address prompt modal */}
       {needsAddress && (
         <SellerAddressPrompt

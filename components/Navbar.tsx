@@ -62,7 +62,18 @@ export default function Navbar() {
       getProfile()
     })
 
-    return () => subscription.unsubscribe()
+    // Listen for dashboard visits to clear notifications
+    const handleDashboardVisit = () => {
+      setPendingOrders(0)
+      setPendingPayments(0)
+    }
+
+    window.addEventListener('dashboard-visited', handleDashboardVisit)
+
+    return () => {
+      subscription.unsubscribe()
+      window.removeEventListener('dashboard-visited', handleDashboardVisit)
+    }
   }, [supabase])
 
   const handleSignOut = async () => {
