@@ -43,6 +43,14 @@ export default function NewProductPage() {
     setError(null)
 
     try {
+      // Check if at least one color tag is selected
+      const hasColorTag = selectedTags.some(tag => COLOR_TAGS.includes(tag))
+      if (!hasColorTag) {
+        setError('Please select at least one color for your dress.')
+        setUploading(false)
+        return
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
@@ -267,7 +275,9 @@ export default function NewProductPage() {
             </label>
             <div className="space-y-3">
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">COLOR</p>
+                <p className="text-xs font-medium text-gray-700 mb-1">
+                  COLOR <span className="text-red-600">*</span>
+                </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-3 sm:gap-x-4 gap-y-2">
                   {COLOR_TAGS.map(tag => (
                     <label key={tag} className="flex items-center">
