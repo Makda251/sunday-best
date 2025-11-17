@@ -9,15 +9,30 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const { id } = await params
   const supabase = await createClient()
 
+  // Get current user to check if they're the seller
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // First try to get the product without review_status filter
   const { data: product } = await supabase
     .from('products')
     .select('*, seller:profiles!products_seller_id_fkey(id, full_name, email)')
     .eq('id', id)
-    .eq('review_status', 'approved')
-    .eq('is_active', true)
     .single()
 
   if (!product) {
+    notFound()
+  }
+
+  // Check if user is the seller
+  const isOwnProduct = user && product.seller_id === user.id
+
+  // If not approved and not the seller's own product, show 404
+  if (product.review_status !== 'approved' && !isOwnProduct) {
+    notFound()
+  }
+
+  // If approved but not active (sold) and not the seller's own product, show 404
+  if (product.review_status === 'approved' && !product.is_active && !isOwnProduct) {
     notFound()
   }
 
@@ -26,6 +41,48 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-4 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Review Status Banner (only visible to seller) */}
+        {isOwnProduct && product.review_status === 'pending' && (
+          <div className="mb-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-yellow-700">
+                  <strong>Pending Review:</strong> This product is waiting for admin approval before it will be visible to buyers.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        {isOwnProduct && product.review_status === 'rejected' && (
+          <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-400 rounded-lg">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-700">
+                  <strong>Rejected:</strong> This product was rejected and is not visible to buyers.
+                </p>
+                {product.rejection_reason && (
+                  <p className="text-sm text-red-600 mt-2">
+                    <strong>Reason:</strong> {product.rejection_reason}
+                  </p>
+                )}
+                <p className="text-sm text-red-600 mt-2">
+                  You can <Link href={`/dashboard/seller/products/${product.id}/edit`} className="font-medium underline">edit this product</Link> to fix the issues and resubmit for review.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="bg-white rounded-xl shadow-xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8">
             {/* Image Gallery */}
