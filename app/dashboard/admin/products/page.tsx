@@ -31,6 +31,7 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [rejectionReason, setRejectionReason] = useState('')
+  const [showImageGallery, setShowImageGallery] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -228,12 +229,30 @@ export default function AdminProductsPage() {
                   </button>
                 </div>
 
-                {/* Product Images */}
-                <div className="mb-6">
-                  <ProductImageGallery
-                    images={selectedProduct.images}
-                    productTitle={selectedProduct.title}
-                  />
+                {/* Product Images - Compact Grid */}
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  {selectedProduct.images.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="aspect-square relative cursor-pointer group rounded-lg overflow-hidden"
+                      onClick={() => setShowImageGallery(true)}
+                    >
+                      <Image
+                        src={img}
+                        alt={`${selectedProduct.title} ${idx + 1}`}
+                        fill
+                        className="object-cover hover:opacity-90 transition-opacity"
+                      />
+                      <div className="absolute bottom-1.5 right-1.5">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 px-2 py-1 rounded shadow-lg flex items-center gap-1">
+                          <svg className="w-3 h-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">Zoom</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Product Details */}
@@ -327,6 +346,24 @@ export default function AdminProductsPage() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Fullscreen Image Gallery Modal */}
+        {showImageGallery && selectedProduct && (
+          <div className="fixed inset-0 bg-black bg-opacity-95 z-[60] flex items-center justify-center p-4">
+            <ProductImageGallery
+              images={selectedProduct.images}
+              productTitle={selectedProduct.title}
+            />
+            <button
+              onClick={() => setShowImageGallery(false)}
+              className="fixed top-4 right-4 text-white hover:text-gray-300 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors z-10"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         )}
 
