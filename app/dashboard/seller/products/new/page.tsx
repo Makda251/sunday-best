@@ -15,6 +15,7 @@ export default function NewProductPage() {
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
   const [condition, setCondition] = useState<ProductCondition>('new')
+  const [sizeType, setSizeType] = useState<'standard' | 'custom'>('standard')
   const [size, setSize] = useState('')
   const [customMeasurements, setCustomMeasurements] = useState('')
   const [images, setImages] = useState<File[]>([])
@@ -99,7 +100,7 @@ export default function NewProductPage() {
       }
 
       // Create product with pending review status
-      const finalSize = size === 'Custom' ? customMeasurements : size
+      const finalSize = sizeType === 'custom' ? customMeasurements : size
       const { error: insertError } = await supabase
         .from('products')
         .insert({
@@ -223,29 +224,57 @@ export default function NewProductPage() {
             </div>
 
             <div>
-              <label htmlFor="size" className="block text-xs sm:text-sm font-medium text-gray-700">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                 Size
               </label>
-              <select
-                id="size"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
-              >
-                <option value="">Select size</option>
-                <option value="XS">XS</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-                <option value="Custom">Custom</option>
-              </select>
-              {size === 'Custom' && (
-                <div className="mt-3">
-                  <label htmlFor="customMeasurements" className="block text-xs font-medium text-gray-700 mb-1">
-                    Custom Measurements
-                  </label>
+
+              {/* Size Type Toggle */}
+              <div className="flex gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={() => setSizeType('standard')}
+                  className={`flex-1 py-2 px-4 rounded-lg border-2 text-sm font-medium transition-all ${
+                    sizeType === 'standard'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                  }`}
+                >
+                  Standard Size
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSizeType('custom')}
+                  className={`flex-1 py-2 px-4 rounded-lg border-2 text-sm font-medium transition-all ${
+                    sizeType === 'custom'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                  }`}
+                >
+                  Custom Measurements
+                </button>
+              </div>
+
+              {/* Standard Size Dropdown */}
+              {sizeType === 'standard' && (
+                <select
+                  id="size"
+                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
+                >
+                  <option value="">Select size</option>
+                  <option value="XS">XS</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                </select>
+              )}
+
+              {/* Custom Measurements Input */}
+              {sizeType === 'custom' && (
+                <div>
                   <textarea
                     id="customMeasurements"
                     rows={3}
@@ -254,7 +283,7 @@ export default function NewProductPage() {
                     value={customMeasurements}
                     onChange={(e) => setCustomMeasurements(e.target.value)}
                   />
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="mt-1.5 text-xs text-gray-500">
                     Provide detailed measurements (bust, waist, hips, length, etc.)
                   </p>
                 </div>
