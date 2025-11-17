@@ -123,6 +123,8 @@ export default function EditProductPage() {
           is_active: isActive,
           images: allImages,
           tags: selectedTags,
+          review_status: 'pending', // Reset to pending when seller updates
+          rejection_reason: null, // Clear previous rejection reason
         })
         .eq('id', params.id)
 
@@ -130,6 +132,7 @@ export default function EditProductPage() {
         throw updateError
       }
 
+      alert('Product updated successfully! It has been submitted for review.')
       router.push('/dashboard/seller')
       router.refresh()
     } catch (err: any) {

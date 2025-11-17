@@ -13,6 +13,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     .from('products')
     .select('*, seller:profiles!products_seller_id_fkey(id, full_name, email)')
     .eq('id', id)
+    .eq('review_status', 'approved')
+    .eq('is_active', true)
     .single()
 
   if (!product) {
