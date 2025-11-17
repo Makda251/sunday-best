@@ -64,8 +64,8 @@ export default function EditProductPage() {
       setPrice(product.price.toString())
       setCondition(product.condition)
 
-      // Check if size contains custom measurements (not a standard size)
-      const standardSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '']
+      // Check if size contains custom measurements (not a standard US size)
+      const standardSizes = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '']
       const productSize = product.size || ''
       if (standardSizes.includes(productSize)) {
         setSizeType('standard')
@@ -329,13 +329,18 @@ export default function EditProductPage() {
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
                 >
-                  <option value="">Select size</option>
-                  <option value="XS">XS</option>
-                  <option value="S">S</option>
-                  <option value="M">M</option>
-                  <option value="L">L</option>
-                  <option value="XL">XL</option>
-                  <option value="XXL">XXL</option>
+                  <option value="">Select US size</option>
+                  <option value="0">0</option>
+                  <option value="2">2</option>
+                  <option value="4">4</option>
+                  <option value="6">6</option>
+                  <option value="8">8</option>
+                  <option value="10">10</option>
+                  <option value="12">12</option>
+                  <option value="14">14</option>
+                  <option value="16">16</option>
+                  <option value="18">18</option>
+                  <option value="20">20</option>
                 </select>
               )}
 
