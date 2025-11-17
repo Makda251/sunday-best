@@ -111,7 +111,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 <div className="flex items-center gap-3">
                   <span className="text-xs sm:text-sm text-gray-500 min-w-[80px]">Condition:</span>
                   <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-800 capitalize">
-                    {product.condition}
+                    {product.condition.replace('_', ' ')}
                   </span>
                 </div>
 

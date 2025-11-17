@@ -16,7 +16,7 @@ export default function ProductGrid() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
-  const [conditionFilter, setConditionFilter] = useState<'all' | 'new' | 'used'>('all')
+  const [conditionFilter, setConditionFilter] = useState<'all' | 'new' | 'pre-loved'>('all')
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
@@ -37,8 +37,10 @@ export default function ProductGrid() {
     let filtered = allProducts || []
 
     // Apply condition filter
-    if (conditionFilter !== 'all') {
-      filtered = filtered.filter(product => product.condition === conditionFilter)
+    if (conditionFilter === 'new') {
+      filtered = filtered.filter(product => product.condition === 'new')
+    } else if (conditionFilter === 'pre-loved') {
+      filtered = filtered.filter(product => product.condition !== 'new')
     }
 
     // Apply search filter (case-insensitive search in title, designer, and tags)
@@ -63,7 +65,7 @@ export default function ProductGrid() {
   }
 
   const getNewProducts = () => products.filter(p => p.condition === 'new').slice(0, 6)
-  const getPreLovedProducts = () => products.filter(p => p.condition === 'used').slice(0, 6)
+  const getPreLovedProducts = () => products.filter(p => p.condition !== 'new').slice(0, 6)
 
   const toggleTag = (tag: string) => {
     setSelectedTags(prev =>
@@ -81,11 +83,11 @@ export default function ProductGrid() {
       {/* Featured Carousels */}
       {conditionFilter === 'all' && !searchQuery && selectedTags.length === 0 && (
         <div className="mb-12 space-y-8">
-          {/* New Arrivals Carousel */}
+          {/* Brand New Dresses Carousel */}
           {getNewProducts().length > 0 && (
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">New Arrivals</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Brand New Dresses</h2>
                 <button
                   onClick={() => setConditionFilter('new')}
                   className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
@@ -133,7 +135,7 @@ export default function ProductGrid() {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-gray-900">Pre-Loved Treasures</h2>
                 <button
-                  onClick={() => setConditionFilter('used')}
+                  onClick={() => setConditionFilter('pre-loved')}
                   className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
                 >
                   View all →
@@ -196,12 +198,12 @@ export default function ProductGrid() {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
-            New Arrivals
+            Brand New
           </button>
           <button
-            onClick={() => setConditionFilter('used')}
+            onClick={() => setConditionFilter('pre-loved')}
             className={`${
-              conditionFilter === 'used'
+              conditionFilter === 'pre-loved'
                 ? 'border-indigo-500 text-indigo-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}

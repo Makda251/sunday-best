@@ -2,7 +2,7 @@ export type UserRole = 'buyer' | 'seller' | 'admin'
 export type OrderStatus = 'pending_payment' | 'payment_verified' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
 export type PaymentMethod = 'zelle'
 export type PaymentStatus = 'pending' | 'verified' | 'rejected'
-export type ProductCondition = 'new' | 'used'
+export type ProductCondition = 'new' | 'like_new' | 'excellent' | 'good' | 'fair'
 
 export interface Profile {
   id: string

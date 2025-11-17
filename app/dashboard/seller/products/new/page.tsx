@@ -17,7 +17,15 @@ export default function NewProductPage() {
   const [condition, setCondition] = useState<ProductCondition>('new')
   const [sizeType, setSizeType] = useState<'standard' | 'custom'>('standard')
   const [size, setSize] = useState('')
-  const [customMeasurements, setCustomMeasurements] = useState('')
+  // Custom measurement fields
+  const [measurementUnit, setMeasurementUnit] = useState<'in' | 'cm'>('in')
+  const [bust, setBust] = useState('')
+  const [waist, setWaist] = useState('')
+  const [hips, setHips] = useState('')
+  const [shoulderToWaist, setShoulderToWaist] = useState('')
+  const [waistToHem, setWaistToHem] = useState('')
+  const [shoulder, setShoulder] = useState('')
+  const [materialType, setMaterialType] = useState<'elastic' | 'zipper'>('elastic')
   const [designer, setDesigner] = useState('')
   const [designerSuggestions, setDesignerSuggestions] = useState<string[]>([])
   const [showDesignerDropdown, setShowDesignerDropdown] = useState(false)
@@ -89,6 +97,21 @@ export default function NewProductPage() {
         return
       }
 
+      // Check if size is provided
+      if (sizeType === 'standard' && !size) {
+        setError('Please select a size for your dress.')
+        setUploading(false)
+        return
+      }
+      if (sizeType === 'custom') {
+        // Check if at least one measurement is provided
+        if (!bust && !waist && !hips && !shoulder && !shoulderToWaist && !waistToHem) {
+          setError('Please provide at least one measurement.')
+          setUploading(false)
+          return
+        }
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
@@ -136,7 +159,18 @@ export default function NewProductPage() {
       }
 
       // Create product with pending review status
-      const finalSize = sizeType === 'custom' ? customMeasurements : size
+      let finalSize = size
+      if (sizeType === 'custom') {
+        // Combine custom measurements into a formatted string
+        const measurements = []
+        if (bust) measurements.push(`Bust: ${bust}${measurementUnit}`)
+        if (waist) measurements.push(`Waist: ${waist}${measurementUnit}`)
+        if (hips) measurements.push(`Hips: ${hips}${measurementUnit}`)
+        if (shoulder) measurements.push(`Shoulder Width: ${shoulder}${measurementUnit}`)
+        if (shoulderToWaist) measurements.push(`Shoulder to Waist: ${shoulderToWaist}${measurementUnit}`)
+        if (waistToHem) measurements.push(`Waist to Floor: ${waistToHem}${measurementUnit}`)
+        finalSize = measurements.join(', ')
+      }
       const { error: insertError } = await supabase
         .from('products')
         .insert({
@@ -146,6 +180,7 @@ export default function NewProductPage() {
           price: parseFloat(price),
           condition,
           size: finalSize,
+          material_type: materialType,
           designer: designer || null,
           images: imageUrls,
           tags: selectedTags,
@@ -189,7 +224,7 @@ export default function NewProductPage() {
 
           <div>
             <label htmlFor="title" className="block text-xs sm:text-sm font-medium text-gray-700">
-              Title *
+              Title <span className="text-red-600">*</span>
             </label>
             <input
               type="text"
@@ -257,7 +292,7 @@ export default function NewProductPage() {
           <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
             <div>
               <label htmlFor="price" className="block text-xs sm:text-sm font-medium text-gray-700">
-                Price ($) *
+                Price ($) <span className="text-red-600">*</span>
               </label>
               <input
                 type="number"
@@ -300,7 +335,7 @@ export default function NewProductPage() {
 
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-                Size
+                Size <span className="text-red-600">*</span>
               </label>
 
               {/* Size Type Toggle */}
@@ -354,56 +389,189 @@ export default function NewProductPage() {
 
               {/* Custom Measurements Input */}
               {sizeType === 'custom' && (
-                <div>
-                  <textarea
-                    id="customMeasurements"
-                    rows={3}
-                    className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="e.g., Bust: 36in, Waist: 28in, Hips: 38in, Length: 58in"
-                    value={customMeasurements}
-                    onChange={(e) => setCustomMeasurements(e.target.value)}
-                  />
-                  <p className="mt-1.5 text-xs text-gray-500">
-                    Provide detailed measurements (bust, waist, hips, length, etc.)
+                <div className="space-y-3">
+                  {/* Unit Selector */}
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs font-medium text-gray-700">Unit:</span>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setMeasurementUnit('in')}
+                        className={`px-3 py-1 rounded text-xs font-medium transition-all ${
+                          measurementUnit === 'in'
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        Inches
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMeasurementUnit('cm')}
+                        className={`px-3 py-1 rounded text-xs font-medium transition-all ${
+                          measurementUnit === 'cm'
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        Centimeters
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="bust" className="block text-xs font-medium text-gray-700 mb-1">
+                        Bust
+                      </label>
+                      <input
+                        type="number"
+                        id="bust"
+                        step="0.5"
+                        min="0"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder={measurementUnit === 'in' ? '36' : '91'}
+                        value={bust}
+                        onChange={(e) => setBust(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="waist" className="block text-xs font-medium text-gray-700 mb-1">
+                        Waist
+                      </label>
+                      <input
+                        type="number"
+                        id="waist"
+                        step="0.5"
+                        min="0"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder={measurementUnit === 'in' ? '28' : '71'}
+                        value={waist}
+                        onChange={(e) => setWaist(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="hips" className="block text-xs font-medium text-gray-700 mb-1">
+                        Hips
+                      </label>
+                      <input
+                        type="number"
+                        id="hips"
+                        step="0.5"
+                        min="0"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder={measurementUnit === 'in' ? '38' : '97'}
+                        value={hips}
+                        onChange={(e) => setHips(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="shoulder" className="block text-xs font-medium text-gray-700 mb-1">
+                        Shoulder Width
+                      </label>
+                      <input
+                        type="number"
+                        id="shoulder"
+                        step="0.5"
+                        min="0"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder={measurementUnit === 'in' ? '15' : '38'}
+                        value={shoulder}
+                        onChange={(e) => setShoulder(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="shoulderToWaist" className="block text-xs font-medium text-gray-700 mb-1">
+                        Shoulder to Waist
+                      </label>
+                      <input
+                        type="number"
+                        id="shoulderToWaist"
+                        step="0.5"
+                        min="0"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder={measurementUnit === 'in' ? '16' : '41'}
+                        value={shoulderToWaist}
+                        onChange={(e) => setShoulderToWaist(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="waistToHem" className="block text-xs font-medium text-gray-700 mb-1">
+                        Waist to Floor
+                      </label>
+                      <input
+                        type="number"
+                        id="waistToHem"
+                        step="0.5"
+                        min="0"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder={measurementUnit === 'in' ? '42' : '107'}
+                        value={waistToHem}
+                        onChange={(e) => setWaistToHem(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Provide as many measurements as possible for best fit
                   </p>
                 </div>
               )}
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-              Condition *
-            </label>
-            <div className="space-y-2">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="condition"
-                  value="new"
-                  checked={condition === 'new'}
-                  onChange={(e) => setCondition(e.target.value as ProductCondition)}
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                />
-                <span className="ml-2 text-sm sm:text-base text-gray-700">New</span>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="condition" className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                Condition <span className="text-red-600">*</span>
               </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="condition"
-                  value="used"
-                  checked={condition === 'used'}
-                  onChange={(e) => setCondition(e.target.value as ProductCondition)}
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                />
-                <span className="ml-2 text-sm sm:text-base text-gray-700">Used</span>
+              <select
+                id="condition"
+                value={condition}
+                onChange={(e) => setCondition(e.target.value as ProductCondition)}
+                className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="new">New - Brand new, never worn</option>
+                <option value="like_new">Like New - Worn once or twice, appears new</option>
+                <option value="excellent">Excellent - Gently used, no visible flaws</option>
+                <option value="good">Good - Some signs of wear, but still in good shape</option>
+                <option value="fair">Fair - Noticeable wear, may have minor flaws</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                Waist Material Type <span className="text-red-600">*</span>
               </label>
+              <div className="space-y-2">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="materialType"
+                    value="elastic"
+                    checked={materialType === 'elastic'}
+                    onChange={(e) => setMaterialType(e.target.value as 'elastic' | 'zipper')}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-sm sm:text-base text-gray-700">Elastic Band</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="materialType"
+                    value="zipper"
+                    checked={materialType === 'zipper'}
+                    onChange={(e) => setMaterialType(e.target.value as 'elastic' | 'zipper')}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-sm sm:text-base text-gray-700">Zipper</span>
+                </label>
+              </div>
             </div>
           </div>
 
           <div>
             <label htmlFor="images" className="block text-xs sm:text-sm font-medium text-gray-700">
-              Images * (Max 5 images)
+              Images <span className="text-red-600">*</span> (Max 5 images)
             </label>
             <input
               type="file"
