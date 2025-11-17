@@ -17,6 +17,7 @@ export default function EditProductPage() {
   const [price, setPrice] = useState('')
   const [condition, setCondition] = useState<ProductCondition>('new')
   const [size, setSize] = useState('')
+  const [customMeasurements, setCustomMeasurements] = useState('')
   const [isActive, setIsActive] = useState(true)
   const [existingImages, setExistingImages] = useState<string[]>([])
   const [newImages, setNewImages] = useState<File[]>([])
@@ -61,7 +62,17 @@ export default function EditProductPage() {
       setDescription(product.description || '')
       setPrice(product.price.toString())
       setCondition(product.condition)
-      setSize(product.size || '')
+
+      // Check if size contains custom measurements (not a standard size)
+      const standardSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '']
+      const productSize = product.size || ''
+      if (standardSizes.includes(productSize)) {
+        setSize(productSize)
+      } else {
+        setSize('Custom')
+        setCustomMeasurements(productSize)
+      }
+
       setIsActive(product.is_active)
       setExistingImages(product.images || [])
       setSelectedTags(product.tags || [])
@@ -121,6 +132,9 @@ export default function EditProductPage() {
       // Combine existing and new images
       const allImages = [...existingImages, ...newImageUrls]
 
+      // Use custom measurements if custom size is selected
+      const finalSize = size === 'Custom' ? customMeasurements : size
+
       const { error: updateError } = await supabase
         .from('products')
         .update({
@@ -128,7 +142,7 @@ export default function EditProductPage() {
           description,
           price: parseFloat(price),
           condition,
-          size,
+          size: finalSize,
           is_active: isActive,
           images: allImages,
           tags: selectedTags,
@@ -291,7 +305,26 @@ export default function EditProductPage() {
                 <option value="L">L</option>
                 <option value="XL">XL</option>
                 <option value="XXL">XXL</option>
+                <option value="Custom">Custom</option>
               </select>
+              {size === 'Custom' && (
+                <div className="mt-3">
+                  <label htmlFor="customMeasurements" className="block text-xs font-medium text-gray-700 mb-1">
+                    Custom Measurements
+                  </label>
+                  <textarea
+                    id="customMeasurements"
+                    rows={3}
+                    className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="e.g., Bust: 36in, Waist: 28in, Hips: 38in, Length: 58in"
+                    value={customMeasurements}
+                    onChange={(e) => setCustomMeasurements(e.target.value)}
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Provide detailed measurements (bust, waist, hips, length, etc.)
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

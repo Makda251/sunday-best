@@ -16,6 +16,7 @@ export default function NewProductPage() {
   const [price, setPrice] = useState('')
   const [condition, setCondition] = useState<ProductCondition>('new')
   const [size, setSize] = useState('')
+  const [customMeasurements, setCustomMeasurements] = useState('')
   const [images, setImages] = useState<File[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
@@ -98,6 +99,7 @@ export default function NewProductPage() {
       }
 
       // Create product with pending review status
+      const finalSize = size === 'Custom' ? customMeasurements : size
       const { error: insertError } = await supabase
         .from('products')
         .insert({
@@ -106,7 +108,7 @@ export default function NewProductPage() {
           description,
           price: parseFloat(price),
           condition,
-          size,
+          size: finalSize,
           images: imageUrls,
           tags: selectedTags,
           is_active: true,
@@ -237,7 +239,26 @@ export default function NewProductPage() {
                 <option value="L">L</option>
                 <option value="XL">XL</option>
                 <option value="XXL">XXL</option>
+                <option value="Custom">Custom</option>
               </select>
+              {size === 'Custom' && (
+                <div className="mt-3">
+                  <label htmlFor="customMeasurements" className="block text-xs font-medium text-gray-700 mb-1">
+                    Custom Measurements
+                  </label>
+                  <textarea
+                    id="customMeasurements"
+                    rows={3}
+                    className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="e.g., Bust: 36in, Waist: 28in, Hips: 38in, Length: 58in"
+                    value={customMeasurements}
+                    onChange={(e) => setCustomMeasurements(e.target.value)}
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Provide detailed measurements (bust, waist, hips, length, etc.)
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
