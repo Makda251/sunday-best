@@ -154,13 +154,34 @@ export default async function SellerDashboard() {
                           <p className="text-sm text-gray-500">
                             ${product.price} • {product.condition}
                           </p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            {product.is_active ? (
-                              <span className="text-green-600">Active</span>
-                            ) : (
-                              <span className="text-gray-500">Inactive</span>
+                          <div className="mt-1 flex flex-wrap gap-2 items-center">
+                            {product.review_status === 'pending' && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                Pending Review
+                              </span>
                             )}
-                          </p>
+                            {product.review_status === 'approved' && product.is_active && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                Active
+                              </span>
+                            )}
+                            {product.review_status === 'approved' && !product.is_active && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                Inactive (Sold)
+                              </span>
+                            )}
+                            {product.review_status === 'rejected' && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                                Rejected
+                              </span>
+                            )}
+                          </div>
+                          {product.review_status === 'rejected' && product.rejection_reason && (
+                            <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
+                              <p className="text-xs font-medium text-red-900">Rejection Reason:</p>
+                              <p className="text-xs text-red-700 mt-0.5">{product.rejection_reason}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex space-x-2">
