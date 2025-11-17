@@ -255,6 +255,12 @@ export default function AdminProductsPage() {
                     <label className="text-sm font-medium text-gray-700">Title</label>
                     <p className="text-gray-900">{selectedProduct.title}</p>
                   </div>
+                  {selectedProduct.designer && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">Designer/Brand</label>
+                      <p className="text-gray-900">{selectedProduct.designer}</p>
+                    </div>
+                  )}
                   <div>
                     <label className="text-sm font-medium text-gray-700">Description</label>
                     <p className="text-gray-900">{selectedProduct.description || 'No description'}</p>

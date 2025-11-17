@@ -18,6 +18,9 @@ export default function NewProductPage() {
   const [sizeType, setSizeType] = useState<'standard' | 'custom'>('standard')
   const [size, setSize] = useState('')
   const [customMeasurements, setCustomMeasurements] = useState('')
+  const [designer, setDesigner] = useState('')
+  const [designerSuggestions, setDesignerSuggestions] = useState<string[]>([])
+  const [showDesignerDropdown, setShowDesignerDropdown] = useState(false)
   const [images, setImages] = useState<File[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
@@ -31,6 +34,39 @@ export default function NewProductPage() {
     setSelectedTags(prev =>
       prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     )
+  }
+
+  // Fetch designer suggestions from existing products
+  const fetchDesignerSuggestions = async (query: string) => {
+    if (query.length < 2) {
+      setDesignerSuggestions([])
+      return
+    }
+
+    const { data } = await supabase
+      .from('products')
+      .select('designer')
+      .not('designer', 'is', null)
+      .ilike('designer', `%${query}%`)
+      .limit(10)
+
+    if (data) {
+      // Get unique designer names
+      const uniqueDesigners = [...new Set(data.map(p => p.designer).filter(Boolean))] as string[]
+      setDesignerSuggestions(uniqueDesigners)
+    }
+  }
+
+  const handleDesignerChange = (value: string) => {
+    setDesigner(value)
+    setShowDesignerDropdown(true)
+    fetchDesignerSuggestions(value)
+  }
+
+  const selectDesigner = (name: string) => {
+    setDesigner(name)
+    setShowDesignerDropdown(false)
+    setDesignerSuggestions([])
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,6 +146,7 @@ export default function NewProductPage() {
           price: parseFloat(price),
           condition,
           size: finalSize,
+          designer: designer || null,
           images: imageUrls,
           tags: selectedTags,
           is_active: true,
@@ -163,6 +200,44 @@ export default function NewProductPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+          </div>
+
+          <div className="relative">
+            <label htmlFor="designer" className="block text-xs sm:text-sm font-medium text-gray-700">
+              Designer/Brand (Optional)
+            </label>
+            <input
+              type="text"
+              id="designer"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm sm:text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Start typing to search or add new designer..."
+              value={designer}
+              onChange={(e) => handleDesignerChange(e.target.value)}
+              onFocus={() => designer.length >= 2 && setShowDesignerDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDesignerDropdown(false), 200)}
+            />
+
+            {/* Autocomplete dropdown */}
+            {showDesignerDropdown && designerSuggestions.length > 0 && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                {designerSuggestions.map((suggestion, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => selectDesigner(suggestion)}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <p className="mt-1 text-xs text-gray-500">
+              {designerSuggestions.length > 0 && showDesignerDropdown
+                ? 'Select an existing designer or continue typing to add a new one'
+                : 'Type to search existing designers or add a new designer/brand name'}
+            </p>
           </div>
 
           <div>

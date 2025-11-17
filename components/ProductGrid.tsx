@@ -41,11 +41,12 @@ export default function ProductGrid() {
       filtered = filtered.filter(product => product.condition === conditionFilter)
     }
 
-    // Apply search filter (case-insensitive search in title and tags)
+    // Apply search filter (case-insensitive search in title, designer, and tags)
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase()
       filtered = filtered.filter(product =>
         product.title.toLowerCase().includes(lowerQuery) ||
+        (product.designer && product.designer.toLowerCase().includes(lowerQuery)) ||
         (product.tags && product.tags.some((tag: string) => tag.toLowerCase().includes(lowerQuery)))
       )
     }
@@ -115,6 +116,9 @@ export default function ProductGrid() {
                         )}
                       </div>
                       <h3 className="mt-2 text-sm text-gray-700 font-medium line-clamp-1">{product.title}</h3>
+                      {product.designer && (
+                        <p className="text-xs text-gray-500 line-clamp-1">by {product.designer}</p>
+                      )}
                       <p className="mt-1 text-base font-semibold text-gray-900">${product.price}</p>
                     </Link>
                   </div>
@@ -158,6 +162,9 @@ export default function ProductGrid() {
                         )}
                       </div>
                       <h3 className="mt-2 text-sm text-gray-700 font-medium line-clamp-1">{product.title}</h3>
+                      {product.designer && (
+                        <p className="text-xs text-gray-500 line-clamp-1">by {product.designer}</p>
+                      )}
                       <p className="mt-1 text-base font-semibold text-gray-900">${product.price}</p>
                     </Link>
                   </div>
@@ -338,6 +345,9 @@ export default function ProductGrid() {
                   )}
                 </div>
                 <h3 className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-700 font-medium line-clamp-2">{product.title}</h3>
+                {product.designer && (
+                  <p className="text-[10px] sm:text-xs text-gray-500 line-clamp-1">by {product.designer}</p>
+                )}
                 <p className="mt-0.5 sm:mt-1 text-sm sm:text-lg font-semibold text-gray-900">${product.price}</p>
                 {product.tags && product.tags.length > 0 && (
                   <div className="mt-1 sm:mt-2 flex flex-wrap gap-1">

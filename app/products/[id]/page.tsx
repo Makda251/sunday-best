@@ -95,6 +95,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               <div className="flex justify-between items-start gap-3">
                 <div className="flex-1 min-w-0">
                   <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{product.title}</h1>
+                  {product.designer && (
+                    <p className="mt-1 text-sm sm:text-base text-gray-600">
+                      by <span className="font-medium text-gray-900">{product.designer}</span>
+                    </p>
+                  )}
                   <p className="mt-2 text-2xl sm:text-3xl font-bold text-indigo-600">${product.price}</p>
                 </div>
                 <div className="flex-shrink-0">

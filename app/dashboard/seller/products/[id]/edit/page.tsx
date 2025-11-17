@@ -19,10 +19,14 @@ export default function EditProductPage() {
   const [sizeType, setSizeType] = useState<'standard' | 'custom'>('standard')
   const [size, setSize] = useState('')
   const [customMeasurements, setCustomMeasurements] = useState('')
+  const [designer, setDesigner] = useState('')
+  const [designerSuggestions, setDesignerSuggestions] = useState<string[]>([])
+  const [showDesignerDropdown, setShowDesignerDropdown] = useState(false)
   const [isActive, setIsActive] = useState(true)
   const [existingImages, setExistingImages] = useState<string[]>([])
   const [newImages, setNewImages] = useState<File[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [originalReviewStatus, setOriginalReviewStatus] = useState<string>('pending')
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -36,6 +40,39 @@ export default function EditProductPage() {
     setSelectedTags(prev =>
       prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     )
+  }
+
+  // Fetch designer suggestions from existing products
+  const fetchDesignerSuggestions = async (query: string) => {
+    if (query.length < 2) {
+      setDesignerSuggestions([])
+      return
+    }
+
+    const { data } = await supabase
+      .from('products')
+      .select('designer')
+      .not('designer', 'is', null)
+      .ilike('designer', `%${query}%`)
+      .limit(10)
+
+    if (data) {
+      // Get unique designer names
+      const uniqueDesigners = [...new Set(data.map(p => p.designer).filter(Boolean))] as string[]
+      setDesignerSuggestions(uniqueDesigners)
+    }
+  }
+
+  const handleDesignerChange = (value: string) => {
+    setDesigner(value)
+    setShowDesignerDropdown(true)
+    fetchDesignerSuggestions(value)
+  }
+
+  const selectDesigner = (name: string) => {
+    setDesigner(name)
+    setShowDesignerDropdown(false)
+    setDesignerSuggestions([])
   }
 
   useEffect(() => {
@@ -63,6 +100,7 @@ export default function EditProductPage() {
       setDescription(product.description || '')
       setPrice(product.price.toString())
       setCondition(product.condition)
+      setDesigner(product.designer || '')
 
       // Check if size contains custom measurements (not a standard US size)
       const standardSizes = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '']
@@ -78,6 +116,7 @@ export default function EditProductPage() {
       setIsActive(product.is_active)
       setExistingImages(product.images || [])
       setSelectedTags(product.tags || [])
+      setOriginalReviewStatus(product.review_status || 'pending')
       setLoading(false)
     }
 
@@ -137,27 +176,49 @@ export default function EditProductPage() {
       // Use custom measurements if custom size is selected
       const finalSize = sizeType === 'custom' ? customMeasurements : size
 
+      // Determine review status logic:
+      // - If currently rejected: reset to pending (seller is resubmitting)
+      // - If currently approved: keep approved (minor edits don't need re-review)
+      // - If currently pending: keep pending
+      const newReviewStatus = originalReviewStatus === 'rejected' ? 'pending' : originalReviewStatus
+      const newRejectionReason = originalReviewStatus === 'rejected' ? null : undefined
+
+      const updateData: any = {
+        title,
+        description,
+        price: parseFloat(price),
+        condition,
+        size: finalSize,
+        designer: designer || null,
+        is_active: isActive,
+        images: allImages,
+        tags: selectedTags,
+        review_status: newReviewStatus,
+      }
+
+      // Only update rejection_reason if we're clearing it
+      if (newRejectionReason === null) {
+        updateData.rejection_reason = null
+      }
+
       const { error: updateError } = await supabase
         .from('products')
-        .update({
-          title,
-          description,
-          price: parseFloat(price),
-          condition,
-          size: finalSize,
-          is_active: isActive,
-          images: allImages,
-          tags: selectedTags,
-          review_status: 'pending', // Reset to pending when seller updates
-          rejection_reason: null, // Clear previous rejection reason
-        })
+        .update(updateData)
         .eq('id', params.id)
 
       if (updateError) {
         throw updateError
       }
 
-      alert('Product updated successfully! It has been submitted for review.')
+      // Show appropriate success message based on review status
+      if (originalReviewStatus === 'rejected') {
+        alert('Product updated and resubmitted for review!')
+      } else if (originalReviewStatus === 'approved') {
+        alert('Product updated successfully! Changes are live.')
+      } else {
+        alert('Product updated successfully!')
+      }
+
       router.push('/dashboard/seller')
       router.refresh()
     } catch (err: any) {
@@ -232,6 +293,44 @@ export default function EditProductPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+          </div>
+
+          <div className="relative">
+            <label htmlFor="designer" className="block text-sm font-medium text-gray-700">
+              Designer/Brand (Optional)
+            </label>
+            <input
+              type="text"
+              id="designer"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Start typing to search or add new designer..."
+              value={designer}
+              onChange={(e) => handleDesignerChange(e.target.value)}
+              onFocus={() => designer.length >= 2 && setShowDesignerDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDesignerDropdown(false), 200)}
+            />
+
+            {/* Autocomplete dropdown */}
+            {showDesignerDropdown && designerSuggestions.length > 0 && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                {designerSuggestions.map((suggestion, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => selectDesigner(suggestion)}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <p className="mt-1 text-xs text-gray-500">
+              {designerSuggestions.length > 0 && showDesignerDropdown
+                ? 'Select an existing designer or continue typing to add a new one'
+                : 'Type to search existing designers or add a new designer/brand name'}
+            </p>
           </div>
 
           <div>
