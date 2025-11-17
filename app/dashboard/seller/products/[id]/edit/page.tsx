@@ -247,10 +247,30 @@ export default function EditProductPage() {
                 onChange={(e) => setPrice(e.target.value)}
               />
               {priceNum > 0 && (
-                <p className="mt-2 text-sm text-gray-500">
-                  Platform fee ({platformFee}%): ${(priceNum * platformFee / 100).toFixed(2)} •
-                  You receive: ${sellerReceives.toFixed(2)}
-                </p>
+                <div className="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                  <p className="text-xs font-medium text-indigo-900 mb-2">Payment Breakdown:</p>
+                  <div className="space-y-1 text-xs text-indigo-800">
+                    <div className="flex justify-between">
+                      <span>Product Price:</span>
+                      <span className="font-medium">${priceNum.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Buyer Pays Shipping:</span>
+                      <span className="font-medium text-green-600">+$10.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Platform Fee ({platformFee}%):</span>
+                      <span className="font-medium text-red-600">-${(priceNum * platformFee / 100).toFixed(2)}</span>
+                    </div>
+                    <div className="pt-2 mt-2 border-t border-indigo-300 flex justify-between">
+                      <span className="font-semibold">You Receive:</span>
+                      <span className="font-bold text-green-700">${(priceNum + 10 - (priceNum * platformFee / 100)).toFixed(2)}</span>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-xs text-indigo-700">
+                    <strong>Note:</strong> Shipping amount ($10) is included in your payment. You're responsible for shipping the item to the buyer.
+                  </p>
+                </div>
               )}
             </div>
 
