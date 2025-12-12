@@ -2,8 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 
-export default async function OrderPage({ params }: { params: { id: string } }) {
+export default async function OrderPage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
+  const { id } = await params
 
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -19,7 +20,7 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
       seller:profiles!seller_id(full_name, email),
       order_items(*, product:products(*))
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!order) {
