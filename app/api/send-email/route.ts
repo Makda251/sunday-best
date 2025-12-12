@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendOrderPlacedEmail, sendPaymentVerifiedEmail, sendOrderShippedEmail, sendOrderCancelledEmail, sendProductApprovedEmail, sendProductRejectedEmail } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
+  console.log('[Email API] Received email request')
+
   try {
     const body = await request.json()
     const { type, params } = body
+
+    console.log('[Email API] Type:', type)
+    console.log('[Email API] Recipient:', params.to)
 
     let result
 
