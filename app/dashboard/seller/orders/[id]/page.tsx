@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
+import { sendOrderShippedEmail, sendOrderCancelledEmail } from '@/lib/email'
 
 export default function SellerOrderDetailPage() {
   const [order, setOrder] = useState<any>(null)
@@ -96,6 +97,20 @@ export default function SellerOrderDetailPage() {
         .eq('id', params.id)
         .single()
 
+      // Send shipping notification email to buyer
+      if (data) {
+        const firstItem = data.order_items?.[0]
+        await sendOrderShippedEmail({
+          to: data.buyer.email,
+          buyerName: data.buyer.full_name || 'Customer',
+          orderNumber: `#${data.id.slice(0, 8).toUpperCase()}`,
+          productTitle: firstItem?.product_title + (data.order_items.length > 1 ? ` and ${data.order_items.length - 1} more` : ''),
+          productImage: firstItem?.product_image,
+          trackingNumber: trackingNumber,
+          estimatedDelivery: '7-10 business days',
+        })
+      }
+
       setOrder(data)
       setUpdating(false)
     } catch (err: any) {
@@ -140,6 +155,17 @@ export default function SellerOrderDetailPage() {
           console.error('Error updating products:', productError)
         }
       }
+
+      // Send cancellation email to buyer
+      const firstItem = order.order_items?.[0]
+      await sendOrderCancelledEmail({
+        to: order.buyer.email,
+        buyerName: order.buyer.full_name || 'Customer',
+        orderNumber: `#${order.id.slice(0, 8).toUpperCase()}`,
+        productTitle: firstItem?.product_title + (order.order_items.length > 1 ? ` and ${order.order_items.length - 1} more` : ''),
+        refundAmount: `$${order.total.toFixed(2)}`,
+        reason: cancellationReason,
+      })
 
       // Redirect back to dashboard
       router.push('/dashboard/seller')

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
+import { sendPaymentVerifiedEmail, sendOrderCancelledEmail } from '@/lib/email'
 
 export default function AdminOrderDetailPage() {
   const [order, setOrder] = useState<any>(null)
@@ -101,6 +102,19 @@ export default function AdminOrderDetailPage() {
         .eq('id', params.id)
         .single()
 
+      // Send payment verified email to buyer
+      if (data) {
+        const firstItem = data.order_items?.[0]
+        await sendPaymentVerifiedEmail({
+          to: data.buyer.email,
+          buyerName: data.buyer.full_name || 'Customer',
+          orderNumber: `#${data.id.slice(0, 8).toUpperCase()}`,
+          productTitle: firstItem?.product_title + (data.order_items.length > 1 ? ` and ${data.order_items.length - 1} more` : ''),
+          productImage: firstItem?.product_image,
+          estimatedDelivery: 'within 7-10 business days',
+        })
+      }
+
       setOrder(data)
       setUpdating(false)
     } catch (err: any) {
@@ -110,6 +124,9 @@ export default function AdminOrderDetailPage() {
   }
 
   const handleRejectPayment = async () => {
+    const reason = prompt('Please provide a reason for rejecting this payment:')
+    if (!reason || !reason.trim()) return
+
     const confirmed = confirm('Are you sure you want to reject this payment? This action cannot be undone.')
     if (!confirmed) return
 
@@ -122,6 +139,7 @@ export default function AdminOrderDetailPage() {
         .update({
           payment_status: 'rejected',
           status: 'cancelled',
+          cancellation_reason: reason,
         })
         .eq('id', order.id)
 
@@ -140,6 +158,19 @@ export default function AdminOrderDetailPage() {
         `)
         .eq('id', params.id)
         .single()
+
+      // Send cancellation email to buyer
+      if (data) {
+        const firstItem = data.order_items?.[0]
+        await sendOrderCancelledEmail({
+          to: data.buyer.email,
+          buyerName: data.buyer.full_name || 'Customer',
+          orderNumber: `#${data.id.slice(0, 8).toUpperCase()}`,
+          productTitle: firstItem?.product_title + (data.order_items.length > 1 ? ` and ${data.order_items.length - 1} more` : ''),
+          refundAmount: `$${data.total.toFixed(2)}`,
+          reason: reason,
+        })
+      }
 
       setOrder(data)
       setUpdating(false)

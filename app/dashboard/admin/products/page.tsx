@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import ProductImageGallery from '@/components/ProductImageGallery'
+import { sendProductApprovedEmail, sendProductRejectedEmail } from '@/lib/email'
 
 type Product = {
   id: string
@@ -62,6 +63,10 @@ export default function AdminProductsPage() {
   const handleApprove = async (productId: string) => {
     const { data: { user } } = await supabase.auth.getUser()
 
+    // Get the product details before updating
+    const product = products.find(p => p.id === productId)
+    if (!product) return
+
     const { error } = await supabase
       .from('products')
       .update({
@@ -75,6 +80,16 @@ export default function AdminProductsPage() {
       console.error('Error approving product:', error)
       alert(`Failed to approve product: ${error.message}`)
     } else {
+      // Send approval email to seller
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
+      await sendProductApprovedEmail({
+        to: product.profiles.email,
+        sellerName: product.profiles.full_name || 'Seller',
+        productTitle: product.title,
+        productImage: product.images?.[0],
+        productUrl: `${baseUrl}/products/${productId}`,
+      })
+
       // Remove the product from the current list
       setProducts(prev => prev.filter(p => p.id !== productId))
       setSelectedProduct(null)
@@ -89,6 +104,10 @@ export default function AdminProductsPage() {
     }
 
     const { data: { user } } = await supabase.auth.getUser()
+
+    // Get the product details before updating
+    const product = products.find(p => p.id === productId)
+    if (!product) return
 
     const { error } = await supabase
       .from('products')
@@ -105,6 +124,16 @@ export default function AdminProductsPage() {
       console.error('Error rejecting product:', error)
       alert(`Failed to reject product: ${error.message}`)
     } else {
+      // Send rejection email to seller
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
+      await sendProductRejectedEmail({
+        to: product.profiles.email,
+        sellerName: product.profiles.full_name || 'Seller',
+        productTitle: product.title,
+        rejectionReason: rejectionReason,
+        editUrl: `${baseUrl}/dashboard/seller/products/${productId}/edit`,
+      })
+
       // Remove the product from the current list
       setProducts(prev => prev.filter(p => p.id !== productId))
       setSelectedProduct(null)

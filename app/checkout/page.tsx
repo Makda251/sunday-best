@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
 import type { CartItem } from '@/lib/types/database'
+import { sendOrderPlacedEmail } from '@/lib/email'
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState<{ items: CartItem[]; seller_id: string | null }>({ items: [], seller_id: null })
@@ -146,6 +147,28 @@ export default function CheckoutPage() {
       if (itemsError) {
         throw itemsError
       }
+
+      // Get buyer profile for name
+      const { data: buyerProfile } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', user.id)
+        .single()
+
+      // Send order confirmation email
+      const shippingAddress = `${addressLine1}${addressLine2 ? ', ' + addressLine2 : ''}, ${city}, ${state} ${zip}, USA`
+
+      await sendOrderPlacedEmail({
+        to: user.email || buyerProfile?.email || '',
+        buyerName: buyerProfile?.full_name || 'Customer',
+        orderNumber: `#${order.id.slice(0, 8).toUpperCase()}`,
+        orderTotal: `$${total.toFixed(2)}`,
+        productTitle: cart.items[0].product.title + (cart.items.length > 1 ? ` and ${cart.items.length - 1} more` : ''),
+        productImage: cart.items[0].product.images?.[0],
+        productPrice: `$${subtotal.toFixed(2)}`,
+        shippingCost: `$${shipping.toFixed(2)}`,
+        shippingAddress,
+      })
 
       // Clear cart
       localStorage.removeItem('cart')
