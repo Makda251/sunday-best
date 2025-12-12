@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import ProductImageGallery from '@/components/ProductImageGallery'
-import { sendProductApprovedEmail, sendProductRejectedEmail } from '@/lib/email'
 
 type Product = {
   id: string
@@ -82,13 +81,24 @@ export default function AdminProductsPage() {
     } else {
       // Send approval email to seller
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
-      await sendProductApprovedEmail({
-        to: product.profiles.email,
-        sellerName: product.profiles.full_name || 'Seller',
-        productTitle: product.title,
-        productImage: product.images?.[0],
-        productUrl: `${baseUrl}/products/${productId}`,
-      })
+      try {
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'product-approved',
+            params: {
+              to: product.profiles.email,
+              sellerName: product.profiles.full_name || 'Seller',
+              productTitle: product.title,
+              productImage: product.images?.[0],
+              productUrl: `${baseUrl}/products/${productId}`,
+            },
+          }),
+        })
+      } catch (emailError) {
+        console.error('Failed to send product approval email:', emailError)
+      }
 
       // Remove the product from the current list
       setProducts(prev => prev.filter(p => p.id !== productId))
@@ -126,13 +136,24 @@ export default function AdminProductsPage() {
     } else {
       // Send rejection email to seller
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
-      await sendProductRejectedEmail({
-        to: product.profiles.email,
-        sellerName: product.profiles.full_name || 'Seller',
-        productTitle: product.title,
-        rejectionReason: rejectionReason,
-        editUrl: `${baseUrl}/dashboard/seller/products/${productId}/edit`,
-      })
+      try {
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'product-rejected',
+            params: {
+              to: product.profiles.email,
+              sellerName: product.profiles.full_name || 'Seller',
+              productTitle: product.title,
+              rejectionReason: rejectionReason,
+              editUrl: `${baseUrl}/dashboard/seller/products/${productId}/edit`,
+            },
+          }),
+        })
+      } catch (emailError) {
+        console.error('Failed to send product rejection email:', emailError)
+      }
 
       // Remove the product from the current list
       setProducts(prev => prev.filter(p => p.id !== productId))

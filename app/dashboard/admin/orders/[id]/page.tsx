@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
-import { sendPaymentVerifiedEmail, sendOrderCancelledEmail } from '@/lib/email'
 
 export default function AdminOrderDetailPage() {
   const [order, setOrder] = useState<any>(null)
@@ -105,14 +104,25 @@ export default function AdminOrderDetailPage() {
       // Send payment verified email to buyer
       if (data) {
         const firstItem = data.order_items?.[0]
-        await sendPaymentVerifiedEmail({
-          to: data.buyer.email,
-          buyerName: data.buyer.full_name || 'Customer',
-          orderNumber: `#${data.id.slice(0, 8).toUpperCase()}`,
-          productTitle: firstItem?.product_title + (data.order_items.length > 1 ? ` and ${data.order_items.length - 1} more` : ''),
-          productImage: firstItem?.product_image,
-          estimatedDelivery: 'within 7-10 business days',
-        })
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'payment-verified',
+              params: {
+                to: data.buyer.email,
+                buyerName: data.buyer.full_name || 'Customer',
+                orderNumber: `#${data.id.slice(0, 8).toUpperCase()}`,
+                productTitle: firstItem?.product_title + (data.order_items.length > 1 ? ` and ${data.order_items.length - 1} more` : ''),
+                productImage: firstItem?.product_image,
+                estimatedDelivery: 'within 7-10 business days',
+              },
+            }),
+          })
+        } catch (emailError) {
+          console.error('Failed to send payment verified email:', emailError)
+        }
       }
 
       setOrder(data)
@@ -162,14 +172,25 @@ export default function AdminOrderDetailPage() {
       // Send cancellation email to buyer
       if (data) {
         const firstItem = data.order_items?.[0]
-        await sendOrderCancelledEmail({
-          to: data.buyer.email,
-          buyerName: data.buyer.full_name || 'Customer',
-          orderNumber: `#${data.id.slice(0, 8).toUpperCase()}`,
-          productTitle: firstItem?.product_title + (data.order_items.length > 1 ? ` and ${data.order_items.length - 1} more` : ''),
-          refundAmount: `$${data.total.toFixed(2)}`,
-          reason: reason,
-        })
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'order-cancelled',
+              params: {
+                to: data.buyer.email,
+                buyerName: data.buyer.full_name || 'Customer',
+                orderNumber: `#${data.id.slice(0, 8).toUpperCase()}`,
+                productTitle: firstItem?.product_title + (data.order_items.length > 1 ? ` and ${data.order_items.length - 1} more` : ''),
+                refundAmount: `$${data.total.toFixed(2)}`,
+                reason: reason,
+              },
+            }),
+          })
+        } catch (emailError) {
+          console.error('Failed to send cancellation email:', emailError)
+        }
       }
 
       setOrder(data)
