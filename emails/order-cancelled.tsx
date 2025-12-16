@@ -73,7 +73,7 @@ export default function OrderCancelledEmail({
           </Text>
 
           <Text style={footer}>
-            © 2024 The Kemis House. All rights reserved.
+            © 2025 The Kemis House. All rights reserved.
           </Text>
         </Container>
       </Body>
