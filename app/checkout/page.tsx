@@ -156,7 +156,10 @@ export default function CheckoutPage() {
 
       // Send order confirmation email via API route
       const shippingAddress = `${addressLine1}${addressLine2 ? ', ' + addressLine2 : ''}, ${city}, ${state} ${zip}, USA`
+      const orderNumber = `#${order.id.slice(0, 8).toUpperCase()}`
+      const productTitle = cart.items[0].product.title + (cart.items.length > 1 ? ` and ${cart.items.length - 1} more` : '')
 
+      // Send email to buyer
       try {
         await fetch('/api/send-email', {
           method: 'POST',
@@ -166,9 +169,9 @@ export default function CheckoutPage() {
             params: {
               to: user.email || buyerProfile?.email || '',
               buyerName: buyerProfile?.full_name || 'Customer',
-              orderNumber: `#${order.id.slice(0, 8).toUpperCase()}`,
+              orderNumber,
               orderTotal: `$${total.toFixed(2)}`,
-              productTitle: cart.items[0].product.title + (cart.items.length > 1 ? ` and ${cart.items.length - 1} more` : ''),
+              productTitle,
               productImage: cart.items[0].product.images?.[0],
               productPrice: `$${subtotal.toFixed(2)}`,
               shippingCost: `$${shipping.toFixed(2)}`,
@@ -178,6 +181,36 @@ export default function CheckoutPage() {
         })
       } catch (emailError) {
         console.error('Failed to send order confirmation email:', emailError)
+        // Don't fail the order if email fails
+      }
+
+      // Send notification email to admin
+      try {
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'admin-order-notification',
+            params: {
+              to: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'makda.asmelash@gmail.com',
+              orderNumber,
+              orderTotal: `$${total.toFixed(2)}`,
+              buyerName: buyerProfile?.full_name || 'Customer',
+              buyerEmail: user.email || buyerProfile?.email || '',
+              productTitle,
+              productImage: cart.items[0].product.images?.[0],
+              productPrice: `$${subtotal.toFixed(2)}`,
+              shippingCost: `$${shipping.toFixed(2)}`,
+              shippingAddress,
+              paymentScreenshotUrl: publicUrl,
+              buyerZelleEmail: buyerZelleEmail || undefined,
+              buyerZellePhone: buyerZellePhone || undefined,
+              orderUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/admin/orders/${order.id}`,
+            },
+          }),
+        })
+      } catch (emailError) {
+        console.error('Failed to send admin notification email:', emailError)
         // Don't fail the order if email fails
       }
 

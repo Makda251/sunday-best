@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendOrderPlacedEmail, sendPaymentVerifiedEmail, sendOrderShippedEmail, sendOrderCancelledEmail, sendProductApprovedEmail, sendProductRejectedEmail } from '@/lib/email'
+import { sendOrderPlacedEmail, sendPaymentVerifiedEmail, sendOrderShippedEmail, sendOrderCancelledEmail, sendProductApprovedEmail, sendProductRejectedEmail, sendAdminOrderNotification } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   console.log('[Email API] Received email request')
@@ -31,6 +31,9 @@ export async function POST(request: NextRequest) {
         break
       case 'product-rejected':
         result = await sendProductRejectedEmail(params)
+        break
+      case 'admin-order-notification':
+        result = await sendAdminOrderNotification(params)
         break
       default:
         return NextResponse.json(

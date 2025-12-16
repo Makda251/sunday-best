@@ -5,6 +5,7 @@ import OrderShippedEmail from '@/emails/order-shipped'
 import OrderCancelledEmail from '@/emails/order-cancelled'
 import ProductApprovedEmail from '@/emails/product-approved'
 import ProductRejectedEmail from '@/emails/product-rejected'
+import AdminOrderNotification from '@/emails/admin-order-notification'
 import React from 'react'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -129,5 +130,29 @@ export async function sendProductRejectedEmail(params: {
     params.to,
     `Product Needs Revision: "${params.productTitle}" - The Kemis House`,
     ProductRejectedEmail(params)
+  )
+}
+
+// Admin notification functions
+export async function sendAdminOrderNotification(params: {
+  to: string
+  orderNumber: string
+  orderTotal: string
+  buyerName: string
+  buyerEmail: string
+  productTitle: string
+  productImage?: string
+  productPrice: string
+  shippingCost: string
+  shippingAddress: string
+  paymentScreenshotUrl: string
+  buyerZelleEmail?: string
+  buyerZellePhone?: string
+  orderUrl: string
+}) {
+  return sendEmail(
+    params.to,
+    `New Order ${params.orderNumber} - Payment Verification Required`,
+    AdminOrderNotification(params)
   )
 }
