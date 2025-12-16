@@ -184,34 +184,42 @@ export default function CheckoutPage() {
         // Don't fail the order if email fails
       }
 
-      // Send notification email to admin
-      try {
-        await fetch('/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'admin-order-notification',
-            params: {
-              to: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'makda.asmelash@gmail.com',
-              orderNumber,
-              orderTotal: `$${total.toFixed(2)}`,
-              buyerName: buyerProfile?.full_name || 'Customer',
-              buyerEmail: user.email || buyerProfile?.email || '',
-              productTitle,
-              productImage: cart.items[0].product.images?.[0],
-              productPrice: `$${subtotal.toFixed(2)}`,
-              shippingCost: `$${shipping.toFixed(2)}`,
-              shippingAddress,
-              paymentScreenshotUrl: publicUrl,
-              buyerZelleEmail: buyerZelleEmail || undefined,
-              buyerZellePhone: buyerZellePhone || undefined,
-              orderUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/admin/orders/${order.id}`,
-            },
-          }),
-        })
-      } catch (emailError) {
-        console.error('Failed to send admin notification email:', emailError)
-        // Don't fail the order if email fails
+      // Check if admin email notifications are enabled
+      const { data: adminSettings } = await supabase
+        .from('admin_settings')
+        .select('email_notifications_enabled')
+        .single()
+
+      // Send notification email to admin if enabled
+      if (adminSettings?.email_notifications_enabled !== false) {
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'admin-order-notification',
+              params: {
+                to: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'asmesmarketplace@gmail.com',
+                orderNumber,
+                orderTotal: `$${total.toFixed(2)}`,
+                buyerName: buyerProfile?.full_name || 'Customer',
+                buyerEmail: user.email || buyerProfile?.email || '',
+                productTitle,
+                productImage: cart.items[0].product.images?.[0],
+                productPrice: `$${subtotal.toFixed(2)}`,
+                shippingCost: `$${shipping.toFixed(2)}`,
+                shippingAddress,
+                paymentScreenshotUrl: publicUrl,
+                buyerZelleEmail: buyerZelleEmail || undefined,
+                buyerZellePhone: buyerZellePhone || undefined,
+                orderUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/admin/orders/${order.id}`,
+              },
+            }),
+          })
+        } catch (emailError) {
+          console.error('Failed to send admin notification email:', emailError)
+          // Don't fail the order if email fails
+        }
       }
 
       // Clear cart
