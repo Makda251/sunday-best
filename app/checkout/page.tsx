@@ -136,7 +136,7 @@ export default function CheckoutPage() {
         product_title: item.product.title,
         product_price: item.product.price,
         product_image: item.product.images?.[0] || null,
-        quantity: item.quantity,
+        quantity: 1, // Always 1 for unique items
       }))
 
       const { error: itemsError } = await supabase
@@ -145,6 +145,18 @@ export default function CheckoutPage() {
 
       if (itemsError) {
         throw itemsError
+      }
+
+      // Mark products as unavailable (sold)
+      const productIds = cart.items.map(item => item.product.id)
+      const { error: productError } = await supabase
+        .from('products')
+        .update({ is_active: false })
+        .in('id', productIds)
+
+      if (productError) {
+        console.error('Error marking products as unavailable:', productError)
+        // Don't fail the order if this fails
       }
 
       // Get buyer profile for name

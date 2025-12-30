@@ -11,8 +11,9 @@ import React from 'react'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Email sender configuration
-// Use Resend's onboarding email for testing (no domain verification needed)
-// In production, verify thekemishouse.com domain and change this
+// TODO: After verifying thekemishouse.com domain in Resend, change to:
+// const FROM_EMAIL = 'The Kemis House <noreply@thekemishouse.com>'
+// For now, using Resend's onboarding email (may go to spam)
 const FROM_EMAIL = 'The Kemis House <onboarding@resend.dev>'
 
 // Utility function to send emails

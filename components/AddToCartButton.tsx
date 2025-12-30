@@ -58,10 +58,13 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     const existingItemIndex = cart.items.findIndex((item: any) => item.product.id === product.id)
 
     if (existingItemIndex > -1) {
-      // Increment quantity
-      cart.items[existingItemIndex].quantity += 1
+      // Product already in cart - each dress is unique, so show message
+      alert('This item is already in your cart! Each dress is a unique piece.')
+      setAdding(false)
+      router.push('/cart')
+      return
     } else {
-      // Add new item
+      // Add new item with quantity 1 (unique items)
       cart.items.push({
         product,
         quantity: 1

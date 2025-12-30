@@ -130,23 +130,7 @@ export default function CartPage() {
                         </div>
                         <div className="mt-4 flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                              className="p-1 rounded-md hover:bg-gray-100"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                              </svg>
-                            </button>
-                            <span className="text-gray-900 w-8 text-center">{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                              className="p-1 rounded-md hover:bg-gray-100"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                              </svg>
-                            </button>
+                            <span className="text-sm text-gray-500">Quantity: 1 (unique item)</span>
                           </div>
                           <button
                             onClick={() => removeItem(item.product.id)}
