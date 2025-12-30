@@ -14,6 +14,7 @@ export default function NewProductPage() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
+  const [quantityAvailable, setQuantityAvailable] = useState('1')
   const [condition, setCondition] = useState<ProductCondition>('new')
   const [sizeType, setSizeType] = useState<'standard' | 'custom'>('standard')
   const [size, setSize] = useState('')
@@ -178,6 +179,7 @@ export default function NewProductPage() {
           title,
           description,
           price: parseFloat(price),
+          quantity_available: parseInt(quantityAvailable) || 1,
           condition,
           size: finalSize,
           material_type: materialType,
@@ -333,6 +335,28 @@ export default function NewProductPage() {
               )}
             </div>
 
+            <div>
+              <label htmlFor="quantity" className="block text-xs sm:text-sm font-medium text-gray-700">
+                Quantity Available <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="number"
+                id="quantity"
+                required
+                min="1"
+                max="999"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm sm:text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="1"
+                value={quantityAvailable}
+                onChange={(e) => setQuantityAvailable(e.target.value)}
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                How many items do you have in stock?
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                 Size <span className="text-red-600">*</span>

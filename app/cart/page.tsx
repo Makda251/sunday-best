@@ -129,8 +129,32 @@ export default function CartPage() {
                           <p className="text-base font-medium text-gray-900">${item.product.price}</p>
                         </div>
                         <div className="mt-4 flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm text-gray-500">Quantity: 1 (unique item)</span>
+                          <div className="flex items-center space-x-3">
+                            <span className="text-sm text-gray-600">Quantity:</span>
+                            <div className="flex items-center border border-gray-300 rounded-md">
+                              <button
+                                onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                                disabled={item.quantity <= 1}
+                                className="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                -
+                              </button>
+                              <span className="px-4 py-1 text-sm font-medium text-gray-900 border-x border-gray-300">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                                disabled={item.quantity >= (item.product.quantity_available || 1)}
+                                className="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                +
+                              </button>
+                            </div>
+                            {item.product.quantity_available && item.product.quantity_available > 1 && (
+                              <span className="text-xs text-gray-500">
+                                ({item.product.quantity_available} available)
+                              </span>
+                            )}
                           </div>
                           <button
                             onClick={() => removeItem(item.product.id)}

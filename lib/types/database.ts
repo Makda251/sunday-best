@@ -20,6 +20,7 @@ export interface Product {
   title: string
   description: string | null
   price: number
+  quantity_available: number
   condition: ProductCondition
   size: string | null
   images: string[]

@@ -58,13 +58,21 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     const existingItemIndex = cart.items.findIndex((item: any) => item.product.id === product.id)
 
     if (existingItemIndex > -1) {
-      // Product already in cart - each dress is unique, so show message
-      alert('This item is already in your cart! Each dress is a unique piece.')
-      setAdding(false)
-      router.push('/cart')
-      return
+      // Product already in cart - increase quantity if available
+      const currentQuantity = cart.items[existingItemIndex].quantity
+      const maxAvailable = product.quantity_available || 1
+
+      if (currentQuantity >= maxAvailable) {
+        alert(`You already have the maximum available quantity (${maxAvailable}) in your cart.`)
+        setAdding(false)
+        router.push('/cart')
+        return
+      }
+
+      // Increase quantity
+      cart.items[existingItemIndex].quantity += 1
     } else {
-      // Add new item with quantity 1 (unique items)
+      // Add new item with quantity 1
       cart.items.push({
         product,
         quantity: 1

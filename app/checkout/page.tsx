@@ -147,16 +147,28 @@ export default function CheckoutPage() {
         throw itemsError
       }
 
-      // Mark products as unavailable (sold)
-      const productIds = cart.items.map(item => item.product.id)
-      const { error: productError } = await supabase
-        .from('products')
-        .update({ is_active: false })
-        .in('id', productIds)
+      // Decrement product quantities
+      for (const item of cart.items) {
+        const newQuantity = (item.product.quantity_available || 1) - item.quantity
 
-      if (productError) {
-        console.error('Error marking products as unavailable:', productError)
-        // Don't fail the order if this fails
+        const updateData: any = {
+          quantity_available: Math.max(0, newQuantity)
+        }
+
+        // If quantity reaches 0, mark as inactive (sold out)
+        if (newQuantity <= 0) {
+          updateData.is_active = false
+        }
+
+        const { error: productError } = await supabase
+          .from('products')
+          .update(updateData)
+          .eq('id', item.product.id)
+
+        if (productError) {
+          console.error('Error updating product quantity:', productError)
+          // Don't fail the order if this fails
+        }
       }
 
       // Get buyer profile for name
