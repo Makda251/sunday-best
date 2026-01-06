@@ -33,6 +33,10 @@ async function sendEmail(to: string, subject: string, react: React.ReactElement)
   }
 
   try {
+    console.log('[Email] Attempting to send email to:', to)
+    console.log('[Email] Subject:', subject)
+    console.log('[Email] From:', FROM_EMAIL)
+
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to,
@@ -41,15 +45,17 @@ async function sendEmail(to: string, subject: string, react: React.ReactElement)
     })
 
     if (error) {
-      console.error('Error sending email:', error)
+      console.error('[Email] Resend API error:', error)
       return { success: false, error }
     }
 
-    console.log('Email sent successfully:', data)
+    console.log('[Email] Email sent successfully! ID:', data?.id)
     return { success: true, data }
-  } catch (error) {
-    console.error('Error sending email:', error)
-    return { success: false, error }
+  } catch (error: any) {
+    console.error('[Email] Unexpected error sending email:', error)
+    console.error('[Email] Error message:', error?.message)
+    console.error('[Email] Error stack:', error?.stack)
+    return { success: false, error: { message: error?.message || 'Unknown error', name: error?.name || 'Error' } }
   }
 }
 

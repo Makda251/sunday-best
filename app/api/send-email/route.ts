@@ -3,6 +3,8 @@ import { sendOrderPlacedEmail, sendPaymentVerifiedEmail, sendOrderShippedEmail, 
 
 export async function POST(request: NextRequest) {
   console.log('[Email API] Received email request')
+  console.log('[Email API] RESEND_API_KEY present:', !!process.env.RESEND_API_KEY)
+  console.log('[Email API] RESEND_API_KEY value:', process.env.RESEND_API_KEY ? `${process.env.RESEND_API_KEY.substring(0, 8)}...` : 'NOT SET')
 
   try {
     const body = await request.json()
