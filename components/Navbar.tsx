@@ -115,6 +115,18 @@ export default function Navbar() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                       </svg>
                     </Link>
+                    {profile.role === 'buyer' && (
+                      <Link
+                        href="/dashboard/buyer/orders"
+                        className="text-gray-600 hover:text-indigo-600 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                        title="My Orders"
+                      >
+                        <svg className="w-5 h-5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span className="hidden sm:inline">My Orders</span>
+                      </Link>
+                    )}
                     {(profile.role === 'seller' || profile.role === 'admin') && (
                       <Link
                         href={profile.role === 'seller' ? '/dashboard/seller' : '/dashboard/admin'}
