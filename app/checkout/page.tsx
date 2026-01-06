@@ -19,6 +19,7 @@ export default function CheckoutPage() {
   const [state, setState] = useState('')
   const [zip, setZip] = useState('')
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null)
+  const [saveAddress, setSaveAddress] = useState(true)
 
   const router = useRouter()
   const supabase = createClient()
@@ -36,10 +37,10 @@ export default function CheckoutPage() {
         return
       }
 
-      // Check if user is admin
+      // Check if user is admin and load saved address
       const { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('role, address_line1, address_line2, city, state, zip_code')
         .eq('id', currentUser.id)
         .single()
 
@@ -47,6 +48,15 @@ export default function CheckoutPage() {
         alert('Admins cannot place orders. Redirecting to dashboard.')
         router.push('/dashboard/admin')
         return
+      }
+
+      // Pre-fill saved address if available
+      if (profile?.address_line1) {
+        setAddressLine1(profile.address_line1)
+        setAddressLine2(profile.address_line2 || '')
+        setCity(profile.city || '')
+        setState(profile.state || '')
+        setZip(profile.zip_code || '')
       }
 
       setUser(currentUser)
@@ -187,6 +197,21 @@ export default function CheckoutPage() {
         .select('full_name, email')
         .eq('id', user.id)
         .single()
+
+      // Save shipping address to profile if checkbox is checked
+      if (saveAddress) {
+        await supabase
+          .from('profiles')
+          .update({
+            address_line1: addressLine1,
+            address_line2: addressLine2 || null,
+            city: city,
+            state: state,
+            zip_code: zip,
+            country: 'USA',
+          })
+          .eq('id', user.id)
+      }
 
       // Send order confirmation email via API route
       const shippingAddress = `${addressLine1}${addressLine2 ? ', ' + addressLine2 : ''}, ${city}, ${state} ${zip}, USA`
@@ -342,6 +367,27 @@ export default function CheckoutPage() {
                     value={zip}
                     onChange={(e) => setZip(e.target.value)}
                   />
+                </div>
+
+                {/* Save Address Checkbox */}
+                <div className="flex items-start pt-2">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="save-address"
+                      type="checkbox"
+                      checked={saveAddress}
+                      onChange={(e) => setSaveAddress(e.target.checked)}
+                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <label htmlFor="save-address" className="text-sm font-medium text-gray-700 cursor-pointer">
+                      Save this address for future orders
+                    </label>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      We'll pre-fill this address next time you checkout
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
