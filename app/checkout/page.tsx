@@ -37,6 +37,20 @@ export default function CheckoutPage() {
         router.push('/auth/login')
         return
       }
+
+      // Check if user is admin
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', currentUser.id)
+        .single()
+
+      if (profile?.role === 'admin') {
+        alert('Admins cannot place orders. Redirecting to dashboard.')
+        router.push('/dashboard/admin')
+        return
+      }
+
       setUser(currentUser)
 
       const cartData = localStorage.getItem('cart')
