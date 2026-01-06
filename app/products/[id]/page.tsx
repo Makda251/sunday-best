@@ -124,9 +124,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-green-100 text-green-800'
                     }`}>
-                      {product.quantity_available === 1
-                        ? 'Only 1 left!'
-                        : `${product.quantity_available} available`}
+                      {product.quantity_available} available
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-800">
