@@ -12,6 +12,7 @@ interface AddToCartButtonProps {
 export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const [adding, setAdding] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isOwnProduct, setIsOwnProduct] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -19,9 +20,10 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setIsLoggedIn(!!user)
+      setIsOwnProduct(!!user && user.id === product.seller_id)
     }
     checkAuth()
-  }, [supabase])
+  }, [supabase, product.seller_id])
 
   const addToCart = async () => {
     // Check if user is logged in
@@ -29,6 +31,12 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
     if (!user) {
       router.push('/auth/login')
+      return
+    }
+
+    // Prevent sellers from buying their own items
+    if (user.id === product.seller_id) {
+      alert('You cannot purchase your own item.')
       return
     }
 
@@ -84,6 +92,21 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
     // Redirect to cart
     router.push('/cart')
+  }
+
+  // If it's the seller's own product, show a disabled button
+  if (isOwnProduct) {
+    return (
+      <button
+        disabled
+        className="w-full bg-gray-400 border border-transparent rounded-xl py-3 sm:py-4 px-8 flex items-center justify-center text-sm sm:text-base font-semibold text-white cursor-not-allowed opacity-60"
+      >
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+        Cannot Purchase Your Own Item
+      </button>
+    )
   }
 
   return (
