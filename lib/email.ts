@@ -8,7 +8,8 @@ import ProductRejectedEmail from '@/emails/product-rejected'
 import AdminOrderNotification from '@/emails/admin-order-notification'
 import React from 'react'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend with API key (use dummy key during build if not set)
+const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_key_for_build')
 
 // Email sender configuration
 // TODO: After verifying thekemishouse.com domain in Resend, change to:
@@ -18,6 +19,19 @@ const FROM_EMAIL = 'The Kemis House <onboarding@resend.dev>'
 
 // Utility function to send emails
 async function sendEmail(to: string, subject: string, react: React.ReactElement) {
+  // Check if API key is set (not the placeholder)
+  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_key_for_build') {
+    const errorMsg = 'RESEND_API_KEY environment variable is not set. Please configure it to send emails.'
+    console.error(errorMsg)
+    return {
+      success: false,
+      error: {
+        message: errorMsg,
+        name: 'MissingAPIKeyError'
+      }
+    }
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
