@@ -12,10 +12,10 @@ type OrderDetails = {
   status: string
   refund_requested: boolean
   total: number
-  product: {
-    title: string
-    images: string[]
-  }
+  order_items: {
+    product_title: string
+    product_image: string | null
+  }[]
 }
 
 export default function RefundRequestPage({ params }: { params: { id: string } }) {
@@ -50,7 +50,10 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
           status,
           refund_requested,
           total,
-          product:products(title, images)
+          order_items(
+            product_title,
+            product_image
+          )
         `)
         .eq('id', params.id)
         .eq('buyer_id', user.id)
@@ -152,17 +155,17 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
 
           {/* Order Info */}
           <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
-            {order.product.images?.[0] && (
+            {order.order_items[0]?.product_image && (
               <Image
-                src={order.product.images[0]}
-                alt={order.product.title}
+                src={order.order_items[0].product_image}
+                alt={order.order_items[0].product_title}
                 width={60}
                 height={60}
                 className="rounded object-cover"
               />
             )}
             <div>
-              <p className="font-medium text-gray-900">{order.product.title}</p>
+              <p className="font-medium text-gray-900">{order.order_items[0]?.product_title}</p>
               <p className="text-sm text-gray-600 mt-1">Refund Amount: ${order.total.toFixed(2)}</p>
             </div>
           </div>

@@ -14,11 +14,11 @@ type Order = {
   payment_status: string
   total: number
   tracking_number: string | null
-  product: {
-    id: string
-    title: string
-    images: string[]
-  }
+  order_items: {
+    product_id: string
+    product_title: string
+    product_image: string | null
+  }[]
   seller: {
     full_name: string
   }
@@ -39,7 +39,7 @@ export default function BuyerOrdersPage() {
         return
       }
 
-      // Fetch buyer's orders
+      // Fetch buyer's orders with order items
       const { data: ordersData, error } = await supabase
         .from('orders')
         .select(`
@@ -50,8 +50,12 @@ export default function BuyerOrdersPage() {
           payment_status,
           total,
           tracking_number,
-          product:products(id, title, images),
-          seller:profiles!orders_seller_id_fkey(full_name)
+          seller:profiles!orders_seller_id_fkey(full_name),
+          order_items(
+            product_id,
+            product_title,
+            product_image
+          )
         `)
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false })
@@ -152,11 +156,11 @@ export default function BuyerOrdersPage() {
 
                   <div className="border-t pt-4">
                     <div className="flex gap-4">
-                      {order.product.images?.[0] && (
+                      {order.order_items[0]?.product_image && (
                         <div className="flex-shrink-0">
                           <Image
-                            src={order.product.images[0]}
-                            alt={order.product.title}
+                            src={order.order_items[0].product_image}
+                            alt={order.order_items[0].product_title}
                             width={80}
                             height={80}
                             className="rounded-lg object-cover"
@@ -164,7 +168,7 @@ export default function BuyerOrdersPage() {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900">{order.product.title}</h4>
+                        <h4 className="font-medium text-gray-900">{order.order_items[0]?.product_title}</h4>
                         <p className="text-sm text-gray-500 mt-1">Sold by {order.seller.full_name}</p>
 
                         {order.tracking_number && (

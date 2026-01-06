@@ -167,27 +167,17 @@ export default function CheckoutPage() {
         throw itemsError
       }
 
-      // Decrement product quantities
+      // Mark products as sold/unavailable immediately
+      // Use database function to bypass RLS policies
       for (const item of cart.items) {
-        const newQuantity = (item.product.quantity_available || 1) - item.quantity
+        const { data, error: reserveError } = await supabase.rpc('reserve_product', {
+          product_id: item.product.id,
+          quantity_to_reserve: item.quantity
+        })
 
-        const updateData: any = {
-          quantity_available: Math.max(0, newQuantity)
-        }
-
-        // If quantity reaches 0, mark as inactive (sold out)
-        if (newQuantity <= 0) {
-          updateData.is_active = false
-        }
-
-        const { error: productError } = await supabase
-          .from('products')
-          .update(updateData)
-          .eq('id', item.product.id)
-
-        if (productError) {
-          console.error('Error updating product quantity:', productError)
-          // Don't fail the order if this fails
+        if (reserveError) {
+          console.error('Error reserving product:', reserveError)
+          throw new Error('Failed to reserve product. Please try again.')
         }
       }
 

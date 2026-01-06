@@ -22,13 +22,12 @@ type OrderDetails = {
   shipping_state: string
   shipping_zip: string
   shipping_country: string
-  product: {
-    id: string
-    title: string
-    description: string
-    price: number
-    images: string[]
-  }
+  order_items: {
+    product_id: string
+    product_title: string
+    product_price: number
+    product_image: string | null
+  }[]
   seller: {
     full_name: string
     email: string
@@ -55,7 +54,12 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
         .from('orders')
         .select(`
           *,
-          product:products(*),
+          order_items(
+            product_id,
+            product_title,
+            product_price,
+            product_image
+          ),
           seller:profiles!orders_seller_id_fkey(full_name, email, phone)
         `)
         .eq('id', params.id)
@@ -137,11 +141,11 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h2>
               <div className="flex gap-4">
-                {order.product.images?.[0] && (
+                {order.order_items[0]?.product_image && (
                   <div className="flex-shrink-0">
                     <Image
-                      src={order.product.images[0]}
-                      alt={order.product.title}
+                      src={order.order_items[0].product_image}
+                      alt={order.order_items[0].product_title}
                       width={120}
                       height={120}
                       className="rounded-lg object-cover"
@@ -149,9 +153,8 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900">{order.product.title}</h3>
-                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">{order.product.description}</p>
-                  <p className="text-lg font-bold text-gray-900 mt-2">${order.product.price.toFixed(2)}</p>
+                  <h3 className="font-semibold text-gray-900">{order.order_items[0]?.product_title}</h3>
+                  <p className="text-lg font-bold text-gray-900 mt-2">${order.order_items[0]?.product_price.toFixed(2)}</p>
                 </div>
               </div>
             </div>
