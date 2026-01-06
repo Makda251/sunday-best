@@ -81,8 +81,9 @@ export default function AdminProductsPage() {
     } else {
       // Send approval email to seller
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
+      let emailSent = false
       try {
-        await fetch('/api/send-email', {
+        const response = await fetch('/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -96,6 +97,13 @@ export default function AdminProductsPage() {
             },
           }),
         })
+
+        const result = await response.json()
+        emailSent = result.success
+
+        if (!emailSent) {
+          console.error('Email API returned error:', result.error)
+        }
       } catch (emailError) {
         console.error('Failed to send product approval email:', emailError)
       }
@@ -103,7 +111,12 @@ export default function AdminProductsPage() {
       // Remove the product from the current list
       setProducts(prev => prev.filter(p => p.id !== productId))
       setSelectedProduct(null)
-      alert('Product approved successfully!')
+
+      if (emailSent) {
+        alert('Product approved successfully! Email notification sent to seller.')
+      } else {
+        alert('Product approved successfully! (Note: Email notification may have failed - check console for details)')
+      }
     }
   }
 
@@ -136,8 +149,9 @@ export default function AdminProductsPage() {
     } else {
       // Send rejection email to seller
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
+      let emailSent = false
       try {
-        await fetch('/api/send-email', {
+        const response = await fetch('/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -151,6 +165,13 @@ export default function AdminProductsPage() {
             },
           }),
         })
+
+        const result = await response.json()
+        emailSent = result.success
+
+        if (!emailSent) {
+          console.error('Email API returned error:', result.error)
+        }
       } catch (emailError) {
         console.error('Failed to send product rejection email:', emailError)
       }
@@ -159,7 +180,12 @@ export default function AdminProductsPage() {
       setProducts(prev => prev.filter(p => p.id !== productId))
       setSelectedProduct(null)
       setRejectionReason('')
-      alert('Product rejected successfully!')
+
+      if (emailSent) {
+        alert('Product rejected successfully! Email notification sent to seller.')
+      } else {
+        alert('Product rejected successfully! (Note: Email notification may have failed - check console for details)')
+      }
     }
   }
 
