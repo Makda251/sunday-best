@@ -89,7 +89,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-14 sm:h-16">
           <div className="flex items-center min-w-0">
             <Link href="/" className="flex-shrink-0 min-w-0">
-              <span className="text-lg sm:text-xl lg:text-2xl font-bold text-indigo-600 truncate">The Kemis House</span>
+              <span className="text-lg sm:text-xl lg:text-2xl font-bold text-indigo-600 truncate">MakHil</span>
             </Link>
           </div>
           <div className="flex items-center">

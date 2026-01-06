@@ -35,7 +35,7 @@ export default function OrderPlacedEmail({
   return (
     <Html>
       <Head />
-      <Preview>Your order {orderNumber} has been placed - The Kemis House</Preview>
+      <Preview>Your order {orderNumber} has been placed - MakHil</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Order Confirmation</Heading>
@@ -88,13 +88,13 @@ export default function OrderPlacedEmail({
 
           <Text style={footer}>
             Questions? Contact us at{' '}
-            <Link href="mailto:support@thekemishouse.com" style={link}>
-              support@thekemishouse.com
+            <Link href="mailto:support@makhil.com" style={link}>
+              support@makhil.com
             </Link>
           </Text>
 
           <Text style={footer}>
-            © 2025 The Kemis House. All rights reserved.
+            © 2025 MakHil. All rights reserved.
           </Text>
         </Container>
       </Body>

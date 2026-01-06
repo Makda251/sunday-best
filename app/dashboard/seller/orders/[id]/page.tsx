@@ -62,9 +62,56 @@ export default function SellerOrderDetailPage() {
     fetchOrder()
   }, [params.id, router, supabase])
 
+  const validateTrackingNumber = (tracking: string): { valid: boolean; message?: string } => {
+    const cleaned = tracking.trim().replace(/\s+/g, '')
+
+    if (cleaned.length === 0) {
+      return { valid: false, message: 'Please enter a tracking number' }
+    }
+
+    // USPS formats
+    const uspsFormats = [
+      /^\d{20}$/, // 20 digits
+      /^\d{22}$/, // 22 digits
+      /^(94|93|92|94|95)\d{20}$/, // USPS tracking (starts with 94, 93, 92, 95)
+      /^(EA|EC|CP|RA|RB|RC|RR|RS|RT)\d{9}US$/, // International
+    ]
+
+    // UPS formats
+    const upsFormats = [
+      /^1Z[A-Z0-9]{16}$/, // Standard UPS
+      /^\d{18}$/, // Alternative UPS format
+    ]
+
+    // FedEx formats
+    const fedexFormats = [
+      /^\d{12}$/, // FedEx Express
+      /^\d{15}$/, // FedEx Ground
+      /^\d{22}$/, // FedEx SmartPost
+    ]
+
+    // DHL formats
+    const dhlFormats = [
+      /^\d{10,11}$/, // DHL Express
+    ]
+
+    const allFormats = [...uspsFormats, ...upsFormats, ...fedexFormats, ...dhlFormats]
+    const isValid = allFormats.some(format => format.test(cleaned))
+
+    if (!isValid) {
+      return {
+        valid: false,
+        message: 'Invalid tracking number format. Please verify the tracking number from your carrier (USPS, UPS, FedEx, or DHL).'
+      }
+    }
+
+    return { valid: true }
+  }
+
   const handleMarkAsShipped = async () => {
-    if (!trackingNumber.trim()) {
-      setError('Please enter a tracking number')
+    const validation = validateTrackingNumber(trackingNumber)
+    if (!validation.valid) {
+      setError(validation.message || 'Invalid tracking number')
       return
     }
 
@@ -265,19 +312,24 @@ export default function SellerOrderDetailPage() {
           {order.payment_status === 'verified' && order.status !== 'shipped' && order.status !== 'delivered' && order.status !== 'cancelled' && (
             <div className="mt-6 border-t pt-6 space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-4">Mark as Shipped</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">Mark as Shipped</h3>
+                <p className="text-xs text-gray-500 mb-3">
+                  Enter the tracking number from USPS, UPS, FedEx, or DHL. The tracking number will be validated before submission.
+                </p>
                 <div className="flex space-x-4">
-                  <input
-                    type="text"
-                    placeholder="Enter tracking number"
-                    className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    value={trackingNumber}
-                    onChange={(e) => setTrackingNumber(e.target.value)}
-                  />
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      placeholder="Enter tracking number (e.g., 1Z999AA10123456784)"
+                      className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      value={trackingNumber}
+                      onChange={(e) => setTrackingNumber(e.target.value)}
+                    />
+                  </div>
                   <button
                     onClick={handleMarkAsShipped}
                     disabled={updating}
-                    className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                    className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 whitespace-nowrap"
                   >
                     {updating ? 'Updating...' : 'Mark as Shipped'}
                   </button>

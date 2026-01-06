@@ -23,6 +23,7 @@ interface AdminOrderNotificationProps {
   shippingCost: string
   shippingAddress: string
   paymentScreenshotUrl: string
+  buyerZelleName?: string
   buyerZelleEmail?: string
   buyerZellePhone?: string
   orderUrl: string
@@ -39,9 +40,10 @@ export default function AdminOrderNotification({
   shippingCost = '$10.00',
   shippingAddress = '123 Main St, City, State 12345',
   paymentScreenshotUrl = 'https://example.com/screenshot.jpg',
+  buyerZelleName,
   buyerZelleEmail,
   buyerZellePhone,
-  orderUrl = 'https://thekemishouse.com/dashboard/admin/orders/123',
+  orderUrl = 'https://makhil.com/dashboard/admin/orders/123',
 }: AdminOrderNotificationProps) {
   return (
     <Html>
@@ -89,9 +91,17 @@ export default function AdminOrderNotification({
             <Text style={infoText}>
               <strong>Name:</strong> {buyerName}<br/>
               <strong>Email:</strong> {buyerEmail}<br/>
-              {buyerZelleEmail && <><strong>Zelle Email:</strong> {buyerZelleEmail}<br/></>}
-              {buyerZellePhone && <><strong>Zelle Phone:</strong> {buyerZellePhone}<br/></>}
             </Text>
+            {(buyerZelleName || buyerZelleEmail || buyerZellePhone) && (
+              <>
+                <Text style={addressLabel}>Zelle Info (for verification):</Text>
+                <Text style={infoText}>
+                  {buyerZelleName && <><strong>Name on Zelle:</strong> {buyerZelleName}<br/></>}
+                  {buyerZelleEmail && <><strong>Zelle Email:</strong> {buyerZelleEmail}<br/></>}
+                  {buyerZellePhone && <><strong>Zelle Phone:</strong> {buyerZellePhone}<br/></>}
+                </Text>
+              </>
+            )}
             <Text style={addressLabel}>Shipping Address:</Text>
             <Text style={address}>{shippingAddress}</Text>
           </Section>
@@ -119,7 +129,7 @@ export default function AdminOrderNotification({
           </Text>
 
           <Text style={footer}>
-            © 2025 The Kemis House. All rights reserved.
+            © 2025 MakHil. All rights reserved.
           </Text>
         </Container>
       </Body>

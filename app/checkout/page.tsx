@@ -21,6 +21,7 @@ export default function CheckoutPage() {
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null)
   const [buyerZelleEmail, setBuyerZelleEmail] = useState('')
   const [buyerZellePhone, setBuyerZellePhone] = useState('')
+  const [buyerZelleName, setBuyerZelleName] = useState('')
 
   const router = useRouter()
   const supabase = createClient()
@@ -128,6 +129,7 @@ export default function CheckoutPage() {
           payment_screenshot_url: publicUrl,
           buyer_zelle_email: buyerZelleEmail || null,
           buyer_zelle_phone: buyerZellePhone || null,
+          buyer_zelle_name: buyerZelleName || null,
           shipping_address_line1: addressLine1,
           shipping_address_line2: addressLine2,
           shipping_city: city,
@@ -248,6 +250,7 @@ export default function CheckoutPage() {
                 shippingCost: `$${shipping.toFixed(2)}`,
                 shippingAddress,
                 paymentScreenshotUrl: publicUrl,
+                buyerZelleName: buyerZelleName || undefined,
                 buyerZelleEmail: buyerZelleEmail || undefined,
                 buyerZellePhone: buyerZellePhone || undefined,
                 orderUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/admin/orders/${order.id}`,
@@ -368,6 +371,23 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Name on Your Zelle Account * <span className="text-xs text-gray-500">(for payment verification)</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Full name as it appears in Zelle"
+                    className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={buyerZelleName}
+                    onChange={(e) => setBuyerZelleName(e.target.value)}
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    This helps us verify your payment faster
+                  </p>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Your Zelle Email or Phone <span className="text-xs text-gray-500">(for refunds if needed)</span>

@@ -38,7 +38,7 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-4">
-            <h1 className="text-3xl font-bold text-indigo-600">The Kemis House</h1>
+            <h1 className="text-3xl font-bold text-indigo-600">MakHil</h1>
             <p className="text-xs text-gray-500">Your Home for Habesha Elegance</p>
           </Link>
           <h2 className="text-2xl font-bold text-gray-900 mt-6">

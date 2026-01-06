@@ -34,7 +34,7 @@ For production, you'll want to send emails from your own domain:
 
 1. In Resend dashboard, go to [Domains](https://resend.com/domains)
 2. Click "Add Domain"
-3. Enter your domain (e.g., `thekemishouse.com`)
+3. Enter your domain (e.g., `makhil.com`)
 4. Add the provided DNS records to your domain registrar:
    - SPF record
    - DKIM record
@@ -42,7 +42,7 @@ For production, you'll want to send emails from your own domain:
 5. Wait for verification (usually 15 minutes to 48 hours)
 6. Once verified, update the `FROM_EMAIL` in `lib/email.ts`:
    ```typescript
-   const FROM_EMAIL = 'The Kemis House <noreply@thekemishouse.com>'
+   const FROM_EMAIL = 'MakHil <noreply@makhil.com>'
    ```
 
 ### 5. Test Email Sending

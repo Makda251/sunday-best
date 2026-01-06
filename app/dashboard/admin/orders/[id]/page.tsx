@@ -413,10 +413,15 @@ export default function AdminOrderDetailPage() {
             </div>
 
             {/* Buyer Zelle Info for Refunds */}
-            {(order.buyer_zelle_email || order.buyer_zelle_phone) && (
+            {(order.buyer_zelle_email || order.buyer_zelle_phone || order.buyer_zelle_name) && (
               <div className="mt-4 pt-4 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Zelle Info (for refunds)</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">Zelle Info (for verification & refunds)</h3>
                 <div className="text-sm space-y-1">
+                  {order.buyer_zelle_name && (
+                    <p className="text-gray-600">
+                      <span className="font-medium">Name on Zelle:</span> {order.buyer_zelle_name}
+                    </p>
+                  )}
                   {order.buyer_zelle_email && (
                     <p className="text-gray-600">
                       <span className="font-medium">Email:</span> {order.buyer_zelle_email}

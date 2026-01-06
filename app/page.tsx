@@ -122,7 +122,10 @@ export default function Home() {
         {/* Products Grid */}
         <div id="products">
           <div className="flex items-center justify-between mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Latest Arrivals</h2>
+            <div>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Shop Available Dresses</h2>
+              <p className="mt-2 text-sm sm:text-base text-gray-600">Discover beautiful kemis from our community of sellers</p>
+            </div>
           </div>
           <ProductGrid />
         </div>
