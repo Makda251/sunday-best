@@ -63,6 +63,7 @@ export default function BuyerOrdersPage() {
       if (error) {
         console.error('Error fetching orders:', error)
       } else {
+        console.log('Orders fetched:', ordersData)
         setOrders(ordersData || [])
       }
 

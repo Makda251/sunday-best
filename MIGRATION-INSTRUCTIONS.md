@@ -66,7 +66,31 @@ COMMENT ON FUNCTION reserve_product IS 'Allows buyers to reserve products when p
 
 ---
 
-## Migration 2: Refund Request Fields (CRITICAL)
+## Migration 2: Order Number Column (CRITICAL)
+
+**File**: `supabase/migrations/add-order-number.sql`
+
+**What it does**: Adds an `order_number` column to the orders table. This is a human-readable order reference generated from the order ID.
+
+**Run this SQL**:
+```sql
+-- Add order_number as a generated column
+-- Formats the first 8 characters of the UUID in uppercase
+ALTER TABLE orders
+ADD COLUMN IF NOT EXISTS order_number TEXT GENERATED ALWAYS AS (
+  UPPER(SUBSTRING(id::text, 1, 8))
+) STORED;
+
+-- Add index for faster lookups
+CREATE INDEX IF NOT EXISTS idx_orders_order_number ON orders(order_number);
+
+-- Comment
+COMMENT ON COLUMN orders.order_number IS 'Human-readable order number, generated from first 8 chars of UUID';
+```
+
+---
+
+## Migration 3: Refund Request Fields (CRITICAL)
 
 **File**: `supabase/migrations/add-refund-request.sql`
 
@@ -93,7 +117,7 @@ COMMENT ON COLUMN orders.refund_request_description IS 'Detailed description of 
 
 ## Verify Migrations
 
-After running both migrations, verify they worked:
+After running all three migrations, verify they worked:
 
 1. Check that the function exists:
    ```sql
@@ -101,7 +125,16 @@ After running both migrations, verify they worked:
    ```
    Should return: `reserve_product`
 
-2. Check that the columns were added:
+2. Check that order_number column was added:
+   ```sql
+   SELECT column_name, data_type
+   FROM information_schema.columns
+   WHERE table_name = 'orders'
+   AND column_name = 'order_number';
+   ```
+   Should return: `order_number | text`
+
+3. Check that the refund columns were added:
    ```sql
    SELECT column_name
    FROM information_schema.columns
