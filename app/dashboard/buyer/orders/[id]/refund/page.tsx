@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -18,7 +18,8 @@ type OrderDetails = {
   }[]
 }
 
-export default function RefundRequestPage({ params }: { params: { id: string } }) {
+export default function RefundRequestPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const [order, setOrder] = useState<OrderDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -55,7 +56,7 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
             product_image
           )
         `)
-        .eq('id', params.id)
+        .eq('id', id)
         .eq('buyer_id', user.id)
         .single()
 
@@ -68,13 +69,13 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
       // Check if order is eligible for refund
       if (data.status !== 'delivered') {
         alert('Refunds can only be requested for delivered orders')
-        router.push(`/dashboard/buyer/orders/${params.id}`)
+        router.push(`/dashboard/buyer/orders/${id}`)
         return
       }
 
       if (data.refund_requested) {
         alert('A refund has already been requested for this order')
-        router.push(`/dashboard/buyer/orders/${params.id}`)
+        router.push(`/dashboard/buyer/orders/${id}`)
         return
       }
 
@@ -83,7 +84,7 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
     }
 
     fetchOrder()
-  }, [params.id, router, supabase])
+  }, [id, router, supabase])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -114,7 +115,7 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
           refund_buyer_zelle_email: zelleEmail.trim() || null,
           refund_buyer_zelle_phone: zellePhone.trim() || null,
         })
-        .eq('id', params.id)
+        .eq('id', id)
 
       if (updateError) {
         throw updateError
@@ -123,7 +124,7 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
       // TODO: Send email notification to admin about refund request
 
       alert('Refund request submitted successfully! Our admin team will review it shortly.')
-      router.push(`/dashboard/buyer/orders/${params.id}`)
+      router.push(`/dashboard/buyer/orders/${id}`)
     } catch (err: any) {
       console.error('Error submitting refund request:', err)
       setError(err.message || 'Failed to submit refund request')
@@ -145,7 +146,7 @@ export default function RefundRequestPage({ params }: { params: { id: string } }
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link href={`/dashboard/buyer/orders/${params.id}`} className="text-indigo-600 hover:text-indigo-700 font-medium text-sm mb-6 inline-block">
+        <Link href={`/dashboard/buyer/orders/${id}`} className="text-indigo-600 hover:text-indigo-700 font-medium text-sm mb-6 inline-block">
           ← Back to Order
         </Link>
 

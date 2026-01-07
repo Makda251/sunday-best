@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -35,7 +35,8 @@ type OrderDetails = {
   }
 }
 
-export default function OrderDetailPage({ params }: { params: { id: string } }) {
+export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const [order, setOrder] = useState<OrderDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -62,7 +63,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
           ),
           seller:profiles!orders_seller_id_fkey(full_name, email, phone)
         `)
-        .eq('id', params.id)
+        .eq('id', id)
         .eq('buyer_id', user.id)
         .single()
 
@@ -77,7 +78,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
     }
 
     fetchOrder()
-  }, [params.id, router, supabase])
+  }, [id, router, supabase])
 
   const getStatusColor = (status: string, paymentStatus: string) => {
     if (status === 'cancelled') return 'text-red-600 bg-red-50'
