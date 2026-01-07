@@ -156,47 +156,48 @@ export default function BuyerOrdersPage() {
                   </div>
 
                   <div className="border-t pt-4">
-                    <div className="flex gap-4">
-                      {order.order_items[0]?.product_image && (
-                        <div className="flex-shrink-0">
-                          <Image
-                            src={order.order_items[0].product_image}
-                            alt={order.order_items[0].product_title}
-                            width={80}
-                            height={80}
-                            className="rounded-lg object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900">{order.order_items[0]?.product_title}</h4>
-                        <p className="text-sm text-gray-500 mt-1">Sold by {order.seller.full_name}</p>
-
-                        {order.tracking_number && (
-                          <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                            <p className="text-xs font-semibold text-blue-900 mb-1">Tracking Number</p>
-                            <p className="text-sm font-mono text-blue-700">{order.tracking_number}</p>
+                    <div className="flex gap-4 items-start justify-between">
+                      <div className="flex gap-4 flex-1 min-w-0">
+                        {order.order_items[0]?.product_image && (
+                          <div className="flex-shrink-0">
+                            <Image
+                              src={order.order_items[0].product_image}
+                              alt={order.order_items[0].product_title}
+                              width={80}
+                              height={80}
+                              className="rounded-lg object-cover"
+                            />
                           </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-gray-900">{order.order_items[0]?.product_title}</h4>
+                          <p className="text-sm text-gray-500 mt-1">Sold by {order.seller.full_name}</p>
+
+                          {order.tracking_number && (
+                            <div className="mt-3 p-2 bg-blue-50 rounded text-xs">
+                              <p className="font-semibold text-blue-900">Tracking: {order.tracking_number}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2 flex-shrink-0">
+                        <Link
+                          href={`/dashboard/buyer/orders/${order.id}`}
+                          className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition whitespace-nowrap"
+                        >
+                          View Details
+                        </Link>
+                        {order.status === 'delivered' && (
+                          <Link
+                            href={`/dashboard/buyer/orders/${order.id}/refund`}
+                            className="px-4 py-2 border border-red-600 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition whitespace-nowrap"
+                          >
+                            Request Refund
+                          </Link>
                         )}
                       </div>
                     </div>
-                  </div>
-
-                  <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                    <Link
-                      href={`/dashboard/buyer/orders/${order.id}`}
-                      className="flex-1 px-4 py-2 bg-indigo-600 text-white text-center font-semibold rounded-lg hover:bg-indigo-700 transition"
-                    >
-                      View Details
-                    </Link>
-                    {order.status === 'delivered' && (
-                      <Link
-                        href={`/dashboard/buyer/orders/${order.id}/refund`}
-                        className="flex-1 px-4 py-2 border-2 border-red-600 text-red-600 text-center font-semibold rounded-lg hover:bg-red-50 transition"
-                      >
-                        Request Refund
-                      </Link>
-                    )}
                   </div>
                 </div>
               </div>
