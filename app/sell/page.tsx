@@ -135,7 +135,7 @@ export default function SellPage() {
             </p>
             <p className="text-sm leading-relaxed mb-8" style={{ color: '#6B6B6B' }}>
               We&apos;ll review your application and reach out at{' '}
-              <span className="font-semibold" style={{ color: '#111111' }}>{email}</span> within 48 hours.
+              <span className="font-semibold" style={{ color: '#111111' }}>{email}</span> within a few days.
             </p>
             <p className="text-sm" style={{ color: '#9A9A9A' }}>Keep an eye on your inbox — we&apos;ll be in touch soon.</p>
           </div>
