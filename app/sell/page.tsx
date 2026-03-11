@@ -137,9 +137,7 @@ export default function SellPage() {
               We&apos;ll review your application and reach out at{' '}
               <span className="font-semibold" style={{ color: '#111111' }}>{email}</span> within 48 hours.
             </p>
-            <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white transition hover:opacity-90" style={{ backgroundColor: '#C4622D' }}>
-              Browse the marketplace
-            </Link>
+            <p className="text-sm" style={{ color: '#9A9A9A' }}>Keep an eye on your inbox — we&apos;ll be in touch soon.</p>
           </div>
         </div>
       </div>
@@ -282,9 +280,24 @@ export default function SellPage() {
                 <label className={labelCls} style={{ color: '#111111' }}>
                   Dress Photos <span className="text-red-500">*</span>
                 </label>
-                <p className="text-xs mb-4" style={{ color: '#6B6B6B' }}>
-                  Upload 2–5 photos of the dresses you want to sell. Clear, well-lit photos help us get you approved faster.
-                </p>
+                <div className="mb-4 rounded-xl p-4 space-y-2" style={{ backgroundColor: '#F7F7F7', border: '1px solid #EBEBEB' }}>
+                  <p className="text-xs font-semibold" style={{ color: '#111111' }}>What to include (2–5 photos):</p>
+                  <ul className="text-xs space-y-1.5" style={{ color: '#6B6B6B' }}>
+                    <li className="flex items-start gap-2">
+                      <span style={{ color: '#C4622D' }}>•</span>
+                      <span><span className="font-medium" style={{ color: '#111111' }}>Wearing the dress</span> — front and back. You can crop your face if you prefer.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span style={{ color: '#C4622D' }}>•</span>
+                      <span><span className="font-medium" style={{ color: '#111111' }}>Close-up of the embroidery</span> or design details.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span style={{ color: '#C4622D' }}>•</span>
+                      <span><span className="font-medium" style={{ color: '#111111' }}>Any flaws or defects</span> (stains, tears, fading) — be transparent, buyers appreciate honesty.</span>
+                    </li>
+                  </ul>
+                  <p className="text-xs pt-1" style={{ color: '#9A9A9A' }}>Good lighting makes a big difference. Natural daylight works best.</p>
+                </div>
 
                 {photoPreviews.length > 0 ? (
                   <div className="grid grid-cols-3 gap-2 mb-3">
