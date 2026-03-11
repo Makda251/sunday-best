@@ -64,6 +64,11 @@ export default async function AdminDashboard() {
 
   const totalRevenue = revenueData?.reduce((sum, order) => sum + parseFloat(order.platform_fee), 0) || 0
 
+  const { count: pendingApplications } = await supabase
+    .from('seller_applications')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'pending')
+
   const paymentBadge = (s: string) => s === 'verified' ? { background: '#D1FAE5', color: '#065F46' } : s === 'pending' ? { background: '#FEF3C7', color: '#92400E' } : { background: '#FEE2E2', color: '#991B1B' }
   const statusBadge = (s: string) => {
     if (s === 'delivered') return { background: '#D1FAE5', color: '#065F46' }
@@ -89,6 +94,7 @@ export default async function AdminDashboard() {
             { label: 'Pending Verifications', value: pendingPayments || 0, color: '#92400E', alert: true },
             { label: 'Pending Reviews', value: pendingProducts || 0, color: '#6D28D9', alert: true, href: '/dashboard/admin/products' },
             { label: 'Platform Revenue', value: `$${totalRevenue.toFixed(2)}`, color: '#065F46' },
+            { label: 'Seller Applications', value: pendingApplications || 0, color: '#C4622D', alert: true, href: '/dashboard/admin/sellers' },
           ].map(({ label, value, color, alert, href }) => {
             const inner = (
               <div className="p-5 rounded-xl" style={{ border: '1px solid #EBEBEB', background: '#FFFFFF' }}>
@@ -111,6 +117,17 @@ export default async function AdminDashboard() {
         <div className="bg-white rounded-xl mb-8 p-5" style={{ border: '1px solid #EBEBEB' }}>
           <h2 className="text-base font-semibold mb-4" style={{ color: '#111111' }}>Management Tools</h2>
           <div className="flex flex-wrap gap-3">
+            <Link href="/dashboard/admin/sellers" className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all" style={{ background: '#FDF0EA', color: '#C4622D' }}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Seller Applications
+              {(pendingApplications || 0) > 0 && (
+                <span className="inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white rounded-full" style={{ backgroundColor: '#C4622D' }}>
+                  {pendingApplications}
+                </span>
+              )}
+            </Link>
             <Link href="/dashboard/admin/designers" className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all" style={{ background: '#FDF0EA', color: '#C4622D' }}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
