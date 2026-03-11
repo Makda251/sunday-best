@@ -34,7 +34,7 @@ export default function OrderShippedEmail({
   return (
     <Html>
       <Head />
-      <Preview>Your order {orderNumber} has shipped! - MakHil</Preview>
+      <Preview>Your order {orderNumber} has shipped! - KemisHouse</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Your Order Has Shipped! 📦</Heading>
@@ -84,13 +84,13 @@ export default function OrderShippedEmail({
 
           <Text style={footer}>
             Questions? Contact us at{' '}
-            <Link href="mailto:support@makhil.com" style={link}>
-              support@makhil.com
+            <Link href="mailto:support@kemishouse.com" style={link}>
+              support@kemishouse.com
             </Link>
           </Text>
 
           <Text style={footer}>
-            © 2025 MakHil. All rights reserved.
+            © 2025 KemisHouse. All rights reserved.
           </Text>
         </Container>
       </Body>

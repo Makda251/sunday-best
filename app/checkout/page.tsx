@@ -283,189 +283,128 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 mx-auto mb-3" style={{ borderColor: '#EBEBEB', borderTopColor: '#C4622D' }} />
+          <p className="text-sm" style={{ color: '#6B6B6B' }}>Loading...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-8" style={{  }}>Checkout</h1>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Checkout Form */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-5">
             {error && (
-              <div className="rounded-md bg-red-50 p-4">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="rounded-xl p-4" style={{ backgroundColor: '#FDF0EA', border: '1px solid #FECACA' }}>
+                <p className="text-sm" style={{ color: '#C4622D' }}>{error}</p>
               </div>
             )}
 
             {/* Shipping Address */}
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Shipping Address</h2>
+            <div className="bg-white rounded-xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-base font-semibold text-stone-900 mb-5" style={{  }}>Shipping Address</h2>
               <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Street Address *</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    value={addressLine1}
-                    onChange={(e) => setAddressLine1(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Apartment, suite, etc.</label>
-                  <input
-                    type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    value={addressLine2}
-                    onChange={(e) => setAddressLine2(e.target.value)}
-                  />
-                </div>
+                {[
+                  { label: 'Street Address', value: addressLine1, onChange: setAddressLine1, required: true },
+                  { label: 'Apartment, suite, etc.', value: addressLine2, onChange: setAddressLine2, required: false },
+                ].map(({ label, value, onChange, required }) => (
+                  <div key={label}>
+                    <label className="block text-sm font-semibold mb-1.5" style={{ color: '#111111' }}>{label}{required ? ' *' : ''}</label>
+                    <input type="text" required={required} value={value} onChange={(e) => onChange(e.target.value)}
+                      className="block w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none" style={{ border: '1px solid #EBEBEB', backgroundColor: '#FDFCFB' }} />
+                  </div>
+                ))}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">City *</label>
-                    <input
-                      type="text"
-                      required
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                    />
+                    <label className="block text-sm font-semibold mb-1.5" style={{ color: '#111111' }}>City *</label>
+                    <input type="text" required value={city} onChange={(e) => setCity(e.target.value)}
+                      className="block w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none" style={{ border: '1px solid #EBEBEB', backgroundColor: '#FDFCFB' }} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">State *</label>
-                    <input
-                      type="text"
-                      required
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      value={state}
-                      onChange={(e) => setState(e.target.value)}
-                    />
+                    <label className="block text-sm font-semibold mb-1.5" style={{ color: '#111111' }}>State *</label>
+                    <input type="text" required value={state} onChange={(e) => setState(e.target.value)}
+                      className="block w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none" style={{ border: '1px solid #EBEBEB', backgroundColor: '#FDFCFB' }} />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">ZIP Code *</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    value={zip}
-                    onChange={(e) => setZip(e.target.value)}
-                  />
+                  <label className="block text-sm font-semibold mb-1.5" style={{ color: '#111111' }}>ZIP Code *</label>
+                  <input type="text" required value={zip} onChange={(e) => setZip(e.target.value)}
+                    className="block w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none" style={{ border: '1px solid #EBEBEB', backgroundColor: '#FDFCFB' }} />
                 </div>
-
-                {/* Save Address Checkbox */}
-                <div className="flex items-start pt-2">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="save-address"
-                      type="checkbox"
-                      checked={saveAddress}
-                      onChange={(e) => setSaveAddress(e.target.checked)}
-                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                    />
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input id="save-address" type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} className="mt-0.5 h-4 w-4 rounded" style={{ accentColor: '#C4622D' }} />
+                  <div>
+                    <span className="text-sm font-medium text-stone-900">Save this address for future orders</span>
+                    <p className="text-xs mt-0.5" style={{ color: '#6B6B6B' }}>We&apos;ll pre-fill this address next time you checkout</p>
                   </div>
-                  <div className="ml-3">
-                    <label htmlFor="save-address" className="text-sm font-medium text-gray-700 cursor-pointer">
-                      Save this address for future orders
-                    </label>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      We'll pre-fill this address next time you checkout
-                    </p>
-                  </div>
-                </div>
+                </label>
               </div>
             </div>
 
-            {/* Payment Instructions */}
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Payment via Zelle</h2>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <h3 className="font-medium text-blue-900 mb-2">Send payment to:</h3>
-                <div className="space-y-1 text-sm text-blue-900">
+            {/* Payment */}
+            <div className="bg-white rounded-xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-base font-semibold text-stone-900 mb-5" style={{  }}>Payment via Zelle</h2>
+              <div className="rounded-xl p-4 mb-5" style={{ backgroundColor: '#F7F7F7', border: '1px solid #F0D99A' }}>
+                <h3 className="text-sm font-semibold mb-2" style={{ color: '#6B6B6B' }}>Send payment to:</h3>
+                <div className="space-y-1 text-sm" style={{ color: '#6B4C0A' }}>
                   {zelleEmail && <p><strong>Email:</strong> {zelleEmail}</p>}
                   {zellePhone && <p><strong>Phone:</strong> {zellePhone}</p>}
                   <p><strong>Amount:</strong> ${total.toFixed(2)}</p>
-                  <p className="text-xs text-blue-700 mt-2">
-                    Please include your order reference in the Zelle memo
-                  </p>
+                  <p className="text-xs mt-2" style={{ color: '#6B6B6B' }}>Please include your order reference in the Zelle memo</p>
                 </div>
               </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Upload Zelle Payment Screenshot *
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    required
-                    onChange={handleFileChange}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                  />
-                  {paymentScreenshot && (
-                    <p className="mt-2 text-sm text-green-600">
-                      ✓ {paymentScreenshot.name}
-                    </p>
-                  )}
-                </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2" style={{ color: '#111111' }}>Upload Zelle Payment Screenshot *</label>
+                <input type="file" accept="image/*" required onChange={handleFileChange}
+                  className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold"
+                  style={{ color: '#6B6B6B' }} />
+                {paymentScreenshot && (
+                  <p className="mt-2 text-sm font-medium" style={{ color: '#166534' }}>✓ {paymentScreenshot.name}</p>
+                )}
               </div>
             </div>
           </div>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white shadow rounded-lg p-6 sticky top-8">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
-
-              <div className="mb-4 max-h-60 overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 lg:sticky lg:top-8" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-base font-semibold text-stone-900 mb-4" style={{  }}>Order Summary</h2>
+              <div className="mb-4 max-h-56 overflow-y-auto space-y-3">
                 {cart.items.map((item) => (
-                  <div key={item.product.id} className="flex items-center space-x-3 mb-3">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded overflow-hidden">
+                  <div key={item.product.id} className="flex items-center gap-3">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden" style={{ backgroundColor: '#EDE8E3' }}>
                       {item.product.images?.[0] && (
-                        <Image
-                          src={item.product.images[0]}
-                          alt={item.product.title}
-                          width={64}
-                          height={64}
-                          className="w-full h-full object-cover"
-                        />
+                        <Image src={item.product.images[0]} alt={item.product.title} width={56} height={56} className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{item.product.title}</p>
-                      <p className="text-xs text-gray-500">Qty: {item.quantity} × ${item.product.price}</p>
+                      <p className="text-xs font-medium text-stone-900 truncate">{item.product.title}</p>
+                      <p className="text-xs" style={{ color: '#6B6B6B' }}>Qty: {item.quantity} × ${item.product.price}</p>
                     </div>
                   </div>
                 ))}
               </div>
-
-              <div className="border-t pt-4 space-y-2">
+              <div className="space-y-2 pt-3" style={{ borderTop: '1px solid #EBEBEB' }}>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                  <span style={{ color: '#6B6B6B' }}>Subtotal</span>
+                  <span className="font-medium text-stone-900">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium text-gray-900">${shipping.toFixed(2)}</span>
+                  <span style={{ color: '#6B6B6B' }}>Shipping</span>
+                  <span className="font-medium text-stone-900">${shipping.toFixed(2)}</span>
                 </div>
-                <div className="border-t pt-2 flex justify-between text-base font-medium">
-                  <span className="text-gray-900">Total</span>
-                  <span className="text-gray-900">${total.toFixed(2)}</span>
+                <div className="flex justify-between text-base font-bold pt-2" style={{ borderTop: '1px solid #EBEBEB' }}>
+                  <span className="text-stone-900">Total</span>
+                  <span style={{ color: '#C4622D' }}>${total.toFixed(2)}</span>
                 </div>
               </div>
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="mt-6 w-full bg-gradient-to-r from-indigo-600 to-purple-600 border border-transparent rounded-xl py-3 px-4 text-base font-semibold text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition shadow-lg hover:shadow-xl"
-              >
+              <button type="submit" disabled={submitting} className="mt-6 w-full py-3 px-4 text-sm font-semibold text-white rounded-lg transition disabled:opacity-50" style={{ backgroundColor: '#C4622D' }}>
                 {submitting ? 'Placing order...' : 'Place Order'}
               </button>
             </div>

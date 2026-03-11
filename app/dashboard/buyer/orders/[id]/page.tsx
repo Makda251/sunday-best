@@ -80,46 +80,46 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     fetchOrder()
   }, [id, router, supabase])
 
-  const getStatusColor = (status: string, paymentStatus: string) => {
-    if (status === 'cancelled') return 'text-red-600 bg-red-50'
-    if (status === 'delivered') return 'text-green-600 bg-green-50'
-    if (status === 'shipped') return 'text-blue-600 bg-blue-50'
-    if (paymentStatus === 'verified') return 'text-purple-600 bg-purple-50'
-    return 'text-yellow-600 bg-yellow-50'
+  const getStatusStyle = (status: string, paymentStatus: string): React.CSSProperties => {
+    if (status === 'cancelled') return { background: '#FEE2E2', color: '#991B1B' }
+    if (status === 'delivered') return { background: '#D1FAE5', color: '#065F46' }
+    if (status === 'shipped') return { background: '#EDE9FE', color: '#6D28D9' }
+    if (paymentStatus === 'verified') return { background: '#DBEAFE', color: '#1E40AF' }
+    return { background: '#FEF3C7', color: '#92400E' }
   }
 
   const getStatusText = (status: string, paymentStatus: string) => {
     if (status === 'cancelled') return 'Cancelled'
     if (status === 'delivered') return 'Delivered'
     if (status === 'shipped') return 'Shipped'
-    if (paymentStatus === 'verified') return 'Processing - Seller will ship soon'
+    if (paymentStatus === 'verified') return 'Processing – Seller will ship soon'
     if (paymentStatus === 'pending') return 'Pending Payment Verification'
     return status
   }
 
   if (loading || !order) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading order details...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto" style={{ borderColor: '#C4622D' }}></div>
+          <p className="mt-4 text-[#6B6B6B]">Loading order details...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
-          <Link href="/dashboard/buyer/orders" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm mb-4 inline-block">
+          <Link href="/dashboard/buyer/orders" className="font-medium text-sm mb-4 inline-block" style={{ color: '#C4622D' }}>
             ← Back to Orders
           </Link>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Order {order.order_number}</h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <h1 className="text-3xl font-bold text-[#111111]">Order {order.order_number}</h1>
+              <p className="mt-1 text-sm text-[#9A9A9A]">
                 Placed on {new Date(order.created_at).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -129,9 +129,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 })}
               </p>
             </div>
-            <div className={`mt-4 sm:mt-0 px-4 py-2 rounded-lg font-semibold ${getStatusColor(order.status, order.payment_status)}`}>
+            <span className="mt-4 sm:mt-0 px-4 py-2 rounded-full text-sm font-semibold" style={getStatusStyle(order.status, order.payment_status)}>
               {getStatusText(order.status, order.payment_status)}
-            </div>
+            </span>
           </div>
         </div>
 
@@ -139,8 +139,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Product */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h2>
+            <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-lg font-semibold text-[#111111] mb-4">Order Items</h2>
               <div className="flex gap-4">
                 {order.order_items[0]?.product_image && (
                   <div className="flex-shrink-0">
@@ -154,8 +154,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900">{order.order_items[0]?.product_title}</h3>
-                  <p className="text-lg font-bold text-gray-900 mt-2">${order.order_items[0]?.product_price.toFixed(2)}</p>
+                  <h3 className="font-semibold text-[#111111]">{order.order_items[0]?.product_title}</h3>
+                  <p className="text-lg font-bold text-[#111111] mt-2">${order.order_items[0]?.product_price.toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -178,9 +178,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             )}
 
             {/* Shipping Address */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Shipping Address</h2>
-              <address className="text-gray-600 not-italic">
+            <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-lg font-semibold text-[#111111] mb-4">Shipping Address</h2>
+              <address className="text-[#6B6B6B] not-italic">
                 {order.shipping_address_line1}<br />
                 {order.shipping_address_line2 && <>{order.shipping_address_line2}<br /></>}
                 {order.shipping_city}, {order.shipping_state} {order.shipping_zip}<br />
@@ -192,44 +192,44 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Order Summary */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+            <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-lg font-semibold text-[#111111] mb-4">Order Summary</h2>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">${order.subtotal.toFixed(2)}</span>
+                  <span className="text-[#6B6B6B]">Subtotal</span>
+                  <span className="text-[#111111]">${order.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="text-gray-900">${order.shipping_cost.toFixed(2)}</span>
+                  <span className="text-[#6B6B6B]">Shipping</span>
+                  <span className="text-[#111111]">${order.shipping_cost.toFixed(2)}</span>
                 </div>
-                <div className="border-t pt-2 mt-2">
+                <div className="pt-2 mt-2" style={{ borderTop: '1px solid #EBEBEB' }}>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-900">Total</span>
-                    <span className="font-bold text-xl text-gray-900">${order.total.toFixed(2)}</span>
+                    <span className="font-semibold text-[#111111]">Total</span>
+                    <span className="font-bold text-xl text-[#111111]">${order.total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Seller Info */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Seller Information</h2>
+            <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-lg font-semibold text-[#111111] mb-4">Seller Information</h2>
               <div className="space-y-2">
                 <p className="text-sm">
-                  <span className="text-gray-600">Name:</span>
-                  <span className="ml-2 text-gray-900 font-medium">{order.seller.full_name}</span>
+                  <span className="text-[#6B6B6B]">Name:</span>
+                  <span className="ml-2 text-[#111111] font-medium">{order.seller.full_name}</span>
                 </p>
                 <p className="text-sm">
-                  <span className="text-gray-600">Email:</span>
-                  <a href={`mailto:${order.seller.email}`} className="ml-2 text-indigo-600 hover:text-indigo-700">
+                  <span className="text-[#6B6B6B]">Email:</span>
+                  <a href={`mailto:${order.seller.email}`} className="ml-2 font-medium" style={{ color: '#C4622D' }}>
                     {order.seller.email}
                   </a>
                 </p>
                 {order.seller.phone && (
                   <p className="text-sm">
-                    <span className="text-gray-600">Phone:</span>
-                    <a href={`tel:${order.seller.phone}`} className="ml-2 text-indigo-600 hover:text-indigo-700">
+                    <span className="text-[#6B6B6B]">Phone:</span>
+                    <a href={`tel:${order.seller.phone}`} className="ml-2 font-medium" style={{ color: '#C4622D' }}>
                       {order.seller.phone}
                     </a>
                   </p>
@@ -241,7 +241,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             {order.status === 'delivered' && (
               <Link
                 href={`/dashboard/buyer/orders/${order.id}/refund`}
-                className="block w-full px-4 py-3 bg-red-600 text-white text-center font-semibold rounded-lg hover:bg-red-700 transition"
+                className="block w-full px-4 py-3 text-white text-center font-semibold rounded-full transition-all hover:opacity-90"
+                style={{ backgroundColor: '#CC3333' }}
               >
                 Request Refund
               </Link>

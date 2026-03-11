@@ -312,8 +312,8 @@ export default function EditProductPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <p className="opacity-70">Loading...</p>
       </div>
     )
   }
@@ -322,16 +322,16 @@ export default function EditProductPage() {
   const sellerReceives = priceNum * (1 - platformFee / 100)
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Product</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-3xl font-bold font-semibold">Edit Product</h1>
+          <p className="mt-2 text-sm ">
             Update your product listing
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 space-y-6">
           {error && (
             <div className="rounded-md bg-red-50 p-4">
               <p className="text-sm text-red-800">{error}</p>
@@ -339,27 +339,27 @@ export default function EditProductPage() {
           )}
 
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="title" className="block text-sm font-medium text-sm">
               Title <span className="text-red-600">*</span>
             </label>
             <input
               type="text"
               id="title"
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 focus:outline-none focus:outline-none sm:text-sm"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
 
           <div className="relative">
-            <label htmlFor="designer" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="designer" className="block text-sm font-medium text-sm">
               Designer/Brand (Optional)
             </label>
             <input
               type="text"
               id="designer"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 focus:outline-none focus:outline-none sm:text-sm"
               placeholder="Start typing to search or add new designer..."
               value={designer}
               onChange={(e) => handleDesignerChange(e.target.value)}
@@ -369,13 +369,13 @@ export default function EditProductPage() {
 
             {/* Autocomplete dropdown */}
             {showDesignerDropdown && designerSuggestions.length > 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-1 w-full bg-white border border-[#EBEBEB] rounded-xl max-h-60 overflow-auto">
                 {designerSuggestions.map((suggestion, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => selectDesigner(suggestion)}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-700 transition-colors"
                   >
                     {suggestion}
                   </button>
@@ -383,7 +383,7 @@ export default function EditProductPage() {
               </div>
             )}
 
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs opacity-70">
               {designerSuggestions.length > 0 && showDesignerDropdown
                 ? 'Select an existing designer or continue typing to add a new one'
                 : 'Type to search existing designers or add a new designer/brand name'}
@@ -391,13 +391,13 @@ export default function EditProductPage() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="description" className="block text-sm font-medium text-sm">
               Description
             </label>
             <textarea
               id="description"
               rows={4}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 focus:outline-none focus:outline-none sm:text-sm"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
@@ -405,7 +405,7 @@ export default function EditProductPage() {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="price" className="block text-sm font-medium text-sm">
                 Price ($) <span className="text-red-600">*</span>
               </label>
               <input
@@ -414,14 +414,14 @@ export default function EditProductPage() {
                 required
                 step="0.01"
                 min="0"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 focus:outline-none focus:outline-none sm:text-sm"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
               {priceNum > 0 && (
-                <div className="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
-                  <p className="text-xs font-medium text-indigo-900 mb-2">Payment Breakdown:</p>
-                  <div className="space-y-1 text-xs text-indigo-800">
+                <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                  <p className="text-xs font-medium text-orange-900 mb-2">Payment Breakdown:</p>
+                  <div className="space-y-1 text-xs text-orange-800">
                     <div className="flex justify-between">
                       <span>Product Price:</span>
                       <span className="font-medium">${priceNum.toFixed(2)}</span>
@@ -434,12 +434,12 @@ export default function EditProductPage() {
                       <span>Platform Fee ({platformFee}%):</span>
                       <span className="font-medium text-red-600">-${(priceNum * platformFee / 100).toFixed(2)}</span>
                     </div>
-                    <div className="pt-2 mt-2 border-t border-indigo-300 flex justify-between">
+                    <div className="pt-2 mt-2 border-t border-[#C4622D] flex justify-between">
                       <span className="font-semibold">You Receive:</span>
                       <span className="font-bold text-green-700">${(priceNum + 10 - (priceNum * platformFee / 100)).toFixed(2)}</span>
                     </div>
                   </div>
-                  <p className="mt-2 text-xs text-indigo-700">
+                  <p className="mt-2 text-xs text-orange-700">
                     <strong>Note:</strong> Shipping amount ($10) is included in your payment. You're responsible for shipping the item to the buyer.
                   </p>
                 </div>
@@ -447,7 +447,7 @@ export default function EditProductPage() {
             </div>
 
             <div>
-              <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="quantity" className="block text-sm font-medium text-sm">
                 Quantity Available <span className="text-red-600">*</span>
               </label>
               <input
@@ -456,11 +456,11 @@ export default function EditProductPage() {
                 required
                 min="0"
                 max="999"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 focus:outline-none focus:outline-none sm:text-sm"
                 value={quantityAvailable}
                 onChange={(e) => setQuantityAvailable(e.target.value)}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs opacity-70">
                 How many items do you have in stock? (Set to 0 to mark as sold out)
               </p>
             </div>
@@ -468,7 +468,7 @@ export default function EditProductPage() {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-sm mb-2">
                 Size <span className="text-red-600">*</span>
               </label>
 
@@ -479,8 +479,8 @@ export default function EditProductPage() {
                   onClick={() => setSizeType('standard')}
                   className={`flex-1 py-2 px-4 rounded-lg border-2 text-sm font-medium transition-all ${
                     sizeType === 'standard'
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                      ? 'border-[#C4622D] bg-[#FDF0EA] text-[#C4622D]'
+                      : 'border-[#EBEBEB] bg-white text-sm hover:border-gray-400'
                   }`}
                 >
                   Standard Size
@@ -490,8 +490,8 @@ export default function EditProductPage() {
                   onClick={() => setSizeType('custom')}
                   className={`flex-1 py-2 px-4 rounded-lg border-2 text-sm font-medium transition-all ${
                     sizeType === 'custom'
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                      ? 'border-[#C4622D] bg-[#FDF0EA] text-[#C4622D]'
+                      : 'border-[#EBEBEB] bg-white text-sm hover:border-gray-400'
                   }`}
                 >
                   Custom Measurements
@@ -502,7 +502,7 @@ export default function EditProductPage() {
               {sizeType === 'standard' && (
                 <select
                   id="size"
-                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm focus:outline-none focus:outline-none"
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
                 >
@@ -526,15 +526,15 @@ export default function EditProductPage() {
                 <div className="space-y-3">
                   {/* Unit Selector */}
                   <div className="flex items-center gap-4">
-                    <span className="text-xs font-medium text-gray-700">Unit:</span>
+                    <span className="text-xs font-medium text-sm">Unit:</span>
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => setMeasurementUnit('in')}
                         className={`px-3 py-1 rounded text-xs font-medium transition-all ${
                           measurementUnit === 'in'
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            ? 'bg-[#C4622D] text-white'
+                            : 'bg-gray-200 text-sm hover:bg-gray-300'
                         }`}
                       >
                         Inches
@@ -544,8 +544,8 @@ export default function EditProductPage() {
                         onClick={() => setMeasurementUnit('cm')}
                         className={`px-3 py-1 rounded text-xs font-medium transition-all ${
                           measurementUnit === 'cm'
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            ? 'bg-[#C4622D] text-white'
+                            : 'bg-gray-200 text-sm hover:bg-gray-300'
                         }`}
                       >
                         Centimeters
@@ -555,7 +555,7 @@ export default function EditProductPage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label htmlFor="bust" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="bust" className="block text-xs font-medium text-sm mb-1">
                         Bust
                       </label>
                       <input
@@ -563,14 +563,14 @@ export default function EditProductPage() {
                         id="bust"
                         step="0.5"
                         min="0"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm focus:outline-none focus:outline-none"
                         placeholder={measurementUnit === 'in' ? '36' : '91'}
                         value={bust}
                         onChange={(e) => setBust(e.target.value)}
                       />
                     </div>
                     <div>
-                      <label htmlFor="waist" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="waist" className="block text-xs font-medium text-sm mb-1">
                         Waist
                       </label>
                       <input
@@ -578,14 +578,14 @@ export default function EditProductPage() {
                         id="waist"
                         step="0.5"
                         min="0"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm focus:outline-none focus:outline-none"
                         placeholder={measurementUnit === 'in' ? '28' : '71'}
                         value={waist}
                         onChange={(e) => setWaist(e.target.value)}
                       />
                     </div>
                     <div>
-                      <label htmlFor="hips" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="hips" className="block text-xs font-medium text-sm mb-1">
                         Hips
                       </label>
                       <input
@@ -593,14 +593,14 @@ export default function EditProductPage() {
                         id="hips"
                         step="0.5"
                         min="0"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm focus:outline-none focus:outline-none"
                         placeholder={measurementUnit === 'in' ? '38' : '97'}
                         value={hips}
                         onChange={(e) => setHips(e.target.value)}
                       />
                     </div>
                     <div>
-                      <label htmlFor="shoulder" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="shoulder" className="block text-xs font-medium text-sm mb-1">
                         Shoulder Width
                       </label>
                       <input
@@ -608,14 +608,14 @@ export default function EditProductPage() {
                         id="shoulder"
                         step="0.5"
                         min="0"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm focus:outline-none focus:outline-none"
                         placeholder={measurementUnit === 'in' ? '15' : '38'}
                         value={shoulder}
                         onChange={(e) => setShoulder(e.target.value)}
                       />
                     </div>
                     <div>
-                      <label htmlFor="shoulderToWaist" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="shoulderToWaist" className="block text-xs font-medium text-sm mb-1">
                         Shoulder to Waist
                       </label>
                       <input
@@ -623,14 +623,14 @@ export default function EditProductPage() {
                         id="shoulderToWaist"
                         step="0.5"
                         min="0"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm focus:outline-none focus:outline-none"
                         placeholder={measurementUnit === 'in' ? '16' : '41'}
                         value={shoulderToWaist}
                         onChange={(e) => setShoulderToWaist(e.target.value)}
                       />
                     </div>
                     <div>
-                      <label htmlFor="waistToHem" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="waistToHem" className="block text-xs font-medium text-sm mb-1">
                         Waist to Floor
                       </label>
                       <input
@@ -638,14 +638,14 @@ export default function EditProductPage() {
                         id="waistToHem"
                         step="0.5"
                         min="0"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm focus:outline-none focus:outline-none"
                         placeholder={measurementUnit === 'in' ? '42' : '107'}
                         value={waistToHem}
                         onChange={(e) => setWaistToHem(e.target.value)}
                       />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs opacity-70">
                     Provide as many measurements as possible for best fit
                   </p>
                 </div>
@@ -655,14 +655,14 @@ export default function EditProductPage() {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="condition" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="condition" className="block text-sm font-medium text-sm mb-2">
                 Condition <span className="text-red-600">*</span>
               </label>
               <select
                 id="condition"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value as ProductCondition)}
-                className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="block w-full border border-[#EBEBEB] rounded-lg py-2 px-3 text-sm font-semibold focus:outline-none focus:outline-none"
               >
                 <option value="new">New - Brand new, never worn</option>
                 <option value="like_new">Like New - Worn once or twice, appears new</option>
@@ -673,7 +673,7 @@ export default function EditProductPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-sm mb-2">
                 Waist Material Type <span className="text-red-600">*</span>
               </label>
               <div className="space-y-2">
@@ -684,9 +684,9 @@ export default function EditProductPage() {
                     value="elastic"
                     checked={materialType === 'elastic'}
                     onChange={(e) => setMaterialType(e.target.value as 'elastic' | 'zipper')}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                    className="h-4 w-4 text-orange-600  border-[#EBEBEB]"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Elastic Band</span>
+                  <span className="ml-2 text-sm text-sm">Elastic Band</span>
                 </label>
                 <label className="flex items-center">
                   <input
@@ -695,16 +695,16 @@ export default function EditProductPage() {
                     value="zipper"
                     checked={materialType === 'zipper'}
                     onChange={(e) => setMaterialType(e.target.value as 'elastic' | 'zipper')}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                    className="h-4 w-4 text-orange-600  border-[#EBEBEB]"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Zipper</span>
+                  <span className="ml-2 text-sm text-sm">Zipper</span>
                 </label>
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-sm mb-2">
               Current Images
             </label>
             {existingImages.length > 0 ? (
@@ -731,10 +731,10 @@ export default function EditProductPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-500 mb-4">No images</p>
+              <p className="text-sm opacity-70 mb-4">No images</p>
             )}
             <div>
-              <label htmlFor="new-images" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="new-images" className="block text-sm font-medium text-sm">
                 Add New Images (Max 5 total)
               </label>
               <input
@@ -743,26 +743,26 @@ export default function EditProductPage() {
                 accept="image/*"
                 multiple
                 onChange={handleImageChange}
-                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                className="mt-1 block w-full text-sm opacity-70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#FDF0EA] file:text-[#C4622D] hover:file:bg-[#FDE8D9]"
               />
               {newImages.length > 0 && (
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm opacity-70">
                   {newImages.length} new image(s) selected
                 </p>
               )}
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs opacity-70">
                 Total images after save: {existingImages.length + newImages.length}
               </p>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-sm mb-2">
               Tags
             </label>
             <div className="space-y-3">
               <div>
-                <p className="text-xs font-medium text-gray-700 mb-1">
+                <p className="text-xs font-medium text-sm mb-1">
                   COLOR <span className="text-red-600">*</span>
                 </p>
                 <div className="grid grid-cols-3 gap-x-4 gap-y-1">
@@ -772,16 +772,16 @@ export default function EditProductPage() {
                         type="checkbox"
                         checked={selectedTags.includes(tag)}
                         onChange={() => toggleTag(tag)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-orange-600  border-[#EBEBEB] rounded"
                       />
-                      <span className="ml-2 text-sm text-gray-700">{tag}</span>
+                      <span className="ml-2 text-sm text-sm">{tag}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">STYLE</p>
+                <p className="text-xs font-medium opacity-70 mb-1">STYLE</p>
                 <div className="grid grid-cols-3 gap-x-4 gap-y-1">
                   {STYLE_TAGS.map(tag => (
                     <label key={tag} className="flex items-center">
@@ -789,16 +789,16 @@ export default function EditProductPage() {
                         type="checkbox"
                         checked={selectedTags.includes(tag)}
                         onChange={() => toggleTag(tag)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-orange-600  border-[#EBEBEB] rounded"
                       />
-                      <span className="ml-2 text-sm text-gray-700">{tag}</span>
+                      <span className="ml-2 text-sm text-sm">{tag}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">OCCASION</p>
+                <p className="text-xs font-medium opacity-70 mb-1">OCCASION</p>
                 <div className="grid grid-cols-3 gap-x-4 gap-y-1">
                   {OCCASION_TAGS.map(tag => (
                     <label key={tag} className="flex items-center">
@@ -806,9 +806,9 @@ export default function EditProductPage() {
                         type="checkbox"
                         checked={selectedTags.includes(tag)}
                         onChange={() => toggleTag(tag)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-orange-600  border-[#EBEBEB] rounded"
                       />
-                      <span className="ml-2 text-sm text-gray-700">{tag}</span>
+                      <span className="ml-2 text-sm text-sm">{tag}</span>
                     </label>
                   ))}
                 </div>
@@ -822,9 +822,9 @@ export default function EditProductPage() {
                 type="checkbox"
                 checked={isActive}
                 onChange={(e) => setIsActive(e.target.checked)}
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                className="h-4 w-4 text-orange-600  border-[#EBEBEB] rounded"
               />
-              <span className="ml-2 text-sm text-gray-700">
+              <span className="ml-2 text-sm text-sm">
                 Active (visible to buyers)
               </span>
             </label>
@@ -835,22 +835,29 @@ export default function EditProductPage() {
               type="button"
               onClick={handleDelete}
               disabled={updating}
-              className="px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+              className="px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-50 transition-all"
+              style={{ border: '1.5px solid #FFCCCC', color: '#CC3333', background: '#FFF0F0' }}
             >
               Delete Product
             </button>
-            <div className="flex space-x-3">
+            <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
+                style={{ border: '1.5px solid #D4D4D4', color: '#6B6B6B' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#6B6B6B'; e.currentTarget.style.color = '#111111' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#D4D4D4'; e.currentTarget.style.color = '#6B6B6B' }}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={updating}
-                className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="px-5 py-2.5 rounded-full text-sm font-semibold text-white disabled:opacity-50 transition-all"
+                style={{ backgroundColor: '#C4622D' }}
+                onMouseEnter={e => { if (!updating) e.currentTarget.style.backgroundColor = '#A84F22' }}
+                onMouseLeave={e => { if (!updating) e.currentTarget.style.backgroundColor = '#C4622D' }}
               >
                 {updating ? 'Saving...' : 'Save Changes'}
               </button>

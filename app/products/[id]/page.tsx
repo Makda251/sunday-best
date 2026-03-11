@@ -39,7 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const shippingCost = parseFloat(process.env.NEXT_PUBLIC_SHIPPING_FLAT_RATE || '10')
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-4 sm:py-8">
+    <div className="min-h-screen py-4 sm:py-8" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Review Status Banner (only visible to seller) */}
         {isOwnProduct && product.review_status === 'pending' && (
@@ -83,7 +83,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </div>
         )}
 
-        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: '1px solid #EBEBEB', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8">
             {/* Image Gallery */}
             <div>
@@ -100,7 +100,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                       by <span className="font-medium text-gray-900">{product.designer}</span>
                     </p>
                   )}
-                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-indigo-600">${product.price}</p>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold" style={{ color: '#C4622D' }}>${product.price}</p>
                 </div>
                 <div className="flex-shrink-0">
                   <FavoriteButton productId={product.id} />
@@ -136,7 +136,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 {product.size && (
                   <div className="flex items-center gap-3">
                     <span className="text-xs sm:text-sm text-gray-500 min-w-[80px]">Size:</span>
-                    <span className="text-xs sm:text-sm font-medium text-gray-900">{product.size}</span>
+                    <span className="text-xs sm:text-sm font-medium text-stone-900">{product.size}</span>
                   </div>
                 )}
 
@@ -145,7 +145,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                     <span className="text-xs sm:text-sm text-gray-500 min-w-[80px] pt-1">Tags:</span>
                     <div className="flex flex-wrap gap-1.5 flex-1">
                       {product.tags.map((tag: string) => (
-                        <span key={tag} className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                        <span key={tag} className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: '#F7F7F7', color: '#6B6B6B', border: '1px solid #EBEBEB' }}>
                           {tag}
                         </span>
                       ))}
@@ -161,7 +161,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   {product.seller_id && (
                     <Link
                       href={`/sellers/${product.seller_id}`}
-                      className="text-xs sm:text-sm text-indigo-600 hover:text-indigo-500 font-medium inline-flex items-center"
+                      className="text-xs sm:text-sm font-medium inline-flex items-center" style={{ color: '#C4622D' }}
                     >
                       Visit Shop
                       <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 </div>
               )}
 
-              <div className="mt-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="mt-6 rounded-xl p-4" style={{ backgroundColor: '#F7F7F7', border: '1px solid #EBEBEB' }}>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-gray-600">Product price</span>
@@ -191,7 +191,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   </div>
                   <div className="flex justify-between text-sm sm:text-base font-semibold border-t border-gray-300 pt-2">
                     <span className="text-gray-900">Total</span>
-                    <span className="text-indigo-600">
+                    <span style={{ color: '#C4622D' }}>
                       ${(product.price + shippingCost).toFixed(2)}
                     </span>
                   </div>

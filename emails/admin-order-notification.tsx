@@ -37,7 +37,7 @@ export default function AdminOrderNotification({
   shippingCost = '$10.00',
   shippingAddress = '123 Main St, City, State 12345',
   paymentScreenshotUrl = 'https://example.com/screenshot.jpg',
-  orderUrl = 'https://makhil.com/dashboard/admin/orders/123',
+  orderUrl = 'https://kemishouse.com/dashboard/admin/orders/123',
 }: AdminOrderNotificationProps) {
   return (
     <Html>
@@ -113,7 +113,7 @@ export default function AdminOrderNotification({
           </Text>
 
           <Text style={footer}>
-            © 2025 MakHil. All rights reserved.
+            © 2025 KemisHouse. All rights reserved.
           </Text>
         </Container>
       </Body>

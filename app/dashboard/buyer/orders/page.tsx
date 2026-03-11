@@ -74,125 +74,91 @@ export default function BuyerOrdersPage() {
   }, [router, supabase])
 
   const getStatusBadge = (status: string, paymentStatus: string) => {
-    if (status === 'cancelled') {
-      return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
-    }
-    if (status === 'delivered') {
-      return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
-    }
-    if (status === 'shipped') {
-      return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Shipped</span>
-    }
-    if (paymentStatus === 'verified') {
-      return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">Processing</span>
-    }
-    if (paymentStatus === 'pending') {
-      return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending Payment Verification</span>
-    }
-    return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">{status}</span>
+    const s = (bg: string, color: string, label: string) => (
+      <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full" style={{ background: bg, color }}>{label}</span>
+    )
+    if (status === 'cancelled') return s('#FEE2E2', '#991B1B', 'Cancelled')
+    if (status === 'delivered') return s('#D1FAE5', '#065F46', 'Delivered')
+    if (status === 'shipped') return s('#EDE9FE', '#6D28D9', 'Shipped')
+    if (paymentStatus === 'verified') return s('#DBEAFE', '#1E40AF', 'Processing')
+    if (paymentStatus === 'pending') return s('#FEF3C7', '#92400E', 'Pending Verification')
+    return s('#F7F7F7', '#6B6B6B', status)
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your orders...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 mx-auto mb-3" style={{ borderColor: '#EBEBEB', borderTopColor: '#C4622D' }} />
+          <p className="text-sm" style={{ color: '#6B6B6B' }}>Loading your orders...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#FFFFFF' }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Track and manage your orders
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold font-semibold" style={{  }}>My Orders</h1>
+          <p className="mt-1 text-sm" style={{ color: '#6B6B6B' }}>Track and manage your orders</p>
         </div>
 
-        {/* Orders List */}
         {orders.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">No orders yet</h3>
-            <p className="mt-2 text-sm text-gray-500">Start shopping to see your orders here</p>
-            <Link
-              href="/"
-              className="mt-6 inline-block px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 transition"
-            >
+          <div className="bg-white rounded-xl p-12 text-center" style={{ border: '1px solid #EBEBEB' }}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#FDF0EA' }}>
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#C4622D' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold font-semibold mb-2">No orders yet</h3>
+            <p className="text-sm mb-6" style={{ color: '#6B6B6B' }}>Start shopping to see your orders here</p>
+            <Link href="/" className="inline-flex px-6 py-3 text-sm font-semibold text-white rounded-full transition-all" style={{ backgroundColor: '#C4622D' }}>
               Browse Dresses
             </Link>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+              <div key={order.id} className="bg-white rounded-xl overflow-hidden" style={{ border: '1px solid #EBEBEB' }}>
+                <div className="p-5 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
                     <div>
-                      <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          Order {order.order_number}
-                        </h3>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <h3 className="text-base font-semibold font-semibold">Order {order.order_number}</h3>
                         {getStatusBadge(order.status, order.payment_status)}
                       </div>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Placed on {new Date(order.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                      <p className="text-xs mt-1" style={{ color: '#6B6B6B' }}>
+                        Placed on {new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </p>
                     </div>
-                    <div className="mt-4 sm:mt-0 text-right">
-                      <p className="text-2xl font-bold text-gray-900">${order.total.toFixed(2)}</p>
-                    </div>
+                    <p className="text-xl font-bold" style={{ color: '#C4622D' }}>${order.total.toFixed(2)}</p>
                   </div>
 
-                  <div className="border-t pt-4">
+                  <div className="pt-4" style={{ borderTop: '1px solid #EBEBEB' }}>
                     <div className="flex gap-4 items-start justify-between">
                       <div className="flex gap-4 flex-1 min-w-0">
                         {order.order_items[0]?.product_image && (
                           <div className="flex-shrink-0">
-                            <Image
-                              src={order.order_items[0].product_image}
-                              alt={order.order_items[0].product_title}
-                              width={80}
-                              height={80}
-                              className="rounded-lg object-cover"
-                            />
+                            <Image src={order.order_items[0].product_image} alt={order.order_items[0].product_title} width={72} height={72} className="rounded-xl object-cover" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-gray-900">{order.order_items[0]?.product_title}</h4>
-                          <p className="text-sm text-gray-500 mt-1">Sold by {order.seller.full_name}</p>
-
+                          <h4 className="text-sm font-semibold font-semibold truncate">{order.order_items[0]?.product_title}</h4>
+                          <p className="text-xs mt-0.5" style={{ color: '#6B6B6B' }}>Sold by {order.seller.full_name}</p>
                           {order.tracking_number && (
-                            <div className="mt-3 p-2 bg-blue-50 rounded text-xs">
-                              <p className="font-semibold text-blue-900">Tracking: {order.tracking_number}</p>
+                            <div className="mt-2 p-2 rounded-lg inline-block" style={{ backgroundColor: '#F7F7F7', border: '1px solid #F0C9B2' }}>
+                              <p className="text-xs font-semibold" style={{ color: '#6B6B6B' }}>Tracking: {order.tracking_number}</p>
                             </div>
                           )}
                         </div>
                       </div>
-
                       <div className="flex flex-col gap-2 flex-shrink-0">
-                        <Link
-                          href={`/dashboard/buyer/orders/${order.id}`}
-                          className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition whitespace-nowrap"
-                        >
+                        <Link href={`/dashboard/buyer/orders/${order.id}`} className="px-4 py-2 text-xs font-semibold text-white rounded-full whitespace-nowrap text-center" style={{ backgroundColor: '#C4622D' }}>
                           View Details
                         </Link>
                         {order.status === 'delivered' && (
-                          <Link
-                            href={`/dashboard/buyer/orders/${order.id}/refund`}
-                            className="px-4 py-2 border border-red-600 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition whitespace-nowrap"
-                          >
+                          <Link href={`/dashboard/buyer/orders/${order.id}/refund`} className="px-4 py-2 text-xs font-semibold rounded-full whitespace-nowrap text-center" style={{ border: '1px solid #C4622D', color: '#C4622D' }}>
                             Request Refund
                           </Link>
                         )}

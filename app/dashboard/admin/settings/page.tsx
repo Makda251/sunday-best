@@ -84,38 +84,38 @@ export default function AdminSettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <p className="text-[#9A9A9A]">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Settings</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-3xl font-bold text-[#111111]">Admin Settings</h1>
+          <p className="mt-2 text-sm text-[#6B6B6B]">
             Configure your admin dashboard preferences
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 rounded-md bg-red-50 p-4">
+          <div className="mb-6 rounded-lg bg-red-50 p-4">
             <p className="text-sm text-red-800">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 rounded-md bg-green-50 p-4">
+          <div className="mb-6 rounded-lg bg-green-50 p-4">
             <p className="text-sm text-green-800">{success}</p>
           </div>
         )}
 
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-white rounded-2xl">
           {/* Email Notifications Section */}
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="p-6 border-b border-[#EBEBEB]">
+            <h2 className="text-lg font-medium text-[#111111] mb-4">
               Email Notifications
             </h2>
 
@@ -127,16 +127,16 @@ export default function AdminSettingsPage() {
                     type="checkbox"
                     checked={emailNotificationsEnabled}
                     onChange={(e) => setEmailNotificationsEnabled(e.target.checked)}
-                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded cursor-pointer"
+                    className=" h-4 w-4 text-orange-600 border-[#EBEBEB] rounded cursor-pointer"
                   />
                 </div>
                 <div className="ml-3 text-sm">
-                  <label htmlFor="email-notifications" className="font-medium text-gray-700 cursor-pointer">
+                  <label htmlFor="email-notifications" className="font-medium text-[#6B6B6B] cursor-pointer">
                     Enable order notification emails
                   </label>
-                  <p className="text-gray-500">
+                  <p className="text-[#9A9A9A]">
                     Receive an email notification when a new order is placed. Email will be sent to{' '}
-                    <span className="font-mono text-xs bg-gray-100 px-1 py-0.5 rounded">
+                    <span className="font-mono text-xs px-1.5 py-0.5 rounded" style={{ background: '#F7F7F7', color: '#6B6B6B' }}>
                       {process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'asmesmarketplace@gmail.com'}
                     </span>
                   </p>
@@ -144,8 +144,8 @@ export default function AdminSettingsPage() {
               </div>
 
               {emailNotificationsEnabled && (
-                <div className="ml-7 p-4 bg-blue-50 border border-blue-200 rounded-md">
-                  <p className="text-sm text-blue-800">
+                <div className="ml-7 p-4 rounded-xl" style={{ background: '#F0F9FF', border: '1px solid #BAE6FD' }}>
+                  <p className="text-sm" style={{ color: '#0369A1' }}>
                     <strong>Note:</strong> You will receive an email for each new order placed.
                     If this becomes overwhelming, you can disable notifications and check the admin dashboard regularly instead.
                   </p>
@@ -155,11 +155,11 @@ export default function AdminSettingsPage() {
           </div>
 
           {/* Save Button */}
-          <div className="px-6 py-4 bg-gray-50 flex justify-end">
+          <div className="px-6 py-4 bg-white flex justify-end">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: '#C4622D' }}
             >
               {saving ? 'Saving...' : 'Save Settings'}
             </button>
@@ -167,11 +167,11 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Additional Settings Sections (Future) */}
-        <div className="mt-6 bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="mt-6 bg-white rounded-2xl p-6">
+          <h2 className="text-lg font-medium text-[#111111] mb-2">
             More Settings Coming Soon
           </h2>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-[#6B6B6B]">
             Additional configuration options will be added here in future updates.
           </p>
         </div>

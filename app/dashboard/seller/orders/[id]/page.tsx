@@ -245,91 +245,93 @@ export default function SellerOrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Loading order...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto" style={{ borderColor: '#C4622D' }}></div>
+          <p className="mt-4 text-sm" style={{ color: '#6B6B6B' }}>Loading order...</p>
+        </div>
       </div>
     )
   }
 
+  const statusStyle = (s: string) => {
+    if (s === 'shipped') return { background: '#EDE9FE', color: '#6D28D9' }
+    if (s === 'delivered') return { background: '#D1FAE5', color: '#065F46' }
+    if (s === 'payment_verified' || s === 'processing') return { background: '#DBEAFE', color: '#1E40AF' }
+    if (s === 'cancelled') return { background: '#FEE2E2', color: '#991B1B' }
+    return { background: '#FEF3C7', color: '#92400E' }
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <button
-            onClick={() => router.push('/dashboard/seller')}
-            className="text-sm text-indigo-600 hover:text-indigo-500 mb-4"
-          >
+        <div className="mb-7">
+          <button onClick={() => router.push('/dashboard/seller')} className="text-sm font-medium mb-3 block" style={{ color: '#C4622D' }}>
             ← Back to Dashboard
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">Order #{order.id.slice(0, 8)}</h1>
+          <h1 className="text-2xl font-bold" style={{ color: '#111111' }}>Order #{order.id.slice(0, 8).toUpperCase()}</h1>
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-50 p-4 mb-6">
-            <p className="text-sm text-red-800">{error}</p>
+          <div className="rounded-xl p-4 mb-6" style={{ background: '#FFF0F0', border: '1px solid #FFCCCC' }}>
+            <p className="text-sm" style={{ color: '#CC3333' }}>{error}</p>
           </div>
         )}
 
         {/* Order Status */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
+        <div className="bg-white rounded-2xl p-6 mb-5" style={{ border: '1px solid #EBEBEB' }}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium text-gray-900">Order Status</h2>
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              order.status === 'pending_payment' ? 'bg-yellow-100 text-yellow-800' :
-              order.status === 'payment_verified' ? 'bg-blue-100 text-blue-800' :
-              order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-              order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-              'bg-gray-100 text-gray-800'
-            }`}>
+            <h2 className="text-base font-semibold" style={{ color: '#111111' }}>Order Status</h2>
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold" style={statusStyle(order.status)}>
               {order.status.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
             </span>
           </div>
 
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 text-sm" style={{ color: '#6B6B6B' }}>
             <div className="flex justify-between">
-              <span className="text-gray-600">Payment Status:</span>
-              <span className={`font-medium ${
-                order.payment_status === 'verified' ? 'text-green-600' :
-                order.payment_status === 'pending' ? 'text-yellow-600' :
-                'text-red-600'
-              }`}>
+              <span>Payment Status</span>
+              <span className="font-semibold" style={{ color: order.payment_status === 'verified' ? '#065F46' : order.payment_status === 'pending' ? '#92400E' : '#991B1B' }}>
                 {order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Order Date:</span>
-              <span className="text-gray-900">{new Date(order.created_at).toLocaleDateString()}</span>
+              <span>Order Date</span>
+              <span style={{ color: '#111111' }}>{new Date(order.created_at).toLocaleDateString()}</span>
             </div>
             {order.shipped_at && (
               <div className="flex justify-between">
-                <span className="text-gray-600">Shipped Date:</span>
-                <span className="text-gray-900">{new Date(order.shipped_at).toLocaleDateString()}</span>
+                <span>Shipped Date</span>
+                <span style={{ color: '#111111' }}>{new Date(order.shipped_at).toLocaleDateString()}</span>
               </div>
             )}
           </div>
 
           {/* Shipping Action */}
           {order.payment_status === 'verified' && order.status !== 'shipped' && order.status !== 'delivered' && order.status !== 'cancelled' && (
-            <div className="mt-6 border-t pt-6 space-y-4">
+            <div className="mt-5 pt-5 space-y-4" style={{ borderTop: '1px solid #EBEBEB' }}>
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Mark as Shipped</h3>
-                <p className="text-xs text-gray-500 mb-3">
-                  Enter the tracking number from USPS, UPS, FedEx, or DHL. The tracking number will be validated before submission.
+                <h3 className="text-sm font-semibold mb-1" style={{ color: '#111111' }}>Mark as Shipped</h3>
+                <p className="text-xs mb-3" style={{ color: '#9A9A9A' }}>
+                  Enter the tracking number from USPS, UPS, FedEx, or DHL.
                 </p>
-                <div className="flex space-x-4">
-                  <div className="flex-1">
-                    <input
-                      type="text"
-                      placeholder="Enter tracking number (e.g., 1Z999AA10123456784)"
-                      className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      value={trackingNumber}
-                      onChange={(e) => setTrackingNumber(e.target.value)}
-                    />
-                  </div>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    placeholder="e.g., 1Z999AA10123456784"
+                    className="flex-1 rounded-lg px-4 py-2.5 text-sm outline-none transition-all"
+                    style={{ border: '1.5px solid #EBEBEB', background: '#F7F7F7', color: '#111111' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#C4622D'; e.currentTarget.style.background = '#fff' }}
+                    onBlur={e => { e.currentTarget.style.borderColor = '#EBEBEB'; e.currentTarget.style.background = '#F7F7F7' }}
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                  />
                   <button
                     onClick={handleMarkAsShipped}
                     disabled={updating}
-                    className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 whitespace-nowrap"
+                    className="px-5 py-2.5 rounded-full text-sm font-semibold text-white disabled:opacity-50 transition-all whitespace-nowrap"
+                    style={{ backgroundColor: '#C4622D' }}
+                    onMouseEnter={e => { if (!updating) e.currentTarget.style.backgroundColor = '#A84F22' }}
+                    onMouseLeave={e => { if (!updating) e.currentTarget.style.backgroundColor = '#C4622D' }}
                   >
                     {updating ? 'Updating...' : 'Mark as Shipped'}
                   </button>
@@ -340,7 +342,8 @@ export default function SellerOrderDetailPage() {
                 <button
                   onClick={() => setShowDeclineModal(true)}
                   disabled={updating}
-                  className="px-4 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-semibold text-red-700 bg-white hover:bg-red-50 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                  className="px-5 py-2 rounded-full text-sm font-semibold disabled:opacity-50 transition-all"
+                  style={{ border: '1.5px solid #FFCCCC', color: '#CC3333', background: '#FFF0F0' }}
                 >
                   Decline Order
                 </button>
@@ -349,90 +352,76 @@ export default function SellerOrderDetailPage() {
           )}
 
           {order.tracking_number && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm font-medium text-blue-900">Tracking Number:</p>
-              <p className="text-lg font-mono text-blue-700">{order.tracking_number}</p>
+            <div className="mt-4 p-4 rounded-xl" style={{ background: '#F0F7FF', border: '1px solid #BFDBFE' }}>
+              <p className="text-xs font-semibold mb-1" style={{ color: '#1E40AF' }}>Tracking Number</p>
+              <p className="text-base font-mono font-bold" style={{ color: '#1E40AF' }}>{order.tracking_number}</p>
             </div>
           )}
         </div>
 
         {/* Order Items */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Items to Ship</h2>
-          <ul className="divide-y divide-gray-200">
+        <div className="bg-white rounded-2xl p-6 mb-5" style={{ border: '1px solid #EBEBEB' }}>
+          <h2 className="text-base font-semibold mb-4" style={{ color: '#111111' }}>Items to Ship</h2>
+          <ul className="space-y-3">
             {order.order_items?.map((item: any) => (
-              <li key={item.id} className="py-4 flex items-center">
-                <div className="flex-shrink-0 w-20 h-20 bg-gray-200 rounded-md overflow-hidden">
+              <li key={item.id} className="flex items-center gap-4 p-3 rounded-xl" style={{ background: '#F7F7F7' }}>
+                <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden" style={{ background: '#EBEBEB' }}>
                   {item.product_image ? (
-                    <Image
-                      src={item.product_image}
-                      alt={item.product_title}
-                      width={80}
-                      height={80}
-                      className="w-full h-full object-cover"
-                    />
+                    <Image src={item.product_image} alt={item.product_title} width={64} height={64} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                      No image
-                    </div>
+                    <div className="w-full h-full flex items-center justify-center text-xs" style={{ color: '#9A9A9A' }}>No image</div>
                   )}
                 </div>
-                <div className="ml-4 flex-1">
-                  <p className="text-base font-medium text-gray-900">{item.product_title}</p>
-                  <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold" style={{ color: '#111111' }}>{item.product_title}</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#6B6B6B' }}>Qty: {item.quantity}</p>
                 </div>
-                <p className="text-base font-medium text-gray-900">${item.product_price}</p>
+                <p className="text-sm font-bold" style={{ color: '#111111' }}>${item.product_price}</p>
               </li>
             ))}
           </ul>
 
-          <div className="mt-6 border-t pt-4 space-y-2">
+          <div className="mt-5 pt-4 space-y-2" style={{ borderTop: '1px solid #EBEBEB' }}>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal (Your Product)</span>
-              <span className="font-medium text-gray-900">${order.subtotal}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Shipping (Buyer Paid)</span>
-              <span className="font-medium text-blue-600">+${order.shipping_cost}</span>
+              <span style={{ color: '#6B6B6B' }}>Subtotal</span>
+              <span style={{ color: '#111111' }}>${order.subtotal}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Platform Fee (10%)</span>
-              <span className="font-medium text-red-600">-${order.platform_fee}</span>
+              <span style={{ color: '#6B6B6B' }}>Shipping (Buyer Paid)</span>
+              <span style={{ color: '#065F46' }}>+${order.shipping_cost}</span>
             </div>
-            <div className="border-t pt-2 flex justify-between text-base font-medium">
-              <span className="text-gray-900">You Receive (After Shipping)</span>
-              <span className="text-green-600">${(order.subtotal + order.shipping_cost - order.platform_fee).toFixed(2)}</span>
+            <div className="flex justify-between text-sm">
+              <span style={{ color: '#6B6B6B' }}>Platform Fee (10%)</span>
+              <span style={{ color: '#991B1B' }}>-${order.platform_fee}</span>
             </div>
-            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-xs text-blue-800">
-                <strong>Note:</strong> We will send you ${(order.subtotal + order.shipping_cost - order.platform_fee).toFixed(2)} via Zelle.
-                This includes the ${order.shipping_cost} shipping cost that the buyer paid.
-                You are responsible for shipping the item to the buyer.
-              </p>
+            <div className="flex justify-between text-sm font-bold pt-2" style={{ borderTop: '1px solid #EBEBEB', color: '#111111' }}>
+              <span>You Receive</span>
+              <span style={{ color: '#065F46' }}>${(order.subtotal + order.shipping_cost - order.platform_fee).toFixed(2)}</span>
+            </div>
+            <div className="mt-3 p-3 rounded-xl text-xs" style={{ background: '#F0F7FF', border: '1px solid #BFDBFE', color: '#1E40AF' }}>
+              We will send you ${(order.subtotal + order.shipping_cost - order.platform_fee).toFixed(2)} via Zelle, including the ${order.shipping_cost} shipping cost the buyer paid. You are responsible for shipping the item.
             </div>
           </div>
         </div>
 
         {/* Buyer & Shipping Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Buyer Information</h2>
-            <div className="text-sm space-y-1">
-              <p className="font-medium text-gray-900">{order.buyer?.full_name || 'Anonymous'}</p>
-              <p className="text-gray-600">{order.buyer?.email}</p>
-              {order.buyer?.phone && (
-                <p className="text-gray-600">{order.buyer.phone}</p>
-              )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+            <h2 className="text-base font-semibold mb-3" style={{ color: '#111111' }}>Buyer Information</h2>
+            <div className="text-sm space-y-0.5">
+              <p className="font-semibold" style={{ color: '#111111' }}>{order.buyer?.full_name || 'Anonymous'}</p>
+              <p style={{ color: '#6B6B6B' }}>{order.buyer?.email}</p>
+              {order.buyer?.phone && <p style={{ color: '#6B6B6B' }}>{order.buyer.phone}</p>}
             </div>
           </div>
 
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Shipping Address</h2>
-            <address className="text-sm text-gray-600 not-italic">
-              {order.shipping_address_line1}<br />
-              {order.shipping_address_line2 && <>{order.shipping_address_line2}<br /></>}
-              {order.shipping_city}, {order.shipping_state} {order.shipping_zip}<br />
-              {order.shipping_country}
+          <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+            <h2 className="text-base font-semibold mb-3" style={{ color: '#111111' }}>Shipping Address</h2>
+            <address className="text-sm not-italic space-y-0.5" style={{ color: '#6B6B6B' }}>
+              <p>{order.shipping_address_line1}</p>
+              {order.shipping_address_line2 && <p>{order.shipping_address_line2}</p>}
+              <p>{order.shipping_city}, {order.shipping_state} {order.shipping_zip}</p>
+              <p>{order.shipping_country}</p>
             </address>
           </div>
         </div>
@@ -440,86 +429,68 @@ export default function SellerOrderDetailPage() {
 
       {/* Decline Order Modal */}
       {showDeclineModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Decline Order</h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Please provide a reason for declining this order. The buyer will be notified.
-              </p>
-            </div>
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50" style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-7" style={{ border: '1px solid #EBEBEB' }}>
+            <h3 className="text-lg font-bold mb-1.5" style={{ color: '#111111' }}>Decline Order</h3>
+            <p className="text-sm mb-5" style={{ color: '#6B6B6B' }}>Please provide a reason for declining. The buyer will be notified.</p>
 
             <div className="mb-4">
-              <label htmlFor="cancellation-reason" className="block text-sm font-medium text-gray-700 mb-2">
-                Reason for cancellation <span className="text-red-600">*</span>
+              <label htmlFor="cancellation-reason" className="block text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: '#6B6B6B' }}>
+                Reason <span style={{ color: '#C4622D' }}>*</span>
               </label>
               <textarea
                 id="cancellation-reason"
                 rows={4}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="e.g., Item damaged, currently traveling, personal emergency, etc."
+                className="block w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all resize-none"
+                style={{ border: '1.5px solid #EBEBEB', background: '#F7F7F7', color: '#111111' }}
+                onFocus={e => { e.currentTarget.style.borderColor = '#C4622D'; e.currentTarget.style.background = '#fff' }}
+                onBlur={e => { e.currentTarget.style.borderColor = '#EBEBEB'; e.currentTarget.style.background = '#F7F7F7' }}
+                placeholder="e.g., Item damaged, currently traveling, personal emergency..."
                 value={cancellationReason}
                 onChange={(e) => setCancellationReason(e.target.value)}
               />
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Product Availability
-              </label>
+            <div className="mb-5">
+              <label className="block text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: '#6B6B6B' }}>Product Availability</label>
               <div className="space-y-3">
-                <label className="flex items-start cursor-pointer">
-                  <input
-                    type="radio"
-                    name="product-availability"
-                    checked={makeProductsAvailable}
-                    onChange={() => setMakeProductsAvailable(true)}
-                    className="mt-0.5 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                  />
-                  <div className="ml-3">
-                    <span className="text-sm font-medium text-gray-900">Make products available again</span>
-                    <p className="text-xs text-gray-500">Choose this if you can fulfill the order later (e.g., traveling, temporary issue)</p>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input type="radio" name="product-availability" checked={makeProductsAvailable} onChange={() => setMakeProductsAvailable(true)} className="mt-0.5" />
+                  <div>
+                    <span className="text-sm font-semibold" style={{ color: '#111111' }}>Make products available again</span>
+                    <p className="text-xs mt-0.5" style={{ color: '#9A9A9A' }}>Choose this if you can fulfill the order later</p>
                   </div>
                 </label>
-                <label className="flex items-start cursor-pointer">
-                  <input
-                    type="radio"
-                    name="product-availability"
-                    checked={!makeProductsAvailable}
-                    onChange={() => setMakeProductsAvailable(false)}
-                    className="mt-0.5 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                  />
-                  <div className="ml-3">
-                    <span className="text-sm font-medium text-gray-900">Keep products unavailable</span>
-                    <p className="text-xs text-gray-500">Choose this if the item is permanently unavailable (e.g., damaged, sold elsewhere)</p>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input type="radio" name="product-availability" checked={!makeProductsAvailable} onChange={() => setMakeProductsAvailable(false)} className="mt-0.5" />
+                  <div>
+                    <span className="text-sm font-semibold" style={{ color: '#111111' }}>Keep products unavailable</span>
+                    <p className="text-xs mt-0.5" style={{ color: '#9A9A9A' }}>Choose this if the item is permanently unavailable</p>
                   </div>
                 </label>
               </div>
             </div>
 
             {error && (
-              <div className="mb-4 rounded-md bg-red-50 p-3">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="mb-4 rounded-xl p-3" style={{ background: '#FFF0F0', border: '1px solid #FFCCCC' }}>
+                <p className="text-sm" style={{ color: '#CC3333' }}>{error}</p>
               </div>
             )}
 
-            <div className="flex justify-end space-x-3">
+            <div className="flex justify-end gap-3">
               <button
-                onClick={() => {
-                  setShowDeclineModal(false)
-                  setCancellationReason('')
-                  setMakeProductsAvailable(true)
-                  setError(null)
-                }}
+                onClick={() => { setShowDeclineModal(false); setCancellationReason(''); setMakeProductsAvailable(true); setError(null) }}
                 disabled={updating}
-                className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="px-5 py-2 rounded-full text-sm font-semibold disabled:opacity-50 transition-all"
+                style={{ border: '1.5px solid #D4D4D4', color: '#6B6B6B' }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeclineOrder}
                 disabled={updating}
-                className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 transition"
+                className="px-5 py-2 rounded-full text-sm font-semibold text-white disabled:opacity-50 transition-all"
+                style={{ backgroundColor: '#CC3333' }}
               >
                 {updating ? 'Declining...' : 'Decline Order'}
               </button>

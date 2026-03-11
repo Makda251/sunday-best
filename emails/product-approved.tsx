@@ -28,7 +28,7 @@ export default function ProductApprovedEmail({
   return (
     <Html>
       <Head />
-      <Preview>Your product "{productTitle}" has been approved! - MakHil</Preview>
+      <Preview>Your product "{productTitle}" has been approved! - KemisHouse</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Product Approved! 🎉</Heading>
@@ -66,13 +66,13 @@ export default function ProductApprovedEmail({
 
           <Text style={footer}>
             Questions? Contact us at{' '}
-            <Link href="mailto:support@makhil.com" style={link}>
-              support@makhil.com
+            <Link href="mailto:support@kemishouse.com" style={link}>
+              support@kemishouse.com
             </Link>
           </Text>
 
           <Text style={footer}>
-            © 2025 MakHil. All rights reserved.
+            © 2025 KemisHouse. All rights reserved.
           </Text>
         </Container>
       </Body>

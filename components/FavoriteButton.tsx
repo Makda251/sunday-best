@@ -78,21 +78,22 @@ export default function FavoriteButton({ productId }: FavoriteButtonProps) {
         toggleFavorite()
       }}
       disabled={loading}
-      className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+      className="w-8 h-8 flex items-center justify-center rounded-full disabled:opacity-50 transition-colors"
+      style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(4px)' }}
       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        fill={isFavorited ? 'currentColor' : 'none'}
+        fill={isFavorited ? '#C4622D' : 'none'}
         viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className={`w-5 h-5 ${isFavorited ? 'text-red-500' : 'text-gray-600'}`}
+        strokeWidth={2}
+        stroke={isFavorited ? '#C4622D' : '#6B6B6B'}
+        className="w-4 h-4"
       >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
         />
       </svg>
     </button>

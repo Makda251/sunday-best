@@ -36,7 +36,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const isSeller = order.seller_id === user.id
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Message for Buyers */}
         {isBuyer && order.status === 'pending_payment' && (
@@ -49,43 +49,43 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
         )}
 
         {/* Order Header */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <div className="flex justify-between items-start mb-4">
+        <div className="bg-white rounded-2xl p-6 mb-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Order #{order.id.slice(0, 8)}</h1>
-              <p className="text-sm text-gray-500 mt-1">
+              <h1 className="text-2xl font-bold text-[#111111]">Order #{order.id.slice(0, 8)}</h1>
+              <p className="text-sm text-[#9A9A9A] mt-1">
                 Placed on {new Date(order.created_at).toLocaleDateString()}
               </p>
             </div>
             <div className="text-right">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                order.status === 'pending_payment' ? 'bg-yellow-100 text-yellow-800' :
-                order.status === 'payment_verified' ? 'bg-blue-100 text-blue-800' :
-                order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {order.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style={
+                order.status === 'pending_payment' ? { background: '#FEF3C7', color: '#92400E' } :
+                order.status === 'payment_verified' ? { background: '#DBEAFE', color: '#1E40AF' } :
+                order.status === 'shipped' ? { background: '#EDE9FE', color: '#6D28D9' } :
+                order.status === 'delivered' ? { background: '#D1FAE5', color: '#065F46' } :
+                { background: '#F7F7F7', color: '#6B6B6B' }
+              }>
+                {order.status.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
               </span>
             </div>
           </div>
 
           {/* Tracking Info */}
           {order.tracking_number && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm font-medium text-blue-900">Tracking Number:</p>
-              <p className="text-lg font-mono text-blue-700">{order.tracking_number}</p>
+            <div className="mt-4 p-4 rounded-xl" style={{ background: '#F0F9FF', border: '1px solid #BAE6FD' }}>
+              <p className="text-sm font-semibold" style={{ color: '#0C4A6E' }}>Tracking Number:</p>
+              <p className="text-lg font-mono mt-1" style={{ color: '#0369A1' }}>{order.tracking_number}</p>
             </div>
           )}
         </div>
 
         {/* Order Items */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Order Items</h2>
-          <ul className="divide-y divide-gray-200">
+        <div className="bg-white rounded-2xl p-6 mb-6">
+          <h2 className="text-lg font-medium text-[#111111] mb-4">Order Items</h2>
+          <ul className="divide-y divide-[#EBEBEB]">
             {order.order_items?.map((item: any) => (
               <li key={item.id} className="py-4 flex items-center">
-                <div className="flex-shrink-0 w-20 h-20 bg-gray-200 rounded-md overflow-hidden">
+                <div className="flex-shrink-0 w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
                   {item.product_image ? (
                     <Image
                       src={item.product_image}
@@ -95,28 +95,28 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                    <div className="w-full h-full flex items-center justify-center text-[#9A9A9A] text-xs">
                       No image
                     </div>
                   )}
                 </div>
-                <div className="ml-4 flex-1">
-                  <p className="text-base font-medium text-gray-900">{item.product_title}</p>
-                  <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                <div className="ml-4 flex-1 min-w-0">
+                  <p className="text-base font-medium text-[#111111] truncate">{item.product_title}</p>
+                  <p className="text-sm text-[#9A9A9A]">Quantity: {item.quantity}</p>
                 </div>
-                <p className="text-base font-medium text-gray-900">${item.product_price}</p>
+                <p className="text-base font-medium text-[#111111]">${item.product_price}</p>
               </li>
             ))}
           </ul>
 
           <div className="mt-6 border-t pt-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium text-gray-900">${order.subtotal}</span>
+              <span className="text-[#6B6B6B]">Subtotal</span>
+              <span className="font-medium text-[#111111]">${order.subtotal}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Shipping</span>
-              <span className="font-medium text-gray-900">
+              <span className="text-[#6B6B6B]">Shipping</span>
+              <span className="font-medium text-[#111111]">
                 {order.shipping_cost === 0 ? (
                   <span className="text-green-600">FREE</span>
                 ) : (
@@ -125,16 +125,16 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
               </span>
             </div>
             <div className="border-t pt-2 flex justify-between text-base font-medium">
-              <span className="text-gray-900">Total</span>
-              <span className="text-gray-900">${order.total}</span>
+              <span className="text-[#111111]">Total</span>
+              <span className="text-[#111111]">${order.total}</span>
             </div>
           </div>
         </div>
 
         {/* Shipping Address */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Shipping Address</h2>
-          <address className="text-sm text-gray-600 not-italic">
+        <div className="bg-white rounded-2xl p-6 mb-6">
+          <h2 className="text-lg font-medium text-[#111111] mb-4">Shipping Address</h2>
+          <address className="text-sm text-[#6B6B6B] not-italic">
             {order.shipping_address_line1}<br />
             {order.shipping_address_line2 && <>{order.shipping_address_line2}<br /></>}
             {order.shipping_city}, {order.shipping_state} {order.shipping_zip}<br />
@@ -143,15 +143,15 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* Payment Information */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Payment Information</h2>
+        <div className="bg-white rounded-2xl p-6">
+          <h2 className="text-lg font-medium text-[#111111] mb-4">Payment Information</h2>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Payment Method</span>
-              <span className="font-medium text-gray-900 uppercase">{order.payment_method}</span>
+              <span className="text-[#6B6B6B]">Payment Method</span>
+              <span className="font-medium text-[#111111] uppercase">{order.payment_method}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Payment Status</span>
+              <span className="text-[#6B6B6B]">Payment Status</span>
               <span className={`font-medium ${
                 order.payment_status === 'verified' ? 'text-green-600' :
                 order.payment_status === 'pending' ? 'text-yellow-600' :
@@ -162,13 +162,13 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             </div>
             {order.payment_screenshot_url && (
               <div className="mt-4">
-                <p className="text-sm text-gray-600 mb-2">Payment Screenshot:</p>
+                <p className="text-sm text-[#6B6B6B] mb-2">Payment Screenshot:</p>
                 <Image
                   src={order.payment_screenshot_url}
                   alt="Payment screenshot"
-                  width={300}
-                  height={200}
-                  className="rounded border"
+                  width={600}
+                  height={400}
+                  className="rounded border w-full h-auto"
                 />
               </div>
             )}
@@ -177,9 +177,9 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
 
         {/* Seller Info */}
         {isBuyer && (
-          <div className="bg-white shadow rounded-lg p-6 mt-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-2">Seller Information</h2>
-            <p className="text-sm text-gray-600">{order.seller?.full_name || 'Anonymous Seller'}</p>
+          <div className="bg-white rounded-2xl p-6 mt-6">
+            <h2 className="text-lg font-medium text-[#111111] mb-2">Seller Information</h2>
+            <p className="text-sm text-[#6B6B6B]">{order.seller?.full_name || 'Anonymous Seller'}</p>
           </div>
         )}
       </div>

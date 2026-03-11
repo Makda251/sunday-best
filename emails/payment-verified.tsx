@@ -29,7 +29,7 @@ export default function PaymentVerifiedEmail({
   return (
     <Html>
       <Head />
-      <Preview>Payment verified for order {orderNumber} - MakHil</Preview>
+      <Preview>Payment verified for order {orderNumber} - KemisHouse</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Payment Verified! 🎉</Heading>
@@ -72,13 +72,13 @@ export default function PaymentVerifiedEmail({
 
           <Text style={footer}>
             Questions? Contact us at{' '}
-            <Link href="mailto:support@makhil.com" style={link}>
-              support@makhil.com
+            <Link href="mailto:support@kemishouse.com" style={link}>
+              support@kemishouse.com
             </Link>
           </Text>
 
           <Text style={footer}>
-            © 2025 MakHil. All rights reserved.
+            © 2025 KemisHouse. All rights reserved.
           </Text>
         </Container>
       </Body>

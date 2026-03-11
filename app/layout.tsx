@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "MakHil - Your Home for Habesha Elegance",
+  title: "KemisHouse - Your Home for Habesha Elegance",
   description: "Buy and sell new and pre-loved traditional Habesha dresses. Your home for Habesha elegance through beautiful cotton and chiffon kemis.",
 };
 
@@ -17,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={outfit.variable} style={{ fontFamily: 'var(--font-outfit), system-ui, sans-serif' }}>
         <Navbar />
         <main>{children}</main>
       </body>

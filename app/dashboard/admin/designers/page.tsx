@@ -142,61 +142,61 @@ export default function DesignerManagementPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-[#9A9A9A]">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Designer Management</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-3xl font-bold text-[#111111]">Designer Management</h1>
+          <p className="mt-2 text-sm text-[#6B6B6B]">
             Manage designer names across all products. You can rename or remove designer names.
           </p>
         </div>
 
         {designers.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <p className="text-gray-500">No designers found in the system.</p>
+          <div className="bg-white rounded-2xl p-8 text-center" style={{ border: '1px solid #EBEBEB' }}>
+            <p className="text-[#9A9A9A]">No designers found in the system.</p>
           </div>
         ) : (
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="bg-white rounded-2xl overflow-hidden">
+            <table className="min-w-full divide-y divide-[#EBEBEB]">
+              <thead className="bg-white">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#9A9A9A] uppercase tracking-wider">
                     Designer Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#9A9A9A] uppercase tracking-wider">
                     Products
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-[#9A9A9A] uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-[#EBEBEB]">
                 {designers.map((designer) => (
                   <tr key={designer.name}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {editingDesigner === designer.name ? (
                         <input
                           type="text"
-                          className="border border-gray-300 rounded px-2 py-1 text-sm w-full max-w-xs"
+                          className="border border-[#EBEBEB] rounded px-2 py-1 text-sm w-full max-w-xs"
                           value={newName}
                           onChange={(e) => setNewName(e.target.value)}
                           placeholder="New designer name"
                           autoFocus
                         />
                       ) : (
-                        <div className="text-sm font-medium text-gray-900">{designer.name}</div>
+                        <div className="text-sm font-medium text-[#111111]">{designer.name}</div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#FDF0EA] text-[#C4622D]">
                         {designer.count} {designer.count === 1 ? 'product' : 'products'}
                       </span>
                     </td>
@@ -206,7 +206,7 @@ export default function DesignerManagementPage() {
                           <button
                             onClick={() => handleRenameDesigner(designer.name)}
                             disabled={updating}
-                            className="text-indigo-600 hover:text-indigo-900 disabled:opacity-50"
+                            className="font-medium disabled:opacity-50" style={{ color: '#C4622D' }}
                           >
                             Save
                           </button>
@@ -216,7 +216,7 @@ export default function DesignerManagementPage() {
                               setNewName('')
                             }}
                             disabled={updating}
-                            className="text-gray-600 hover:text-gray-900 disabled:opacity-50"
+                            className="text-[#6B6B6B] hover:text-[#111111] disabled:opacity-50"
                           >
                             Cancel
                           </button>
@@ -229,7 +229,7 @@ export default function DesignerManagementPage() {
                               setNewName(designer.name)
                             }}
                             disabled={updating}
-                            className="text-indigo-600 hover:text-indigo-900 disabled:opacity-50"
+                            className="font-medium disabled:opacity-50" style={{ color: '#C4622D' }}
                           >
                             Rename
                           </button>
@@ -253,7 +253,7 @@ export default function DesignerManagementPage() {
         <div className="mt-6">
           <button
             onClick={() => router.push('/dashboard/admin')}
-            className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+            className="text-sm font-medium" style={{ color: '#C4622D' }}
           >
             ← Back to Admin Dashboard
           </button>

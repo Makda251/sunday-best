@@ -61,93 +61,85 @@ export default function FavoritesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 mx-auto mb-3" style={{ borderColor: '#EBEBEB', borderTopColor: '#C4622D' }} />
+          <p className="text-sm" style={{ color: '#9A9A9A' }}>Loading favorites...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Favorites</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#111111' }}>My Favorites</h1>
+          <p className="mt-1 text-sm" style={{ color: '#6B6B6B' }}>
             {favorites.length} {favorites.length === 1 ? 'item' : 'items'} saved
           </p>
         </div>
 
         {favorites.length > 0 ? (
-          <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {favorites.map((favorite) => (
-              <div key={favorite.id} className="group relative">
+              <div
+                key={favorite.id}
+                className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-200"
+                style={{ border: '1px solid #EBEBEB' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1), 0 12px 32px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
+              >
                 <Link href={`/products/${favorite.product.id}`}>
-                  <div className="w-full aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                  <div className="w-full overflow-hidden" style={{ aspectRatio: '3/4', backgroundColor: '#F7F7F7' }}>
                     {favorite.product.images && favorite.product.images.length > 0 ? (
                       <Image
                         src={favorite.product.images[0]}
                         alt={favorite.product.title}
                         width={400}
-                        height={400}
-                        className="w-full h-full object-center object-cover group-hover:opacity-75"
+                        height={533}
+                        className="w-full h-full object-center object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        No image
+                      <div className="w-full h-full flex items-center justify-center" style={{ color: '#D4D4D4' }}>
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                       </div>
                     )}
                   </div>
-                  <h3 className="mt-4 text-sm text-gray-700 font-medium">{favorite.product.title}</h3>
-                  <p className="mt-1 text-lg font-semibold text-gray-900">${favorite.product.price}</p>
-                  <p className="mt-1 text-sm text-gray-500 capitalize">{favorite.product.condition}</p>
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold line-clamp-1" style={{ color: '#111111' }}>{favorite.product.title}</h3>
+                    <div className="flex items-center justify-between mt-1.5">
+                      <p className="text-base font-bold" style={{ color: '#111111' }}>${favorite.product.price}</p>
+                      <span className="text-xs capitalize px-2 py-0.5 rounded-md" style={{ background: '#F7F7F7', color: '#6B6B6B', border: '1px solid #EBEBEB' }}>{favorite.product.condition.replace('_', ' ')}</span>
+                    </div>
+                  </div>
                 </Link>
                 <button
                   onClick={() => removeFavorite(favorite.id)}
-                  className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                  className="absolute top-2.5 right-2.5 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(4px)' }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-5 h-5 text-red-500"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                    />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="#C4622D" viewBox="0 0 24 24" strokeWidth={2} stroke="#C4622D" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </button>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No favorites yet</h3>
-            <p className="mt-1 text-sm text-gray-500">Start adding items to your favorites!</p>
-            <div className="mt-6">
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition shadow-lg hover:shadow-xl"
-              >
-                Browse Dresses
-              </Link>
+          <div className="text-center py-16">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#FDF0EA' }}>
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#C4622D' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
             </div>
+            <h3 className="text-base font-semibold mb-1" style={{ color: '#111111' }}>No favorites yet</h3>
+            <p className="text-sm mb-6" style={{ color: '#6B6B6B' }}>Start adding items to your favorites!</p>
+            <Link href="/" className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold rounded-full text-white transition" style={{ backgroundColor: '#C4622D' }}>
+              Browse Dresses
+            </Link>
           </div>
         )}
       </div>

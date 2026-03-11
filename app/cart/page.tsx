@@ -62,7 +62,7 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <p className="text-gray-500">Loading cart...</p>
       </div>
     )
@@ -70,15 +70,17 @@ export default function CartPage() {
 
   if (cart.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Your cart is empty</h1>
-          <p className="text-gray-600 mb-8">Browse our collection and add items to your cart</p>
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition shadow-lg hover:shadow-xl"
-          >
-            Continue Shopping
+      <div className="min-h-screen py-16 flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="text-center">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: '#FDF0EA' }}>
+            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#C4622D' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-stone-900 mb-2" style={{  }}>Your cart is empty</h1>
+          <p className="mb-8 text-sm" style={{ color: '#6B6B6B' }}>Browse our collection and add items to your cart</p>
+          <Link href="/" className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold rounded-lg text-white transition" style={{ backgroundColor: '#C4622D' }}>
+            Browse Dresses
           </Link>
         </div>
       </div>
@@ -86,127 +88,82 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-8" style={{  }}>
+          Shopping Cart
+        </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">
-            <div className="bg-white shadow rounded-lg overflow-hidden">
-              <ul className="divide-y divide-gray-200">
-                {cart.items.map((item) => (
-                  <li key={item.product.id} className="p-6">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 w-24 h-24 bg-gray-200 rounded-md overflow-hidden">
+            <div className="bg-white rounded-xl overflow-hidden" style={{ border: '1px solid #EBEBEB' }}>
+              <ul>
+                {cart.items.map((item, idx) => (
+                  <li key={item.product.id} className="p-5 sm:p-6" style={{ borderTop: idx > 0 ? '1px solid #EBEBEB' : 'none' }}>
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden" style={{ backgroundColor: '#EDE8E3' }}>
                         {item.product.images && item.product.images.length > 0 ? (
-                          <Image
-                            src={item.product.images[0]}
-                            alt={item.product.title}
-                            width={96}
-                            height={96}
-                            className="w-full h-full object-center object-cover"
-                          />
+                          <Image src={item.product.images[0]} alt={item.product.title} width={96} height={96} className="w-full h-full object-center object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                            No image
-                          </div>
+                          <div className="w-full h-full flex items-center justify-center text-xs" style={{ color: '#B5A899' }}>No image</div>
                         )}
                       </div>
-                      <div className="ml-6 flex-1">
-                        <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-3">
                           <div>
-                            <h3 className="text-base font-medium text-gray-900">
-                              <Link href={`/products/${item.product.id}`} className="hover:text-indigo-600">
-                                {item.product.title}
-                              </Link>
+                            <h3 className="text-sm sm:text-base font-semibold text-stone-900">
+                              <Link href={`/products/${item.product.id}`} className="hover:underline">{item.product.title}</Link>
                             </h3>
-                            <p className="mt-1 text-sm text-gray-500 capitalize">{item.product.condition}</p>
-                            {item.product.size && (
-                              <p className="mt-1 text-sm text-gray-500">Size: {item.product.size}</p>
-                            )}
+                            <p className="mt-0.5 text-xs capitalize" style={{ color: '#6B6B6B' }}>{item.product.condition}</p>
+                            {item.product.size && <p className="text-xs" style={{ color: '#6B6B6B' }}>Size: {item.product.size}</p>}
                           </div>
-                          <p className="text-base font-medium text-gray-900">${item.product.price}</p>
+                          <p className="text-sm sm:text-base font-bold text-stone-900 flex-shrink-0">${item.product.price}</p>
                         </div>
-                        <div className="mt-4 flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <span className="text-sm text-gray-600">Quantity:</span>
-                            <div className="flex items-center border border-gray-300 rounded-md">
-                              <button
-                                onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                                disabled={item.quantity <= 1}
-                                className="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                -
-                              </button>
-                              <span className="px-4 py-1 text-sm font-medium text-gray-900 border-x border-gray-300">
-                                {item.quantity}
-                              </span>
-                              <button
-                                onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                                disabled={item.quantity >= (item.product.quantity_available || 1)}
-                                className="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                +
-                              </button>
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs" style={{ color: '#6B6B6B' }}>Qty:</span>
+                            <div className="flex items-center rounded-lg overflow-hidden" style={{ border: '1px solid #EBEBEB' }}>
+                              <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} disabled={item.quantity <= 1} className="px-4 py-2.5 text-sm transition disabled:opacity-40 min-w-[44px]" style={{ color: '#6B6B6B' }}>−</button>
+                              <span className="px-3 py-2.5 text-sm font-semibold text-stone-900" style={{ borderLeft: '1px solid #EBEBEB', borderRight: '1px solid #EBEBEB' }}>{item.quantity}</span>
+                              <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} disabled={item.quantity >= (item.product.quantity_available || 1)} className="px-4 py-2.5 text-sm transition disabled:opacity-40 min-w-[44px]" style={{ color: '#6B6B6B' }}>+</button>
                             </div>
-                            {item.product.quantity_available && item.product.quantity_available > 1 && (
-                              <span className="text-xs text-gray-500">
-                                ({item.product.quantity_available} available)
-                              </span>
-                            )}
                           </div>
-                          <button
-                            onClick={() => removeItem(item.product.id)}
-                            className="text-sm text-red-600 hover:text-red-500"
-                          >
-                            Remove
-                          </button>
+                          <button onClick={() => removeItem(item.product.id)} className="text-xs font-medium" style={{ color: '#C4622D' }}>Remove</button>
                         </div>
                       </div>
                     </div>
                   </li>
                 ))}
               </ul>
-              <div className="p-6 bg-gray-50 border-t">
-                <button
-                  onClick={clearCart}
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                >
-                  Clear cart
-                </button>
+              <div className="px-6 py-4" style={{ borderTop: '1px solid #EBEBEB', backgroundColor: '#FDFCFB' }}>
+                <button onClick={clearCart} className="text-sm" style={{ color: '#6B6B6B' }}>Clear cart</button>
               </div>
             </div>
           </div>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white shadow rounded-lg p-6 sticky top-8">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+            <div className="bg-white rounded-xl p-6 lg:sticky lg:top-8" style={{ border: '1px solid #EBEBEB' }}>
+              <h2 className="text-lg font-semibold text-stone-900 mb-4" style={{  }}>Order Summary</h2>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal ({cart.items.length} item{cart.items.length !== 1 ? 's' : ''})</span>
-                  <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                  <span style={{ color: '#6B6B6B' }}>Subtotal ({cart.items.length} item{cart.items.length !== 1 ? 's' : ''})</span>
+                  <span className="font-medium text-stone-900">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium text-gray-900">${shipping.toFixed(2)}</span>
+                  <span style={{ color: '#6B6B6B' }}>Shipping</span>
+                  <span className="font-medium text-stone-900">${shipping.toFixed(2)}</span>
                 </div>
-                <div className="border-t pt-3 flex justify-between text-base font-medium">
-                  <span className="text-gray-900">Total</span>
-                  <span className="text-gray-900">${total.toFixed(2)}</span>
+                <div className="flex justify-between text-base font-bold pt-3" style={{ borderTop: '1px solid #EBEBEB' }}>
+                  <span className="text-stone-900">Total</span>
+                  <span style={{ color: '#C4622D' }}>${total.toFixed(2)}</span>
                 </div>
               </div>
-              <Link
-                href="/checkout"
-                className="mt-6 w-full bg-gradient-to-r from-indigo-600 to-purple-600 border border-transparent rounded-xl py-3 px-4 flex items-center justify-center text-base font-semibold text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition shadow-lg hover:shadow-xl"
-              >
+              <Link href="/checkout" className="mt-6 w-full flex items-center justify-center py-3 px-4 text-sm font-semibold text-white rounded-lg transition" style={{ backgroundColor: '#C4622D' }}>
                 Proceed to Checkout
               </Link>
-              <Link
-                href="/"
-                className="mt-3 w-full bg-white border border-gray-300 rounded-md py-3 px-4 flex items-center justify-center text-base font-medium text-gray-700 hover:bg-gray-50"
-              >
+              <Link href="/" className="mt-3 w-full flex items-center justify-center py-3 px-4 text-sm font-medium rounded-lg transition" style={{ border: '1px solid #EBEBEB', color: '#6B6B6B' }}>
                 Continue Shopping
               </Link>
             </div>

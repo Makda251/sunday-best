@@ -52,32 +52,39 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
 
   if (!isOpen) return null
 
+  const inputSt = { border: '1.5px solid #EBEBEB', background: '#F7F7F7', color: '#111111' }
+  const onFocus = (e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.style.borderColor = '#C4622D'; e.currentTarget.style.background = '#fff' }
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.style.borderColor = '#EBEBEB'; e.currentTarget.style.background = '#F7F7F7' }
+
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Complete Your Shipping Address</h3>
-          <p className="mt-2 text-sm text-gray-600">
+    <div className="fixed inset-0 flex items-center justify-center p-4 z-50" style={{ background: 'rgba(0,0,0,0.5)' }}>
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-7" style={{ border: '1px solid #EBEBEB' }}>
+        <div className="mb-5">
+          <h3 className="text-lg font-bold" style={{ color: '#111111' }}>Complete Your Shipping Address</h3>
+          <p className="mt-1.5 text-sm" style={{ color: '#6B6B6B' }}>
             You have pending orders! Please provide your complete shipping address so buyers know where to return items if needed.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{error}</p>
+            <div className="rounded-xl p-4" style={{ background: '#FFF0F0', border: '1px solid #FFCCCC' }}>
+              <p className="text-sm" style={{ color: '#CC3333' }}>{error}</p>
             </div>
           )}
 
           <div>
-            <label htmlFor="address-line1" className="block text-sm font-medium text-gray-700">
-              Street Address <span className="text-red-600">*</span>
+            <label htmlFor="address-line1" className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: '#6B6B6B' }}>
+              Street Address <span style={{ color: '#C4622D' }}>*</span>
             </label>
             <input
               id="address-line1"
               type="text"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all"
+              style={inputSt}
+              onFocus={onFocus}
+              onBlur={onBlur}
               placeholder="123 Main St"
               value={addressLine1}
               onChange={(e) => setAddressLine1(e.target.value)}
@@ -85,13 +92,16 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
           </div>
 
           <div>
-            <label htmlFor="address-line2" className="block text-sm font-medium text-gray-700">
-              Apartment, suite, etc. <span className="text-gray-400 text-xs">(optional)</span>
+            <label htmlFor="address-line2" className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: '#6B6B6B' }}>
+              Apartment, suite, etc. <span className="normal-case font-normal" style={{ color: '#9A9A9A' }}>(optional)</span>
             </label>
             <input
               id="address-line2"
               type="text"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all"
+              style={inputSt}
+              onFocus={onFocus}
+              onBlur={onBlur}
               placeholder="Apt 4B"
               value={addressLine2}
               onChange={(e) => setAddressLine2(e.target.value)}
@@ -100,14 +110,17 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                City <span className="text-red-600">*</span>
+              <label htmlFor="city" className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: '#6B6B6B' }}>
+                City <span style={{ color: '#C4622D' }}>*</span>
               </label>
               <input
                 id="city"
                 type="text"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="block w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all"
+                style={inputSt}
+                onFocus={onFocus}
+                onBlur={onBlur}
                 placeholder="New York"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
@@ -115,15 +128,18 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
             </div>
 
             <div>
-              <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                State <span className="text-red-600">*</span>
+              <label htmlFor="state" className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: '#6B6B6B' }}>
+                State <span style={{ color: '#C4622D' }}>*</span>
               </label>
               <input
                 id="state"
                 type="text"
                 required
                 maxLength={2}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm uppercase"
+                className="block w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all uppercase"
+                style={inputSt}
+                onFocus={onFocus}
+                onBlur={onBlur}
                 placeholder="NY"
                 value={state}
                 onChange={(e) => setState(e.target.value.toUpperCase())}
@@ -132,8 +148,8 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
           </div>
 
           <div>
-            <label htmlFor="zip-code" className="block text-sm font-medium text-gray-700">
-              ZIP Code <span className="text-red-600">*</span>
+            <label htmlFor="zip-code" className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: '#6B6B6B' }}>
+              ZIP Code <span style={{ color: '#C4622D' }}>*</span>
             </label>
             <input
               id="zip-code"
@@ -141,25 +157,31 @@ export default function SellerAddressPrompt({ sellerId, hasOrders, onAddressAdde
               required
               maxLength={5}
               pattern="[0-9]{5}"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all"
+              style={inputSt}
+              onFocus={onFocus}
+              onBlur={onBlur}
               placeholder="10001"
               value={zipCode}
               onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
             />
           </div>
 
-          <div className="flex justify-end space-x-3 mt-6">
+          <div className="flex justify-end mt-6">
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex justify-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition shadow-md hover:shadow-lg"
+              className="px-6 py-2.5 rounded-full text-sm font-semibold text-white disabled:opacity-60 transition-all"
+              style={{ backgroundColor: '#C4622D' }}
+              onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = '#A84F22' }}
+              onMouseLeave={e => { if (!loading) e.currentTarget.style.backgroundColor = '#C4622D' }}
             >
               {loading ? 'Saving...' : 'Save Address'}
             </button>
           </div>
         </form>
 
-        <p className="mt-4 text-xs text-gray-500">
+        <p className="mt-4 text-xs" style={{ color: '#9A9A9A' }}>
           This address will be used as the return address on shipping labels.
         </p>
       </div>

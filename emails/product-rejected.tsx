@@ -27,7 +27,7 @@ export default function ProductRejectedEmail({
   return (
     <Html>
       <Head />
-      <Preview>Action needed: Your product "{productTitle}" needs revision - MakHil</Preview>
+      <Preview>Action needed: Your product "{productTitle}" needs revision - KemisHouse</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Product Needs Revision</Heading>
@@ -66,13 +66,13 @@ export default function ProductRejectedEmail({
 
           <Text style={footer}>
             Questions? Contact us at{' '}
-            <Link href="mailto:support@makhil.com" style={link}>
-              support@makhil.com
+            <Link href="mailto:support@kemishouse.com" style={link}>
+              support@kemishouse.com
             </Link>
           </Text>
 
           <Text style={footer}>
-            © 2025 MakHil. All rights reserved.
+            © 2025 KemisHouse. All rights reserved.
           </Text>
         </Container>
       </Body>

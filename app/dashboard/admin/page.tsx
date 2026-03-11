@@ -64,87 +64,62 @@ export default async function AdminDashboard() {
 
   const totalRevenue = revenueData?.reduce((sum, order) => sum + parseFloat(order.platform_fee), 0) || 0
 
+  const paymentBadge = (s: string) => s === 'verified' ? { background: '#D1FAE5', color: '#065F46' } : s === 'pending' ? { background: '#FEF3C7', color: '#92400E' } : { background: '#FEE2E2', color: '#991B1B' }
+  const statusBadge = (s: string) => {
+    if (s === 'delivered') return { background: '#D1FAE5', color: '#065F46' }
+    if (s === 'shipped') return { background: '#EDE9FE', color: '#6D28D9' }
+    if (s === 'cancelled') return { background: '#FEE2E2', color: '#991B1B' }
+    if (s === 'refunded') return { background: '#FDF0EA', color: '#C4622D' }
+    return { background: '#DBEAFE', color: '#1E40AF' }
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#FFFFFF' }}>
       <DashboardVisitTracker role="admin" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Manage orders and verify payments
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#111111' }}>Admin Dashboard</h1>
+          <p className="mt-1 text-sm" style={{ color: '#6B6B6B' }}>Manage orders and verify payments</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <dt className="text-sm font-medium text-gray-500 truncate">
-                Total Orders
-              </dt>
-              <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                {totalOrders || 0}
-              </dd>
-            </div>
-          </div>
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <dt className="text-sm font-medium text-gray-500 truncate">
-                Pending Verifications
-              </dt>
-              <dd className="mt-1 text-3xl font-semibold text-yellow-600">
-                {pendingPayments || 0}
-              </dd>
-              {pendingPayments > 0 && (
-                <p className="mt-2 text-xs text-yellow-600 font-medium">⚠️ Action needed</p>
-              )}
-            </div>
-          </div>
-          <Link href="/dashboard/admin/products" className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
-            <div className="p-5">
-              <dt className="text-sm font-medium text-gray-500 truncate">
-                Pending Product Reviews
-              </dt>
-              <dd className="mt-1 text-3xl font-semibold text-purple-600">
-                {pendingProducts || 0}
-              </dd>
-              {pendingProducts > 0 && (
-                <p className="mt-2 text-xs text-purple-600 font-medium">⚠️ Action needed</p>
-              )}
-            </div>
-          </Link>
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <dt className="text-sm font-medium text-gray-500 truncate">
-                Platform Revenue
-              </dt>
-              <dd className="mt-1 text-3xl font-semibold text-green-600">
-                ${totalRevenue.toFixed(2)}
-              </dd>
-            </div>
-          </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {[
+            { label: 'Total Orders', value: totalOrders || 0, color: '#111111' },
+            { label: 'Pending Verifications', value: pendingPayments || 0, color: '#92400E', alert: true },
+            { label: 'Pending Reviews', value: pendingProducts || 0, color: '#6D28D9', alert: true, href: '/dashboard/admin/products' },
+            { label: 'Platform Revenue', value: `$${totalRevenue.toFixed(2)}`, color: '#065F46' },
+          ].map(({ label, value, color, alert, href }) => {
+            const inner = (
+              <div className="p-5 rounded-xl" style={{ border: '1px solid #EBEBEB', background: '#FFFFFF' }}>
+                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6B6B6B' }}>{label}</p>
+                <p className="mt-2 text-3xl font-bold" style={{ color }}>{value}</p>
+                {alert && Number(value) > 0 && (
+                  <p className="mt-1 text-xs font-medium" style={{ color }}>Action needed</p>
+                )}
+              </div>
+            )
+            return href ? (
+              <Link key={label} href={href} className="block transition-all hover:shadow-md rounded-xl">{inner}</Link>
+            ) : (
+              <div key={label}>{inner}</div>
+            )
+          })}
         </div>
 
         {/* Quick Links */}
-        <div className="bg-white shadow rounded-lg mb-8 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Management Tools</h2>
+        <div className="bg-white rounded-xl mb-8 p-5" style={{ border: '1px solid #EBEBEB' }}>
+          <h2 className="text-base font-semibold mb-4" style={{ color: '#111111' }}>Management Tools</h2>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/dashboard/admin/designers"
-              className="inline-flex items-center px-4 py-2 border border-indigo-300 rounded-md shadow-sm text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Link href="/dashboard/admin/designers" className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all" style={{ background: '#FDF0EA', color: '#C4622D' }}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
               Manage Designers
             </Link>
-            <Link
-              href="/dashboard/admin/settings"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <Link href="/dashboard/admin/settings" className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all" style={{ background: '#F7F7F7', color: '#6B6B6B' }}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               Settings
             </Link>
@@ -152,121 +127,86 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Pending Payment Verifications */}
-        <div className="bg-white shadow rounded-lg mb-8">
-          <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Pending Payment Verifications</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Review and verify Zelle payments
-            </p>
+        <div className="bg-white rounded-xl mb-6" style={{ border: '1px solid #EBEBEB' }}>
+          <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid #EBEBEB' }}>
+            <div>
+              <h2 className="text-base font-semibold" style={{ color: '#111111' }}>Pending Payment Verifications</h2>
+              <p className="text-xs mt-0.5" style={{ color: '#6B6B6B' }}>Review and verify Zelle payments</p>
+            </div>
+            {pendingOrders && pendingOrders.length > 0 && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold" style={{ background: '#FEF3C7', color: '#92400E' }}>{pendingOrders.length}</span>
+            )}
           </div>
           <div>
             {pendingOrders && pendingOrders.length > 0 ? (
-              <ul className="divide-y divide-gray-200">
+              <ul>
                 {pendingOrders.map((order) => (
-                  <li key={order.id} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
+                  <li key={order.id} className="px-5 py-4" style={{ borderBottom: '1px solid #EBEBEB' }}>
+                    <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-3">
-                          <p className="text-sm font-medium text-gray-900">
-                            Order #{order.id.slice(0, 8)}
-                          </p>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Pending Verification
-                          </span>
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <p className="text-sm font-semibold" style={{ color: '#111111' }}>Order #{order.id.slice(0, 8)}</p>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#FEF3C7', color: '#92400E' }}>Pending Verification</span>
                         </div>
-                        <div className="mt-2 flex items-center text-sm text-gray-500 space-x-4">
+                        <div className="flex flex-wrap gap-3 text-xs" style={{ color: '#6B6B6B' }}>
                           <span>Buyer: {order.buyer?.full_name || 'Anonymous'}</span>
-                          <span>•</span>
                           <span>Amount: ${order.total}</span>
-                          <span>•</span>
                           <span>{new Date(order.created_at).toLocaleDateString()}</span>
                         </div>
                         {order.payment_screenshot_url && (
                           <div className="mt-3">
-                            <p className="text-xs text-gray-500 mb-1">Payment Screenshot:</p>
-                            <Image
-                              src={order.payment_screenshot_url}
-                              alt="Payment screenshot"
-                              width={200}
-                              height={150}
-                              className="rounded border"
-                            />
+                            <p className="text-xs mb-1" style={{ color: '#9A9A9A' }}>Payment Screenshot:</p>
+                            <Image src={order.payment_screenshot_url} alt="Payment screenshot" width={200} height={150} className="rounded-lg border" style={{ borderColor: '#EBEBEB' }} />
                           </div>
                         )}
                       </div>
-                      <div className="ml-4">
-                        <Link
-                          href={`/dashboard/admin/orders/${order.id}`}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg"
-                        >
-                          Review
-                        </Link>
-                      </div>
+                      <Link href={`/dashboard/admin/orders/${order.id}`} className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold text-white transition-all" style={{ backgroundColor: '#C4622D' }}>
+                        Review
+                      </Link>
                     </div>
                   </li>
                 ))}
               </ul>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-500">No pending verifications</p>
+                <p className="text-sm" style={{ color: '#9A9A9A' }}>No pending verifications</p>
               </div>
             )}
           </div>
         </div>
 
         {/* All Orders */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Recent Orders</h2>
+        <div className="bg-white rounded-xl" style={{ border: '1px solid #EBEBEB' }}>
+          <div className="px-5 py-4" style={{ borderBottom: '1px solid #EBEBEB' }}>
+            <h2 className="text-base font-semibold" style={{ color: '#111111' }}>Recent Orders</h2>
           </div>
           <div>
             {allOrders && allOrders.length > 0 ? (
-              <ul className="divide-y divide-gray-200">
+              <ul>
                 {allOrders.map((order) => (
-                  <li key={order.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50">
-                    <Link href={`/dashboard/admin/orders/${order.id}`} className="block">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3">
-                            <p className="text-sm font-medium text-gray-900">
-                              Order #{order.id.slice(0, 8)}
-                            </p>
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              order.payment_status === 'verified' ? 'bg-green-100 text-green-800' :
-                              order.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {order.payment_status}
-                            </span>
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                              order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                              order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                              order.status === 'refunded' ? 'bg-orange-100 text-orange-800' :
-                              'bg-blue-100 text-blue-800'
-                            }`}>
-                              {order.status.replace(/_/g, ' ')}
-                            </span>
-                          </div>
-                          <div className="mt-1 flex items-center text-sm text-gray-500 space-x-4">
-                            <span>${order.total}</span>
-                            <span>•</span>
-                            <span>{new Date(order.created_at).toLocaleDateString()}</span>
-                          </div>
+                  <li key={order.id} style={{ borderBottom: '1px solid #EBEBEB' }}>
+                    <Link href={`/dashboard/admin/orders/${order.id}`} className="flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-[#F7F7F7]" style={{ color: 'inherit' }}>
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <p className="text-sm font-semibold" style={{ color: '#111111' }}>Order #{order.id.slice(0, 8)}</p>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold" style={paymentBadge(order.payment_status)}>{order.payment_status}</span>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold" style={statusBadge(order.status)}>{order.status.replace(/_/g, ' ')}</span>
                         </div>
-                        <div>
-                          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
+                        <div className="flex gap-3 text-xs" style={{ color: '#9A9A9A' }}>
+                          <span>${order.total}</span>
+                          <span>{new Date(order.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
+                      <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#9A9A9A' }}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </Link>
                   </li>
                 ))}
               </ul>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-500">No orders yet</p>
+                <p className="text-sm" style={{ color: '#9A9A9A' }}>No orders yet</p>
               </div>
             )}
           </div>

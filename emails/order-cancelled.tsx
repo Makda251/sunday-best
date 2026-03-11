@@ -28,7 +28,7 @@ export default function OrderCancelledEmail({
   return (
     <Html>
       <Head />
-      <Preview>Order {orderNumber} has been cancelled - MakHil</Preview>
+      <Preview>Order {orderNumber} has been cancelled - KemisHouse</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Order Cancelled</Heading>
@@ -67,13 +67,13 @@ export default function OrderCancelledEmail({
 
           <Text style={footer}>
             Questions? Contact us at{' '}
-            <Link href="mailto:support@makhil.com" style={link}>
-              support@makhil.com
+            <Link href="mailto:support@kemishouse.com" style={link}>
+              support@kemishouse.com
             </Link>
           </Text>
 
           <Text style={footer}>
-            © 2025 MakHil. All rights reserved.
+            © 2025 KemisHouse. All rights reserved.
           </Text>
         </Container>
       </Body>

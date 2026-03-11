@@ -242,50 +242,48 @@ export default function AdminOrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Loading order...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto" style={{ borderColor: '#C4622D' }}></div>
+          <p className="mt-4 text-sm" style={{ color: '#6B6B6B' }}>Loading order...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <button
-            onClick={() => router.push('/dashboard/admin')}
-            className="text-sm text-indigo-600 hover:text-indigo-500 mb-4"
-          >
+        <div className="mb-7">
+          <button onClick={() => router.push('/dashboard/admin')} className="text-sm font-medium mb-3 block" style={{ color: '#C4622D' }}>
             ← Back to Dashboard
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">Order #{order.id.slice(0, 8)}</h1>
+          <h1 className="text-2xl font-bold" style={{ color: '#111111' }}>Order #{order.id.slice(0, 8).toUpperCase()}</h1>
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-50 p-4 mb-6">
-            <p className="text-sm text-red-800">{error}</p>
+          <div className="rounded-xl p-4 mb-6" style={{ background: '#FFF0F0', border: '1px solid #FFCCCC' }}>
+            <p className="text-sm" style={{ color: '#CC3333' }}>{error}</p>
           </div>
         )}
 
         {/* Payment Verification */}
         {order.payment_status === 'pending' && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
-            <h2 className="text-lg font-medium text-yellow-900 mb-4">Payment Verification Required</h2>
-            <p className="text-sm text-yellow-700 mb-4">
-              Review the payment screenshot and verify the payment has been received in your Zelle account.
-            </p>
-            <div className="flex space-x-3">
-              <button
-                onClick={handleVerifyPayment}
-                disabled={updating}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+          <div className="rounded-2xl p-6 mb-5" style={{ background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+            <h2 className="text-base font-bold mb-2" style={{ color: '#92400E' }}>Payment Verification Required</h2>
+            <p className="text-sm mb-4" style={{ color: '#92400E' }}>Review the payment screenshot and verify the payment has been received in your Zelle account.</p>
+            <div className="flex gap-3">
+              <button onClick={handleVerifyPayment} disabled={updating}
+                className="px-5 py-2 text-sm font-semibold text-white rounded-full disabled:opacity-50 transition-all"
+                style={{ backgroundColor: '#16A34A' }}
+                onMouseEnter={e => { if (!updating) e.currentTarget.style.backgroundColor = '#15803D' }}
+                onMouseLeave={e => { if (!updating) e.currentTarget.style.backgroundColor = '#16A34A' }}
               >
                 {updating ? 'Processing...' : 'Verify Payment'}
               </button>
-              <button
-                onClick={handleRejectPayment}
-                disabled={updating}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+              <button onClick={handleRejectPayment} disabled={updating}
+                className="px-5 py-2 text-sm font-semibold rounded-full disabled:opacity-50 transition-all"
+                style={{ border: '1.5px solid #FFCCCC', color: '#CC3333', background: '#FFF0F0' }}
               >
                 Reject Payment
               </button>
@@ -293,72 +291,60 @@ export default function AdminOrderDetailPage() {
           </div>
         )}
 
-        {/* Order Status */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Order Information</h2>
+        {/* Order Info */}
+        <div className="bg-white rounded-2xl p-6 mb-5" style={{ border: '1px solid #EBEBEB' }}>
+          <h2 className="text-base font-semibold mb-4" style={{ color: '#111111' }}>Order Information</h2>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">Order Date:</span>
-              <p className="font-medium text-gray-900">{new Date(order.created_at).toLocaleString()}</p>
+              <span style={{ color: '#6B6B6B' }}>Order Date</span>
+              <p className="font-semibold mt-0.5" style={{ color: '#111111' }}>{new Date(order.created_at).toLocaleString()}</p>
             </div>
             <div>
-              <span className="text-gray-600">Order Status:</span>
-              <p className="font-medium text-gray-900 capitalize">{order.status.replace(/_/g, ' ')}</p>
+              <span style={{ color: '#6B6B6B' }}>Order Status</span>
+              <p className="font-semibold mt-0.5 capitalize" style={{ color: '#111111' }}>{order.status.replace(/_/g, ' ')}</p>
             </div>
             <div>
-              <span className="text-gray-600">Payment Status:</span>
-              <p className={`font-medium ${
-                order.payment_status === 'verified' ? 'text-green-600' :
-                order.payment_status === 'pending' ? 'text-yellow-600' :
-                'text-red-600'
-              }`}>
+              <span style={{ color: '#6B6B6B' }}>Payment Status</span>
+              <p className="font-semibold mt-0.5" style={{ color: order.payment_status === 'verified' ? '#065F46' : order.payment_status === 'pending' ? '#92400E' : '#991B1B' }}>
                 {order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
               </p>
             </div>
             <div>
-              <span className="text-gray-600">Payment Method:</span>
-              <p className="font-medium text-gray-900 uppercase">{order.payment_method}</p>
+              <span style={{ color: '#6B6B6B' }}>Payment Method</span>
+              <p className="font-semibold mt-0.5 uppercase" style={{ color: '#111111' }}>{order.payment_method}</p>
             </div>
             {order.tracking_number && (
               <div className="col-span-2">
-                <span className="text-gray-600">Tracking Number:</span>
-                <p className="font-medium font-mono text-gray-900">{order.tracking_number}</p>
+                <span style={{ color: '#6B6B6B' }}>Tracking Number</span>
+                <p className="font-semibold font-mono mt-0.5" style={{ color: '#111111' }}>{order.tracking_number}</p>
               </div>
             )}
           </div>
-
-          {/* Cancellation Reason */}
           {order.cancellation_reason && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <h3 className="text-sm font-medium text-red-900 mb-2">Cancellation Reason</h3>
-              <p className="text-sm text-red-700">{order.cancellation_reason}</p>
+            <div className="mt-5 p-4 rounded-xl" style={{ background: '#FFF0F0', border: '1px solid #FFCCCC' }}>
+              <h3 className="text-xs font-semibold mb-1" style={{ color: '#CC3333' }}>Cancellation Reason</h3>
+              <p className="text-sm" style={{ color: '#CC3333' }}>{order.cancellation_reason}</p>
             </div>
           )}
         </div>
 
         {/* Payment Screenshot */}
         {order.payment_screenshot_url && (
-          <div className="bg-white shadow rounded-lg p-6 mb-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Payment Screenshot</h2>
+          <div className="bg-white rounded-2xl p-6 mb-5" style={{ border: '1px solid #EBEBEB' }}>
+            <h2 className="text-base font-semibold mb-4" style={{ color: '#111111' }}>Payment Screenshot</h2>
             <div className="max-w-md">
-              <Image
-                src={order.payment_screenshot_url}
-                alt="Payment screenshot"
-                width={400}
-                height={300}
-                className="rounded border"
-              />
+              <Image src={order.payment_screenshot_url} alt="Payment screenshot" width={400} height={300} className="rounded-xl" style={{ border: '1px solid #EBEBEB' }} />
             </div>
           </div>
         )}
 
         {/* Order Items */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Order Items</h2>
-          <ul className="divide-y divide-gray-200">
+        <div className="bg-white rounded-2xl p-6 mb-5" style={{ border: '1px solid #EBEBEB' }}>
+          <h2 className="text-base font-semibold mb-4" style={{ color: '#111111' }}>Order Items</h2>
+          <ul className="space-y-3">
             {order.order_items?.map((item: any) => (
-              <li key={item.id} className="py-4 flex items-center">
-                <div className="flex-shrink-0 w-20 h-20 bg-gray-200 rounded-md overflow-hidden">
+              <li key={item.id} className="flex items-center gap-4 p-3 rounded-xl" style={{ background: '#F7F7F7' }}>
+                <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden" style={{ background: '#EBEBEB' }}>
                   {item.product_image ? (
                     <Image
                       src={item.product_image}
@@ -368,67 +354,67 @@ export default function AdminOrderDetailPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                    <div className="w-full h-full flex items-center justify-center text-[#9A9A9A] text-xs">
                       No image
                     </div>
                   )}
                 </div>
                 <div className="ml-4 flex-1">
-                  <p className="text-base font-medium text-gray-900">{item.product_title}</p>
-                  <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                  <p className="text-base font-medium text-[#111111]">{item.product_title}</p>
+                  <p className="text-sm text-[#9A9A9A]">Quantity: {item.quantity}</p>
                 </div>
-                <p className="text-base font-medium text-gray-900">${item.product_price}</p>
+                <p className="text-base font-medium text-[#111111]">${item.product_price}</p>
               </li>
             ))}
           </ul>
 
           <div className="mt-6 border-t pt-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium text-gray-900">${order.subtotal}</span>
+              <span className="text-[#6B6B6B]">Subtotal</span>
+              <span className="font-medium text-[#111111]">${order.subtotal}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Shipping</span>
-              <span className="font-medium text-gray-900">${order.shipping_cost}</span>
+              <span className="text-[#6B6B6B]">Shipping</span>
+              <span className="font-medium text-[#111111]">${order.shipping_cost}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Platform Fee (10%)</span>
+              <span className="text-[#6B6B6B]">Platform Fee (10%)</span>
               <span className="font-medium text-green-600">${order.platform_fee}</span>
             </div>
             <div className="border-t pt-2 flex justify-between text-base font-medium">
-              <span className="text-gray-900">Total Paid</span>
-              <span className="text-gray-900">${order.total}</span>
+              <span className="text-[#111111]">Total Paid</span>
+              <span className="text-[#111111]">${order.total}</span>
             </div>
           </div>
         </div>
 
         {/* Customer Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Buyer</h2>
+          <div className="bg-white rounded-2xl p-6">
+            <h2 className="text-lg font-medium text-[#111111] mb-4">Buyer</h2>
             <div className="text-sm space-y-1">
-              <p className="font-medium text-gray-900">{order.buyer?.full_name}</p>
-              <p className="text-gray-600">{order.buyer?.email}</p>
-              {order.buyer?.phone && <p className="text-gray-600">{order.buyer.phone}</p>}
+              <p className="font-medium text-[#111111]">{order.buyer?.full_name}</p>
+              <p className="text-[#6B6B6B]">{order.buyer?.email}</p>
+              {order.buyer?.phone && <p className="text-[#6B6B6B]">{order.buyer.phone}</p>}
             </div>
 
             {/* Buyer Zelle Info for Refunds */}
             {(order.buyer_zelle_email || order.buyer_zelle_phone || order.buyer_zelle_name) && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Zelle Info (for verification & refunds)</h3>
+              <div className="mt-4 pt-4 border-t border-[#EBEBEB]">
+                <h3 className="text-sm font-medium text-[#111111] mb-2">Zelle Info (for verification & refunds)</h3>
                 <div className="text-sm space-y-1">
                   {order.buyer_zelle_name && (
-                    <p className="text-gray-600">
+                    <p className="text-[#6B6B6B]">
                       <span className="font-medium">Name on Zelle:</span> {order.buyer_zelle_name}
                     </p>
                   )}
                   {order.buyer_zelle_email && (
-                    <p className="text-gray-600">
+                    <p className="text-[#6B6B6B]">
                       <span className="font-medium">Email:</span> {order.buyer_zelle_email}
                     </p>
                   )}
                   {order.buyer_zelle_phone && (
-                    <p className="text-gray-600">
+                    <p className="text-[#6B6B6B]">
                       <span className="font-medium">Phone:</span> {order.buyer_zelle_phone}
                     </p>
                   )}
@@ -439,43 +425,44 @@ export default function AdminOrderDetailPage() {
                   <button
                     onClick={handleMarkAsRefunded}
                     disabled={updating}
-                    className="mt-3 w-full px-3 py-2 border border-transparent rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 transition"
+                    className="mt-3 w-full px-3 py-2 text-sm font-semibold text-white rounded-full disabled:opacity-50 transition-all"
+                    style={{ backgroundColor: '#16A34A' }}
+                    onMouseEnter={e => { if (!updating) e.currentTarget.style.backgroundColor = '#15803D' }}
+                    onMouseLeave={e => { if (!updating) e.currentTarget.style.backgroundColor = '#16A34A' }}
                   >
                     Mark as Refunded
                   </button>
                 )}
 
                 {order.refunded_at && (
-                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-sm font-medium text-green-900">✓ Refunded</p>
-                    <p className="text-xs text-green-700 mt-1">{new Date(order.refunded_at).toLocaleString()}</p>
-                    {order.refund_notes && (
-                      <p className="text-xs text-green-700 mt-1 italic">{order.refund_notes}</p>
-                    )}
+                  <div className="mt-3 p-3 rounded-xl" style={{ background: '#F0FFF4', border: '1px solid #BBF7D0' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#166534' }}>✓ Refunded</p>
+                    <p className="text-xs mt-1" style={{ color: '#166534' }}>{new Date(order.refunded_at).toLocaleString()}</p>
+                    {order.refund_notes && <p className="text-xs mt-1 italic" style={{ color: '#166534' }}>{order.refund_notes}</p>}
                   </div>
                 )}
               </div>
             )}
           </div>
 
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Seller</h2>
-            <div className="text-sm space-y-1">
-              <p className="font-medium text-gray-900">{order.seller?.full_name}</p>
-              <p className="text-gray-600">{order.seller?.email}</p>
-              {order.seller?.phone && <p className="text-gray-600">{order.seller.phone}</p>}
+          <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
+            <h2 className="text-base font-semibold mb-3" style={{ color: '#111111' }}>Seller</h2>
+            <div className="text-sm space-y-0.5">
+              <p className="font-semibold" style={{ color: '#111111' }}>{order.seller?.full_name}</p>
+              <p style={{ color: '#6B6B6B' }}>{order.seller?.email}</p>
+              {order.seller?.phone && <p style={{ color: '#6B6B6B' }}>{order.seller.phone}</p>}
             </div>
           </div>
         </div>
 
         {/* Shipping Address */}
-        <div className="bg-white shadow rounded-lg p-6 mt-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Shipping Address</h2>
-          <address className="text-sm text-gray-600 not-italic">
-            {order.shipping_address_line1}<br />
-            {order.shipping_address_line2 && <>{order.shipping_address_line2}<br /></>}
-            {order.shipping_city}, {order.shipping_state} {order.shipping_zip}<br />
-            {order.shipping_country}
+        <div className="bg-white rounded-2xl p-6 mt-5" style={{ border: '1px solid #EBEBEB' }}>
+          <h2 className="text-base font-semibold mb-3" style={{ color: '#111111' }}>Shipping Address</h2>
+          <address className="text-sm not-italic space-y-0.5" style={{ color: '#6B6B6B' }}>
+            <p>{order.shipping_address_line1}</p>
+            {order.shipping_address_line2 && <p>{order.shipping_address_line2}</p>}
+            <p>{order.shipping_city}, {order.shipping_state} {order.shipping_zip}</p>
+            <p>{order.shipping_country}</p>
           </address>
         </div>
       </div>

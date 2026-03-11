@@ -12,10 +12,10 @@ import React from 'react'
 const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_key_for_build')
 
 // Email sender configuration
-// TODO: After verifying makhil.com domain in Resend, change to:
-// const FROM_EMAIL = 'MakHil <noreply@makhil.com>'
+// TODO: After verifying kemishouse.com domain in Resend, change to:
+// const FROM_EMAIL = 'KemisHouse <noreply@kemishouse.com>'
 // For now, using Resend's onboarding email (may go to spam)
-const FROM_EMAIL = 'MakHil <onboarding@resend.dev>'
+const FROM_EMAIL = 'KemisHouse <onboarding@resend.dev>'
 
 // Utility function to send emails
 async function sendEmail(to: string, subject: string, react: React.ReactElement) {
@@ -73,7 +73,7 @@ export async function sendOrderPlacedEmail(params: {
 }) {
   return sendEmail(
     params.to,
-    `Order Confirmation ${params.orderNumber} - MakHil`,
+    `Order Confirmation ${params.orderNumber} - KemisHouse`,
     OrderPlacedEmail(params)
   )
 }
@@ -88,7 +88,7 @@ export async function sendPaymentVerifiedEmail(params: {
 }) {
   return sendEmail(
     params.to,
-    `Payment Verified ${params.orderNumber} - MakHil`,
+    `Payment Verified ${params.orderNumber} - KemisHouse`,
     PaymentVerifiedEmail(params)
   )
 }
@@ -105,7 +105,7 @@ export async function sendOrderShippedEmail(params: {
 }) {
   return sendEmail(
     params.to,
-    `Your Order Has Shipped ${params.orderNumber} - MakHil`,
+    `Your Order Has Shipped ${params.orderNumber} - KemisHouse`,
     OrderShippedEmail(params)
   )
 }
@@ -120,7 +120,7 @@ export async function sendOrderCancelledEmail(params: {
 }) {
   return sendEmail(
     params.to,
-    `Order Cancelled ${params.orderNumber} - MakHil`,
+    `Order Cancelled ${params.orderNumber} - KemisHouse`,
     OrderCancelledEmail(params)
   )
 }
@@ -135,7 +135,7 @@ export async function sendProductApprovedEmail(params: {
 }) {
   return sendEmail(
     params.to,
-    `Product Approved: "${params.productTitle}" - MakHil`,
+    `Product Approved: "${params.productTitle}" - KemisHouse`,
     ProductApprovedEmail(params)
   )
 }
@@ -149,7 +149,7 @@ export async function sendProductRejectedEmail(params: {
 }) {
   return sendEmail(
     params.to,
-    `Product Needs Revision: "${params.productTitle}" - MakHil`,
+    `Product Needs Revision: "${params.productTitle}" - KemisHouse`,
     ProductRejectedEmail(params)
   )
 }

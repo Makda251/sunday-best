@@ -134,28 +134,28 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
 
   if (loading || !order) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto" style={{ borderColor: '#C4622D' }}></div>
+          <p className="mt-4 text-[#6B6B6B]">Loading...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link href={`/dashboard/buyer/orders/${id}`} className="text-indigo-600 hover:text-indigo-700 font-medium text-sm mb-6 inline-block">
+        <Link href={`/dashboard/buyer/orders/${id}`} className="font-medium text-sm mb-6 inline-block" style={{ color: '#C4622D' }}>
           ← Back to Order
         </Link>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Request Refund</h1>
-          <p className="text-sm text-gray-600 mb-4">Order {order.order_number}</p>
+        <div className="bg-white rounded-2xl p-6 mb-6" style={{ border: '1px solid #EBEBEB' }}>
+          <h1 className="text-2xl font-bold text-[#111111] mb-2">Request Refund</h1>
+          <p className="text-sm text-[#6B6B6B] mb-4">Order {order.order_number}</p>
 
           {/* Order Info */}
-          <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+          <div className="flex gap-4 p-4 bg-white rounded-xl" style={{ border: '1px solid #EBEBEB' }}>
             {order.order_items[0]?.product_image && (
               <Image
                 src={order.order_items[0].product_image}
@@ -166,8 +166,8 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
               />
             )}
             <div>
-              <p className="font-medium text-gray-900">{order.order_items[0]?.product_title}</p>
-              <p className="text-sm text-gray-600 mt-1">Refund Amount: ${order.total.toFixed(2)}</p>
+              <p className="font-medium text-[#111111]">{order.order_items[0]?.product_title}</p>
+              <p className="text-sm text-[#6B6B6B] mt-1">Refund Amount: ${order.total.toFixed(2)}</p>
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Refund Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6" style={{ border: '1px solid #EBEBEB' }}>
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-sm text-red-800">{error}</p>
@@ -204,12 +204,12 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
 
           {/* Reason */}
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
+            <label className="block text-sm font-semibold text-[#6B6B6B] mb-3">
               Reason for Refund <span className="text-red-500">*</span>
             </label>
             <div className="space-y-3">
               <label className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition ${
-                reason === 'item_destroyed' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 hover:border-gray-400'
+                reason === 'item_destroyed' ? 'border-[#C4622D] bg-[#FDF0EA]' : 'border-[#EBEBEB] hover:border-gray-400'
               }`}>
                 <input
                   type="radio"
@@ -221,13 +221,13 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
                   required
                 />
                 <div className="ml-3">
-                  <p className="font-medium text-gray-900">Item Destroyed</p>
-                  <p className="text-sm text-gray-600">The dress arrived damaged or destroyed during shipping</p>
+                  <p className="font-medium text-[#111111]">Item Destroyed</p>
+                  <p className="text-sm text-[#6B6B6B]">The dress arrived damaged or destroyed during shipping</p>
                 </div>
               </label>
 
               <label className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition ${
-                reason === 'severe_misrepresentation' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 hover:border-gray-400'
+                reason === 'severe_misrepresentation' ? 'border-[#C4622D] bg-[#FDF0EA]' : 'border-[#EBEBEB] hover:border-gray-400'
               }`}>
                 <input
                   type="radio"
@@ -239,8 +239,8 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
                   required
                 />
                 <div className="ml-3">
-                  <p className="font-medium text-gray-900">Severe Misrepresentation</p>
-                  <p className="text-sm text-gray-600">The item is significantly different from the description</p>
+                  <p className="font-medium text-[#111111]">Severe Misrepresentation</p>
+                  <p className="text-sm text-[#6B6B6B]">The item is significantly different from the description</p>
                 </div>
               </label>
             </div>
@@ -248,10 +248,10 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
 
           {/* Description */}
           <div className="mb-6">
-            <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="description" className="block text-sm font-semibold text-[#6B6B6B] mb-2">
               Detailed Description <span className="text-red-500">*</span>
             </label>
-            <p className="text-xs text-gray-500 mb-2">
+            <p className="text-xs text-[#9A9A9A] mb-2">
               Please provide a detailed explanation of the issue. Include photos if possible by email.
             </p>
             <textarea
@@ -259,12 +259,12 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
               rows={6}
               required
               minLength={20}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-[#EBEBEB] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 "
               placeholder="Describe the issue in detail... (minimum 20 characters)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-            <p className="text-xs text-gray-500 mt-1">{description.length} characters</p>
+            <p className="text-xs text-[#9A9A9A] mt-1">{description.length} characters</p>
           </div>
 
           {/* Zelle Information for Refund */}
@@ -276,14 +276,14 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="zelleName" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="zelleName" className="block text-sm font-semibold text-[#6B6B6B] mb-2">
                   Name on Zelle Account <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   id="zelleName"
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[#EBEBEB] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 "
                   placeholder="Full name as it appears on Zelle"
                   value={zelleName}
                   onChange={(e) => setZelleName(e.target.value)}
@@ -291,13 +291,13 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
               </div>
 
               <div>
-                <label htmlFor="zelleEmail" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Zelle Email or Phone <span className="text-xs text-gray-500">(at least one required)</span>
+                <label htmlFor="zelleEmail" className="block text-sm font-semibold text-[#6B6B6B] mb-2">
+                  Zelle Email or Phone <span className="text-xs text-[#9A9A9A]">(at least one required)</span>
                 </label>
                 <input
                   type="email"
                   id="zelleEmail"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
+                  className="w-full border border-[#EBEBEB] rounded-lg px-4 py-2 focus:outline-none focus:ring-2  mb-3"
                   placeholder="email@example.com"
                   value={zelleEmail}
                   onChange={(e) => setZelleEmail(e.target.value)}
@@ -305,7 +305,7 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
                 <input
                   type="tel"
                   id="zellePhone"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[#EBEBEB] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 "
                   placeholder="+1 (555) 123-4567"
                   value={zellePhone}
                   onChange={(e) => setZellePhone(e.target.value)}
@@ -319,7 +319,8 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
             <button
               type="button"
               onClick={() => router.back()}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 px-6 py-3 font-semibold rounded-full transition-all"
+              style={{ border: '1.5px solid #D4D4D4', color: '#6B6B6B' }}
               disabled={submitting}
             >
               Cancel
@@ -327,7 +328,8 @@ export default function RefundRequestPage({ params }: { params: Promise<{ id: st
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+              className="flex-1 px-6 py-3 text-white font-semibold rounded-full transition-all hover:opacity-90 disabled:opacity-50"
+              style={{ backgroundColor: '#CC3333' }}
             >
               {submitting ? 'Submitting...' : 'Submit Refund Request'}
             </button>

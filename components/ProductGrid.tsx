@@ -82,94 +82,33 @@ export default function ProductGrid() {
     <div>
       {/* Featured Carousels */}
       {conditionFilter === 'all' && !searchQuery && selectedTags.length === 0 && (
-        <div className="mb-12 space-y-8">
-          {/* Brand New Dresses Carousel */}
+        <div className="mb-12 space-y-10">
           {getNewProducts().length > 0 && (
             <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">Brand New Dresses</h2>
-                <button
-                  onClick={() => setConditionFilter('new')}
-                  className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
-                >
+              <div className="flex justify-between items-baseline mb-5">
+                <h2 className="text-xl font-bold" style={{ color: '#111111' }}>New arrivals</h2>
+                <button onClick={() => setConditionFilter('new')} className="text-sm font-medium" style={{ color: '#C4622D' }}>
                   View all →
                 </button>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {getNewProducts().map((product: Product) => (
-                  <div key={product.id} className="group relative">
-                    <div className="absolute top-2 right-2 z-10">
-                      <FavoriteButton productId={product.id} />
-                    </div>
-                    <Link href={`/products/${product.id}`}>
-                      <div className="w-full aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                        {product.images && product.images.length > 0 ? (
-                          <Image
-                            src={product.images[0]}
-                            alt={product.title}
-                            width={200}
-                            height={200}
-                            className="w-full h-full object-center object-cover group-hover:opacity-75"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            No image
-                          </div>
-                        )}
-                      </div>
-                      <h3 className="mt-2 text-sm text-gray-700 font-medium line-clamp-1">{product.title}</h3>
-                      {product.designer && (
-                        <p className="text-xs text-gray-500 line-clamp-1">by {product.designer}</p>
-                      )}
-                      <p className="mt-1 text-base font-semibold text-gray-900">${product.price}</p>
-                    </Link>
-                  </div>
+                  <ProductCard key={product.id} product={product} compact />
                 ))}
               </div>
             </div>
           )}
-
-          {/* Pre-Loved Carousel */}
           {getPreLovedProducts().length > 0 && (
             <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">Pre-Loved Treasures</h2>
-                <button
-                  onClick={() => setConditionFilter('pre-loved')}
-                  className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
-                >
+              <div className="flex justify-between items-baseline mb-5">
+                <h2 className="text-xl font-bold" style={{ color: '#111111' }}>Pre-loved</h2>
+                <button onClick={() => setConditionFilter('pre-loved')} className="text-sm font-medium" style={{ color: '#C4622D' }}>
                   View all →
                 </button>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {getPreLovedProducts().map((product: Product) => (
-                  <div key={product.id} className="group relative">
-                    <div className="absolute top-2 right-2 z-10">
-                      <FavoriteButton productId={product.id} />
-                    </div>
-                    <Link href={`/products/${product.id}`}>
-                      <div className="w-full aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                        {product.images && product.images.length > 0 ? (
-                          <Image
-                            src={product.images[0]}
-                            alt={product.title}
-                            width={200}
-                            height={200}
-                            className="w-full h-full object-center object-cover group-hover:opacity-75"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            No image
-                          </div>
-                        )}
-                      </div>
-                      <h3 className="mt-2 text-sm text-gray-700 font-medium line-clamp-1">{product.title}</h3>
-                      {product.designer && (
-                        <p className="text-xs text-gray-500 line-clamp-1">by {product.designer}</p>
-                      )}
-                      <p className="mt-1 text-base font-semibold text-gray-900">${product.price}</p>
-                    </Link>
-                  </div>
+                  <ProductCard key={product.id} product={product} compact />
                 ))}
               </div>
             </div>
@@ -177,207 +116,196 @@ export default function ProductGrid() {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="-mb-px flex space-x-8">
-          <button
-            onClick={() => setConditionFilter('all')}
-            className={`${
-              conditionFilter === 'all'
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-          >
-            All Dresses
-          </button>
-          <button
-            onClick={() => setConditionFilter('new')}
-            className={`${
-              conditionFilter === 'new'
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-          >
-            Brand New
-          </button>
-          <button
-            onClick={() => setConditionFilter('pre-loved')}
-            className={`${
-              conditionFilter === 'pre-loved'
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-          >
-            Pre-Loved
-          </button>
-        </nav>
-      </div>
+      {/* Condition tabs + Search */}
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <div className="flex gap-2">
+          {(['all', 'new', 'pre-loved'] as const).map((tab) => {
+            const labels = { all: 'All', new: 'New', 'pre-loved': 'Pre-Loved' }
+            const active = conditionFilter === tab
+            return (
+              <button
+                key={tab}
+                onClick={() => setConditionFilter(tab)}
+                className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
+                style={{
+                  border: active ? '1.5px solid #C4622D' : '1.5px solid #EBEBEB',
+                  background: active ? '#FDF0EA' : '#fff',
+                  color: active ? '#C4622D' : '#6B6B6B',
+                }}
+              >
+                {labels[tab]}
+              </button>
+            )
+          })}
+        </div>
 
-      {/* Search and Filters */}
-      <div className="mb-6 space-y-3">
-        <div className="flex gap-3 items-center">
+        {/* Search — mobile */}
+        <div className="relative flex-1 min-w-[160px] sm:hidden">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: '#9A9A9A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
             type="text"
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full pl-9 pr-3 py-1.5 text-sm rounded-full focus:outline-none"
+            style={{ border: '1.5px solid #EBEBEB', background: '#F7F7F7', color: '#111111' }}
           />
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-          >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
-            {selectedTags.length > 0 && (
-              <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-indigo-600 rounded-full">
-                {selectedTags.length}
-              </span>
-            )}
-          </button>
-          {(searchQuery || selectedTags.length > 0) && (
-            <button
-              onClick={clearFilters}
-              className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
-            >
-              Clear All
-            </button>
-          )}
         </div>
 
-        {/* Tag Filters */}
-        {showFilters && (
-          <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
-            <div className="space-y-3 sm:space-y-4">
-              <div>
-                <p className="text-xs font-medium text-gray-500 mb-1.5 sm:mb-2">COLORS</p>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                  {COLOR_TAGS.map(tag => (
-                    <button
-                      key={tag}
-                      onClick={() => toggleTag(tag)}
-                      className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
-                        selectedTags.includes(tag)
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs font-medium text-gray-500 mb-1.5 sm:mb-2">STYLES</p>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                  {STYLE_TAGS.map(tag => (
-                    <button
-                      key={tag}
-                      onClick={() => toggleTag(tag)}
-                      className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
-                        selectedTags.includes(tag)
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs font-medium text-gray-500 mb-1.5 sm:mb-2">OCCASIONS</p>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                  {OCCASION_TAGS.map(tag => (
-                    <button
-                      key={tag}
-                      onClick={() => toggleTag(tag)}
-                      className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
-                        selectedTags.includes(tag)
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-full transition-all"
+          style={{
+            border: showFilters || selectedTags.length > 0 ? '1.5px solid #C4622D' : '1.5px solid #EBEBEB',
+            background: showFilters || selectedTags.length > 0 ? '#FDF0EA' : '#fff',
+            color: showFilters || selectedTags.length > 0 ? '#C4622D' : '#6B6B6B',
+          }}
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+          </svg>
+          Filters
+          {selectedTags.length > 0 && (
+            <span className="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white rounded-full" style={{ backgroundColor: '#C4622D' }}>
+              {selectedTags.length}
+            </span>
+          )}
+        </button>
+        {(searchQuery || selectedTags.length > 0) && (
+          <button onClick={clearFilters} className="text-sm font-medium" style={{ color: '#C4622D' }}>
+            Clear all
+          </button>
         )}
       </div>
 
-      {/* Products Grid */}
-      {loading ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500">Loading...</p>
-        </div>
-      ) : products.length > 0 ? (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products.map((product: Product) => (
-            <div key={product.id} className="group relative">
-              <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 z-10">
-                <span className={`inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-[10px] sm:text-xs font-semibold ${
-                  product.condition === 'new'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-amber-100 text-amber-800'
-                }`}>
-                  {product.condition === 'new' ? 'New' : 'Pre-Loved'}
-                </span>
+      {showFilters && (
+        <div className="mb-5 p-4 rounded-2xl bg-white space-y-4" style={{ border: '1px solid #EBEBEB' }}>
+          {[
+            { label: 'COLORS', tags: COLOR_TAGS },
+            { label: 'STYLES', tags: STYLE_TAGS },
+            { label: 'OCCASIONS', tags: OCCASION_TAGS },
+          ].map(({ label, tags }) => (
+            <div key={label}>
+              <p className="text-xs font-semibold tracking-wider mb-2" style={{ color: '#9A9A9A' }}>{label}</p>
+              <div className="flex flex-wrap gap-2">
+                {tags.map(tag => {
+                  const active = selectedTags.includes(tag)
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => toggleTag(tag)}
+                      className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                      style={{
+                        border: active ? '1.5px solid #C4622D' : '1.5px solid #EBEBEB',
+                        background: active ? '#FDF0EA' : '#fff',
+                        color: active ? '#C4622D' : '#6B6B6B',
+                      }}
+                    >
+                      {tag}
+                    </button>
+                  )
+                })}
               </div>
-              <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 z-10">
-                <FavoriteButton productId={product.id} />
-              </div>
-              <Link href={`/products/${product.id}`}>
-                <div className="w-full aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                  {product.images && product.images.length > 0 ? (
-                    <Image
-                      src={product.images[0]}
-                      alt={product.title}
-                      width={400}
-                      height={400}
-                      className="w-full h-full object-center object-cover group-hover:opacity-75"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                      No image
-                    </div>
-                  )}
-                </div>
-                <h3 className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-700 font-medium line-clamp-2">{product.title}</h3>
-                {product.designer && (
-                  <p className="text-[10px] sm:text-xs text-gray-500 line-clamp-1">by {product.designer}</p>
-                )}
-                <p className="mt-0.5 sm:mt-1 text-sm sm:text-lg font-semibold text-gray-900">${product.price}</p>
-                {product.tags && product.tags.length > 0 && (
-                  <div className="mt-1 sm:mt-2 flex flex-wrap gap-1">
-                    {product.tags.slice(0, 2).map((tag: string) => (
-                      <span key={tag} className="inline-flex items-center px-1.5 py-0.5 sm:px-2 rounded text-[10px] sm:text-xs font-medium bg-indigo-100 text-indigo-800">
-                        {tag}
-                      </span>
-                    ))}
-                    {product.tags.length > 2 && (
-                      <span className="text-[10px] sm:text-xs text-gray-500">+{product.tags.length - 2}</span>
-                    )}
-                  </div>
-                )}
-              </Link>
             </div>
           ))}
         </div>
+      )}
+
+      {/* Products Grid */}
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="rounded-2xl mb-3" style={{ aspectRatio: '3/4', backgroundColor: '#F7F7F7' }} />
+              <div className="h-3 rounded-full mb-2" style={{ backgroundColor: '#F7F7F7', width: '75%' }} />
+              <div className="h-3 rounded-full" style={{ backgroundColor: '#F7F7F7', width: '40%' }} />
+            </div>
+          ))}
+        </div>
+      ) : products.length > 0 ? (
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products.map((product: Product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No products found.</p>
-          <button
-            onClick={clearFilters}
-            className="mt-4 text-indigo-600 hover:text-indigo-500 font-medium"
-          >
+        <div className="text-center py-16">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#FDF0EA' }}>
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#C4622D' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <p className="font-semibold" style={{ color: '#111111' }}>No dresses found</p>
+          <p className="text-sm mt-1" style={{ color: '#6B6B6B' }}>Try adjusting your filters</p>
+          <button onClick={clearFilters} className="mt-4 text-sm font-medium" style={{ color: '#C4622D' }}>
             Clear filters
           </button>
         </div>
       )}
+    </div>
+  )
+}
+
+function ProductCard({ product, compact = false }: { product: Product; compact?: boolean }) {
+  const conditionLabel = product.condition === 'new' ? 'New' : product.condition === 'like_new' ? 'Like New' : 'Good'
+  const conditionColor = product.condition === 'new'
+    ? { color: '#16A34A' }
+    : product.condition === 'like_new'
+    ? { color: '#0284C7' }
+    : { color: '#92400E' }
+
+  return (
+    <div
+      className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-200"
+      style={{ border: '1px solid #EBEBEB' }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1), 0 12px 32px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
+    >
+      {/* Condition badge */}
+      <div className="absolute top-2.5 left-2.5 z-10">
+        <span
+          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold"
+          style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(4px)', ...conditionColor }}
+        >
+          {conditionLabel}
+        </span>
+      </div>
+      {/* Favorite button */}
+      <div className="absolute top-2.5 right-2.5 z-10">
+        <FavoriteButton productId={product.id} />
+      </div>
+      <Link href={`/products/${product.id}`}>
+        <div className="w-full overflow-hidden" style={{ aspectRatio: '3/4', backgroundColor: '#F7F7F7' }}>
+          {product.images && product.images.length > 0 ? (
+            <Image
+              src={product.images[0]}
+              alt={product.title}
+              width={400}
+              height={533}
+              className="w-full h-full object-center object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#D4D4D4' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+          )}
+        </div>
+        <div className="p-3">
+          <h3 className={`font-semibold line-clamp-1 ${compact ? 'text-xs' : 'text-sm'}`} style={{ color: '#111111' }}>{product.title}</h3>
+          <div className="flex items-center justify-between mt-2">
+            <p className={`font-bold ${compact ? 'text-sm' : 'text-base'}`} style={{ color: '#111111' }}>${product.price}</p>
+            {product.size && (
+              <span className="text-xs font-medium px-2 py-0.5 rounded-md" style={{ background: '#F7F7F7', color: '#6B6B6B', border: '1px solid #EBEBEB' }}>
+                {product.size}
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
     </div>
   )
 }
