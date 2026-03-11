@@ -165,7 +165,7 @@ export default function SellPage() {
           </div>
 
           <h1 className="text-2xl font-bold" style={{ color: '#111111' }}>Sell your Habesha dress</h1>
-          <p className="mt-2 text-sm" style={{ color: '#6B6B6B' }}>Apply in 2 minutes. We&apos;ll get back to you within 48 hours.</p>
+          <p className="mt-2 text-sm" style={{ color: '#6B6B6B' }}>Apply in 2 minutes. We&apos;ll get back to you within a few days.</p>
         </div>
 
         {/* Step indicator */}

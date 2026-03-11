@@ -111,7 +111,7 @@ export default function Navbar() {
 
           {/* Nav Actions */}
           <div className="flex items-center gap-1">
-            {!loading && (
+            {!loading && !pathname.startsWith('/sell') && (
               <>
                 {profile ? (
                   <div className="flex items-center gap-1">
