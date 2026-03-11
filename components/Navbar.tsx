@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
 import type { Profile } from '@/lib/types/database'
@@ -12,6 +12,7 @@ export default function Navbar() {
   const [pendingOrders, setPendingOrders] = useState(0)
   const [pendingPayments, setPendingPayments] = useState(0)
   const router = useRouter()
+  const pathname = usePathname()
   const supabase = createClient()
 
   useEffect(() => {
@@ -186,7 +187,7 @@ export default function Navbar() {
                       </svg>
                     </button>
                   </div>
-                ) : (
+                ) : !pathname.startsWith('/sell') ? (
                   <div className="flex items-center gap-2">
                     <Link
                       href="/auth/login"
@@ -207,7 +208,7 @@ export default function Navbar() {
                       Sign up
                     </Link>
                   </div>
-                )}
+                ) : null}
               </>
             )}
           </div>
