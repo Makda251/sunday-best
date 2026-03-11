@@ -160,7 +160,7 @@ export default function SellPage() {
               <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
               </svg>
-              US sellers &amp; buyers only — all 50 states
+              Currently US only — more countries coming soon
             </div>
           </div>
 
