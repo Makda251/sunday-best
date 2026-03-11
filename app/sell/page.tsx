@@ -81,8 +81,8 @@ export default function SellPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (photos.length < 2) {
-      setError('Please upload at least 2 photos of your dresses')
+    if (photos.length < 3) {
+      setError('Please upload at least 3 photos of your dresses')
       return
     }
     setLoading(true)
@@ -281,7 +281,7 @@ export default function SellPage() {
                   Dress Photos <span className="text-red-500">*</span>
                 </label>
                 <div className="mb-4 rounded-xl p-4 space-y-2" style={{ backgroundColor: '#F7F7F7', border: '1px solid #EBEBEB' }}>
-                  <p className="text-xs font-semibold" style={{ color: '#111111' }}>What to include (2–5 photos):</p>
+                  <p className="text-xs font-semibold" style={{ color: '#111111' }}>What to include (3–5 photos):</p>
                   <ul className="text-xs space-y-1.5" style={{ color: '#6B6B6B' }}>
                     <li className="flex items-start gap-2">
                       <span style={{ color: '#C4622D' }}>•</span>
@@ -358,7 +358,7 @@ export default function SellPage() {
                   onChange={handlePhotoChange}
                 />
                 <p className="text-xs mt-2" style={{ color: '#9A9A9A' }}>
-                  {photos.length}/5 photos added {photos.length < 2 && '(minimum 2)'}
+                  {photos.length}/5 photos added {photos.length < 3 && '(minimum 3)'}
                 </p>
               </div>
 
@@ -373,7 +373,7 @@ export default function SellPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={loading || photos.length < 2}
+                  disabled={loading || photos.length < 3}
                   className="flex-1 flex justify-center items-center gap-2 px-4 py-3.5 text-sm font-semibold rounded-full text-white disabled:opacity-50 disabled:cursor-not-allowed transition"
                   style={{ backgroundColor: '#C4622D' }}
                   onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = '#A84F22' }}
