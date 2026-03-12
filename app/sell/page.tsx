@@ -56,10 +56,6 @@ export default function SellPage() {
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
-    if (photos.length + files.length > 5) {
-      setError('Maximum 5 photos allowed')
-      return
-    }
     setError(null)
     const newFiles = [...photos, ...files]
     setPhotos(newFiles)
@@ -82,7 +78,7 @@ export default function SellPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (photos.length < 3) {
-      setError('Please upload at least 3 photos of your dresses')
+      setError('Please upload at least 3 photos of your dress')
       return
     }
     setLoading(true)
@@ -281,11 +277,15 @@ export default function SellPage() {
                   Dress Photos <span className="text-red-500">*</span>
                 </label>
                 <div className="mb-4 rounded-xl p-4 space-y-2" style={{ backgroundColor: '#F7F7F7', border: '1px solid #EBEBEB' }}>
-                  <p className="text-xs font-semibold" style={{ color: '#111111' }}>What to include (3–5 photos):</p>
+                  <p className="text-xs font-semibold" style={{ color: '#111111' }}>What to include (minimum 3 photos):</p>
                   <ul className="text-xs space-y-1.5" style={{ color: '#6B6B6B' }}>
                     <li className="flex items-start gap-2">
                       <span style={{ color: '#C4622D' }}>•</span>
-                      <span><span className="font-medium" style={{ color: '#111111' }}>Wearing the dress</span> — front and back. You can crop your face if you prefer.</span>
+                      <span><span className="font-medium" style={{ color: '#111111' }}>Wearing the dress now</span> — front and back, to show its current state. You can crop your face if you prefer.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span style={{ color: '#C4622D' }}>•</span>
+                      <span><span className="font-medium" style={{ color: '#111111' }}>Photo from an event</span> — if you have one of you wearing it at a wedding, ceremony, or celebration, include it!</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span style={{ color: '#C4622D' }}>•</span>
@@ -316,19 +316,17 @@ export default function SellPage() {
                         </button>
                       </div>
                     ))}
-                    {photos.length < 5 && (
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="rounded-xl flex flex-col items-center justify-center gap-1 transition-colors hover:bg-[#F0E8E0]"
-                        style={{ aspectRatio: '3/4', border: '1.5px dashed #D4D4D4', backgroundColor: '#F7F7F7' }}
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#9A9A9A' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span className="text-xs" style={{ color: '#9A9A9A' }}>Add</span>
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="rounded-xl flex flex-col items-center justify-center gap-1 transition-colors hover:bg-[#F0E8E0]"
+                      style={{ aspectRatio: '3/4', border: '1.5px dashed #D4D4D4', backgroundColor: '#F7F7F7' }}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#9A9A9A' }}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span className="text-xs" style={{ color: '#9A9A9A' }}>Add</span>
+                    </button>
                   </div>
                 ) : (
                   <button
@@ -358,7 +356,7 @@ export default function SellPage() {
                   onChange={handlePhotoChange}
                 />
                 <p className="text-xs mt-2" style={{ color: '#9A9A9A' }}>
-                  {photos.length}/5 photos added {photos.length < 3 && '(minimum 3)'}
+                  {photos.length} photo{photos.length !== 1 ? 's' : ''} added {photos.length < 3 && '(minimum 3)'}
                 </p>
               </div>
 
