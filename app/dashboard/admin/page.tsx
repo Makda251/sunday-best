@@ -69,6 +69,15 @@ export default async function AdminDashboard() {
     .select('*', { count: 'exact', head: true })
     .eq('status', 'pending')
 
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 86400_000).toISOString()
+  const { data: funnelEvents } = await supabase
+    .from('sell_page_events')
+    .select('event')
+    .gte('created_at', thirtyDaysAgo)
+  const funnelViews     = funnelEvents?.filter(e => e.event === 'page_view').length ?? 0
+  const funnelContinues = funnelEvents?.filter(e => e.event === 'step1_complete').length ?? 0
+  const funnelSubmits   = funnelEvents?.filter(e => e.event === 'form_submitted').length ?? 0
+
   const paymentBadge = (s: string) => s === 'verified' ? { background: '#D1FAE5', color: '#065F46' } : s === 'pending' ? { background: '#FEF3C7', color: '#92400E' } : { background: '#FEE2E2', color: '#991B1B' }
   const statusBadge = (s: string) => {
     if (s === 'delivered') return { background: '#D1FAE5', color: '#065F46' }
@@ -111,6 +120,31 @@ export default async function AdminDashboard() {
               <div key={label}>{inner}</div>
             )
           })}
+        </div>
+
+        {/* Sell Page Funnel */}
+        <div className="bg-white rounded-xl mb-8 p-5" style={{ border: '1px solid #EBEBEB' }}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-semibold" style={{ color: '#111111' }}>Sell Page Funnel</h2>
+            <span className="text-xs" style={{ color: '#9A9A9A' }}>Last 30 days</span>
+          </div>
+          <div className="space-y-3">
+            {[
+              { label: 'Page views', value: funnelViews, pct: null },
+              { label: 'Clicked Continue', value: funnelContinues, pct: funnelViews > 0 ? Math.round(funnelContinues / funnelViews * 100) : 0 },
+              { label: 'Submitted', value: funnelSubmits, pct: funnelContinues > 0 ? Math.round(funnelSubmits / funnelContinues * 100) : 0 },
+            ].map(({ label, value, pct }) => (
+              <div key={label} className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: '#6B6B6B' }}>{label}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold" style={{ color: '#111111' }}>{value}</span>
+                  {pct !== null && (
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F7F7F7', color: '#6B6B6B' }}>{pct}%</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Quick Links */}

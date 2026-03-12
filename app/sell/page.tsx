@@ -48,6 +48,17 @@ export default function SellPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
+  // Funnel tracking
+  useEffect(() => {
+    const sessionId = (() => {
+      let id = sessionStorage.getItem('sell_session_id')
+      if (!id) { id = crypto.randomUUID(); sessionStorage.setItem('sell_session_id', id) }
+      return id
+    })()
+    supabase.from('sell_page_events').insert({ event: 'page_view', session_id: sessionId })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const inputCls = 'appearance-none block w-full px-4 py-3 focus:outline-none transition text-sm'
   const inputSt = { border: '1.5px solid #EBEBEB', backgroundColor: '#F7F7F7', color: '#111111', borderRadius: '10px' }
   const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => { e.currentTarget.style.borderColor = '#C4622D'; e.currentTarget.style.background = '#fff' }
@@ -72,6 +83,8 @@ export default function SellPage() {
   const handleStep1 = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    const sessionId = sessionStorage.getItem('sell_session_id') || ''
+    supabase.from('sell_page_events').insert({ event: 'step1_complete', session_id: sessionId })
     setStep(2)
   }
 
@@ -104,6 +117,8 @@ export default function SellPage() {
         .insert({ full_name: fullName, email, phone, city, state, photos: photoUrls })
       if (insertError) throw insertError
 
+      const sessionId = sessionStorage.getItem('sell_session_id') || ''
+      supabase.from('sell_page_events').insert({ event: 'form_submitted', session_id: sessionId })
       setSubmitted(true)
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.')
@@ -277,26 +292,26 @@ export default function SellPage() {
                   Dress Photos <span className="text-red-500">*</span>
                 </label>
                 <div className="mb-4 rounded-xl p-4 space-y-2" style={{ backgroundColor: '#F7F7F7', border: '1px solid #EBEBEB' }}>
-                  <p className="text-xs font-semibold" style={{ color: '#111111' }}>What to include (minimum 3 photos):</p>
-                  <ul className="text-xs space-y-1.5" style={{ color: '#6B6B6B' }}>
+                  <p className="text-sm font-semibold" style={{ color: '#111111' }}>Photos needed (min 3):</p>
+                  <ul className="text-sm space-y-1.5" style={{ color: '#6B6B6B' }}>
                     <li className="flex items-start gap-2">
                       <span style={{ color: '#C4622D' }}>•</span>
-                      <span><span className="font-medium" style={{ color: '#111111' }}>Wearing the dress now</span> — front and back, to show its current state. You can crop your face if you prefer.</span>
+                      <span>Front &amp; back wearing the dress <span style={{ color: '#9A9A9A' }}>(face can be cropped)</span></span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span style={{ color: '#C4622D' }}>•</span>
-                      <span><span className="font-medium" style={{ color: '#111111' }}>Photo from an event</span> — if you have one of you wearing it at a wedding, ceremony, or celebration, include it!</span>
+                      <span>One photo from an event <span style={{ color: '#9A9A9A' }}>(optional)</span></span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span style={{ color: '#C4622D' }}>•</span>
-                      <span><span className="font-medium" style={{ color: '#111111' }}>Close-up of the embroidery</span> or design details.</span>
+                      <span>Close-up of embroidery or design</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span style={{ color: '#C4622D' }}>•</span>
-                      <span><span className="font-medium" style={{ color: '#111111' }}>Any flaws or defects</span> (stains, tears, fading) — be transparent, buyers appreciate honesty.</span>
+                      <span>Show any flaws honestly</span>
                     </li>
                   </ul>
-                  <p className="text-xs pt-1" style={{ color: '#9A9A9A' }}>Good lighting makes a big difference. Natural daylight works best.</p>
+                  <p className="text-xs pt-1" style={{ color: '#9A9A9A' }}>Tip: Natural daylight works best.</p>
                 </div>
 
                 {photoPreviews.length > 0 ? (
