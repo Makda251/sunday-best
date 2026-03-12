@@ -392,6 +392,13 @@ export default function SellPage() {
           )}
         </div>
       </div>
+
+      <p className="text-center mt-8 text-xs" style={{ color: '#9A9A9A' }}>
+        Already have an account?{' '}
+        <Link href="/auth/login" style={{ color: '#6B6B6B' }} className="underline hover:no-underline">
+          Sign in
+        </Link>
+      </p>
     </div>
   )
 }
